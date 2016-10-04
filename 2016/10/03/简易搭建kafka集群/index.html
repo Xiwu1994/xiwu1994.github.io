@@ -84,15 +84,26 @@
 
 
 
-<meta name="description" content="Xiiiii&apos;s Blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hi">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="选择kafka版本首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)1、进入spark官网的文档页http://spark.apache.org/documentation.html2、点击Spark 1.6.13、顶部有Programming Guides，点击SparkStreaming4、command+F 或者 ctrl+F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建简易kafka集群">
+<meta property="og:url" content="http://yoursite.com/2016/10/03/简易搭建kafka集群/index.html">
 <meta property="og:site_name" content="Hi">
-<meta property="og:description" content="Xiiiii&apos;s Blog">
+<meta property="og:description" content="选择kafka版本首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)1、进入spark官网的文档页http://spark.apache.org/documentation.html2、点击Spark 1.6.13、顶部有Programming Guides，点击SparkStreaming4、command+F 或者 ctrl+F">
+<meta property="og:image" content="http://yoursite.com/images/201610/sparkstreaming_guide.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/kafka_version.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/download_kafka.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/spark_scala_version.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/zookeeper_version.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/download_zookeeper.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/sucess_zoo.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/kafka_create_topic.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/201610/kafka_pro_con.jpeg">
+<meta property="og:updated_time" content="2016-10-04T08:43:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hi">
-<meta name="twitter:description" content="Xiiiii&apos;s Blog">
+<meta name="twitter:title" content="搭建简易kafka集群">
+<meta name="twitter:description" content="选择kafka版本首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)1、进入spark官网的文档页http://spark.apache.org/documentation.html2、点击Spark 1.6.13、顶部有Programming Guides，点击SparkStreaming4、command+F 或者 ctrl+F">
+<meta name="twitter:image" content="http://yoursite.com/images/201610/sparkstreaming_guide.jpeg">
 
 
 
@@ -113,9 +124,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/10/03/简易搭建kafka集群/"/>
 
-  <title> Hi </title>
+  <title> 搭建简易kafka集群 | Hi </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -136,9 +147,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -215,9 +224,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -237,10 +246,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/10/03/简易搭建kafka集群/" itemprop="url">
-                  搭建简易kafka集群
-                </a>
+                搭建简易kafka集群
               
             
           </h1>
@@ -280,9 +286,7 @@
       
 
       
-        
-          
-            <h3 id="选择kafka版本"><a href="#选择kafka版本" class="headerlink" title="选择kafka版本"></a>选择kafka版本</h3><p>首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)<br>1、进入spark官网的文档页<a href="http://spark.apache.org/documentation.html" target="_blank" rel="external">http://spark.apache.org/documentation.html</a><br>2、点击Spark 1.6.1<br>3、顶部有Programming Guides，点击SparkStreaming<br><img src="/images/201610/sparkstreaming_guide.jpeg" width="400" height="600"><br>4、command+F 或者 ctrl+F 搜索kafka，能找到kafka版本<br><img src="/images/201610/kafka_version.jpeg" width="400" height="600"></p>
+        <h3 id="选择kafka版本"><a href="#选择kafka版本" class="headerlink" title="选择kafka版本"></a>选择kafka版本</h3><p>首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)<br>1、进入spark官网的文档页<a href="http://spark.apache.org/documentation.html" target="_blank" rel="external">http://spark.apache.org/documentation.html</a><br>2、点击Spark 1.6.1<br>3、顶部有Programming Guides，点击SparkStreaming<br><img src="/images/201610/sparkstreaming_guide.jpeg" width="400" height="600"><br>4、command+F 或者 ctrl+F 搜索kafka，能找到kafka版本<br><img src="/images/201610/kafka_version.jpeg" width="400" height="600"></p>
 <h3 id="kafka下载"><a href="#kafka下载" class="headerlink" title="kafka下载"></a>kafka下载</h3><p>进入官网下载页面<a href="http://kafka.apache.org/downloads.html" target="_blank" rel="external">http://kafka.apache.org/downloads.html</a><br><img src="/images/201610/download_kafka.jpeg"><br>binary是编译好的可以直接使用，source是还没编译过的源代码(编译挺麻烦的，直接使用编译好的)<br>Binary downloads提供不同scala版本的kafka下载，所以我们还得找到scala版本<br>回到我们已经有的环境，查看spark1.6.1需要的scala版本<br><img src="/images/201610/spark_scala_version.jpeg" width="400" height="600"><br>得知scala版本是2.10<br>开始下载kafka_2.10-0.8.2.1.tgz</p>
 <h3 id="zookeeper下载"><a href="#zookeeper下载" class="headerlink" title="zookeeper下载"></a>zookeeper下载</h3><p>为什么要下载zookeeper，因为kafka使用zookeeper来管理，存储一些meta信息。<br>(虽然kafka文件包里带有zookeeper的服务，但是我没有试过)<br>1、选择zookeeper版本，通过官网的Kafka 0.8.2 Documentation<br><a href="http://kafka.apache.org/082/documentation.html#zkversion" target="_blank" rel="external">http://kafka.apache.org/082/documentation.html#zkversion</a><br><img src="/images/201610/zookeeper_version.jpeg" width="400" height="600"><br>2、开始下载zookeeper 3.3.x版本<br><a href="http://apache.fayea.com/zookeeper/" target="_blank" rel="external">http://apache.fayea.com/zookeeper/</a><br><img src="/images/201610/download_zookeeper.jpeg" width="400" height="600"><br>3.3.x版本的只有3.3.6<br>PS.我的下载地址都在/opt下</p>
 <h3 id="zookeeper配置"><a href="#zookeeper配置" class="headerlink" title="zookeeper配置"></a>zookeeper配置</h3><p>1、配置zookeeper<br>cd /opt/zookeeper-3.3.6/conf<br>cp zoo_sample.cfg zoo.cfg<br>打开zoo.cfg 默认的配置如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># The number of milliseconds of each tick</span></div><div class="line">tickTime=2000 <span class="comment">#心跳时间，为了确保client-server连接存在的，以毫秒为单位，最小超时时间为两个心跳时间。</span></div><div class="line"><span class="comment"># The number of ticks that the initial</span></div><div class="line"><span class="comment"># synchronization phase can take</span></div><div class="line">initLimit=10 <span class="comment">#多少个tickTime内，允许其他server连接并初始化数据，如果zooKeeper管理的数据较大，则应相应增大这个值。</span></div><div class="line"><span class="comment"># The number of ticks that can pass between</span></div><div class="line"><span class="comment"># sending a request and getting an acknowledgement</span></div><div class="line">syncLimit=5 <span class="comment">#多少个tickTime内，允许follower同步，如果follower落后太多，则会被丢弃。</span></div><div class="line"><span class="comment"># the directory where the snapshot is stored.</span></div><div class="line">dataDir=/tmp/zookeeper <span class="comment">#用于存放内存数据库快照的文件夹，同时用于集群的myid文件也存在这个文件夹里</span></div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2181 <span class="comment">#客户端监听端口</span></div></pre></td></tr></table></figure></p>
@@ -299,16 +303,20 @@
 <img src="/images/201610/kafka_pro_con.jpeg" width="600" height="800">
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a href="http://www.cnblogs.com/sunddenly/articles/4071730.html" target="_blank" rel="external">http://www.cnblogs.com/sunddenly/articles/4071730.html</a><br><a href="http://yanliu.org/2015/08/31/kafka%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/" target="_blank" rel="external">http://yanliu.org/2015/08/31/kafka%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/</a></p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
@@ -316,312 +324,32 @@
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/09/25/spark源码环境搭建/" rel="next" title="spark源码环境搭建">
+                <i class="fa fa-chevron-left"></i> spark源码环境搭建
+              </a>
             
-              
-                
-                <a class="post-title-link" href="/2016/09/25/spark源码环境搭建/" itemprop="url">
-                  spark源码环境搭建
-                </a>
-              
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-09-25T12:26:47+08:00" content="2016-09-25">
-              2016-09-25
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>已有的环境:<br>IntelliJ IDEA</p>
-<p>一、去官网下载spark源码<br><a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">http://spark.apache.org/downloads.html</a><br><img src="/images/201609/download_sparkSourceCode.png"><br>注意package type选择Source Code</p>
-<p>二、解压spark-1.6.1.tgz到目录xxx/spark-1.6.1</p>
-<p>三、打开IntelliJ IDEA import project<br><img src="/images/201609/import_project.png" width="500" height="500"><br>找到xxx/spark-1.6.1/pom.xml<br><img src="/images/201609/get_pom.png" width="500" height="600"></p>
-<p>四、接下来一直点击next就行<br>最后出现这个说明快成功了<br><img src="/images/201609/updating_indices.png"><br>PS.如果出现Unable to save settings: Failed to save settings. Please restart IntelliJ<br>那么可能是导入的路径没有权限写入</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-      
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/03/1/" itemprop="url">
-                  工作一年多了
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-09-03T01:20:27+08:00" content="2016-09-03">
-              2016-09-03
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-               
-    2015年07月06日入职猎豹移动后台研发工程师，现在想想这职位名字还是挺酷的，因为研发这词总让人想到科学家，小时候的梦想还是科学家呢。但是仔细回想自己这一年干过的事情，似乎和研发并没有太多的关系，趁着有着新开博客的新鲜感，深夜来反思反思。
-    这件事多少和环境有点关系，我不能否认，但是更主要的原因应当从自己说起。
-    很少有事情能让自己处于all in的状态，几乎没有最近几年都一直在坚持的事情，没有一个长远的计划，艾玛不想说了。其实说到底自己还是不想改变，不想创造，用现在很流行的话，跳不出舒适圈，再通过今天从单位厕所电视机上老罗的节目上说的一句话，总结一下，不乐意跳出舒适圈其实就是不乐意学习。
-    本人从小到大有点好吃懒做，能不动脑子尽量不动脑子，能麻烦别人做的尽量好说坏说的求别人做，其实我也挺怂的，即使我一直在对其他人说我小时候打过老师，打架让别人缝针，这些让我壮胆的故事。我不能在很多人面前清楚表达自己的观点，不能在最需要自己站出来的时候，却悄悄的躲在人群后面，因为我是真的怂。特么真是扯远了，不会写文章就是没有架构这一说。重点来了，本人也是有自己小幸福的时候，如果今天学到点新东西，有了点小进步，晚上在被窝里也会偷着乐下的。总结一下，本人虽然懒虽然贱虽然怂，虽然学习欲望也不强，好歹也是有这学习的心！
-    写文章太累了，休息下..
-    PS. 上面的文字是9月3号写的，现在已经到了9月15号了。妈勒个鸡，已经没有当时的心情了，写不下去了。
-
-
-          
-        
+    <div class="post-spread">
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/02/MyFisrtBlog/" itemprop="url">
-                  my first essay
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-09-02T13:19:46+08:00" content="2016-09-02">
-              2016-09-02
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"Today is a nice day."</span></div><div class="line">    sleep $(( <span class="variable">$RANDOM</span> % 10 ))</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
@@ -629,6 +357,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -648,8 +380,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -685,6 +426,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择kafka版本"><span class="nav-number">1.</span> <span class="nav-text">选择kafka版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka下载"><span class="nav-number">2.</span> <span class="nav-text">kafka下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zookeeper下载"><span class="nav-number">3.</span> <span class="nav-text">zookeeper下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zookeeper配置"><span class="nav-number">4.</span> <span class="nav-text">zookeeper配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka配置"><span class="nav-number">5.</span> <span class="nav-text">kafka配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -781,6 +533,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
