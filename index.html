@@ -86,12 +86,12 @@
 
 <meta name="description" content="Xiiiii&apos;s Blog">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hi">
+<meta property="og:title" content="风十五郎">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hi">
+<meta property="og:site_name" content="风十五郎">
 <meta property="og:description" content="Xiiiii&apos;s Blog">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hi">
+<meta name="twitter:title" content="风十五郎">
 <meta name="twitter:description" content="Xiiiii&apos;s Blog">
 
 
@@ -115,7 +115,7 @@
 
   <link rel="canonical" href="http://yoursite.com/"/>
 
-  <title> Hi </title>
+  <title> 风十五郎 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -148,7 +148,7 @@
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Hi</span>
+      <span class="site-title">风十五郎</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -216,6 +216,104 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/10/build-hive/" itemprop="url">
+                  搭建hive
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-10-10T21:06:58+08:00" content="2016-10-10">
+              2016-10-10
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="mac安装mysql"><a href="#mac安装mysql" class="headerlink" title="mac安装mysql"></a>mac安装mysql</h3><p>1、官网下载<a href="http://dev.mysql.com/downloads/mysql/" target="_blank" rel="external">http://dev.mysql.com/downloads/mysql/</a><br><img src="/images/201610/build_hive/main_download.jpeg" width="400" height="600"><br>2、官网默认的下载版本是5.7.15<br><img src="/images/201610/build_hive/default_download_version.jpeg" width="400" height="600"><br>但是我下载后不会安装，所以选择下载以前的版本5.6.33<br><img src="/images/201610/build_hive/download_mysql.jpeg" width="400" height="600"><br>选择下载压缩包</p>
+<p>2、下载后安装配置<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#先cd到下载mysql的目录，mv到/usr/local下并且解压，改名</span></div><div class="line">sudo mv mysql-5.6.33-osx10.11-x86_64.tar.gz /usr/<span class="built_in">local</span>/</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span></div><div class="line">sudo tar -xzvf mysql-5.6.33-osx10.11-x86_64.tar.gz</div><div class="line">sudo mv mysql-5.6.33-osx10.11-x86_64 mysql</div><div class="line"><span class="comment">#各种修改权限</span></div><div class="line">sudo chown -R mysql:mysql mysql</div><div class="line"><span class="built_in">cd</span> mysql</div><div class="line">sudo scripts/mysql_install_db --user=mysql</div><div class="line">sudo chown -R root .</div><div class="line">sudo chown -R mysql data</div><div class="line"><span class="comment">#配置mysql(可以设置登陆密码，默认为空)</span></div><div class="line"><span class="built_in">cd</span> /bin</div><div class="line">sudo ./mysql_secure_installation</div><div class="line"><span class="comment">#启动mysql</span></div><div class="line">sudo ./mysqld_safe </div><div class="line"><span class="comment">#登录mysql</span></div><div class="line">sudo ./mysql -u root -p </div><div class="line"><span class="comment">#停止mysql:</span></div><div class="line">sudo ./mysqld_safe stop</div></pre></td></tr></table></figure></p>
+<h3 id="centos安装mysql服务"><a href="#centos安装mysql服务" class="headerlink" title="centos安装mysql服务"></a>centos安装mysql服务</h3><p>1、下载mysql<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mysql-server</div></pre></td></tr></table></figure></p>
+<p>安装失败，因为CentOS7版本将MySQL数据库软件从默认的程序列表中移除，用mariadb代替了<br>所以去官网下载安装mysql-server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm</div><div class="line">rpm -ivh mysql-community-release-el7-5.noarch.rpm</div><div class="line">yum install mysql-community-server</div></pre></td></tr></table></figure></p>
+<p>2、配置mysql<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#重启mysql服务</span></div><div class="line">service mysqld restart</div><div class="line"><span class="comment">#登入mysql</span></div><div class="line">mysql -u root</div><div class="line"><span class="comment">#设置密码</span></div><div class="line">mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> <span class="string">'root'</span>@<span class="string">'localhost'</span> =password(<span class="string">'xxx'</span>);</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
     
       
 
@@ -661,7 +759,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
