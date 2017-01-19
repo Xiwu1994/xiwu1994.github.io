@@ -241,6 +241,134 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/19/hbase分布式搭建/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/19/hbase分布式搭建/" itemprop="url">
+                  hbase分布式搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T11:45:40+08:00">
+                2017-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="已有的环境"><a href="#已有的环境" class="headerlink" title="已有的环境"></a>已有的环境</h2><p>三台机器hostname: master, worker1, worker2<br>并已安装好分布式Hadoop2.6.0</p>
+<h3 id="定位JAVA-HOME"><a href="#定位JAVA-HOME" class="headerlink" title="定位JAVA_HOME"></a>定位JAVA_HOME</h3><p>mac: 使用命令/usr/libexec/java_home<br><img src="/images/201701/JAVA_HOME_2.png"><br>linux: 如下图所示<br><img src="/images/201701/JAVA_HOME_1.png"></p>
+<h2 id="下载HBase"><a href="#下载HBase" class="headerlink" title="下载HBase"></a>下载HBase</h2><p>官网下载地址：<a href="http://www.apache.org/dyn/closer.cgi/hbase/" target="_blank" rel="external">http://www.apache.org/dyn/closer.cgi/hbase/</a><br>我下载的是Stable版本：<a href="http://mirrors.cnnic.cn/apache/hbase/stable/hbase-1.2.4-bin.tar.gz" target="_blank" rel="external">http://mirrors.cnnic.cn/apache/hbase/stable/hbase-1.2.4-bin.tar.gz</a></p>
+<h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><p>将下载后的压缩包解压后 放到/Users/xiwu/hbase-1.2.4目录下</p>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-env-sh"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-env-sh" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-env.sh"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-env.sh</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> JAVA_HOME=通过之前方法定位</div><div class="line"><span class="built_in">export</span> HBASE_LOG_DIR=/Users/xiwu/hbase-1.2.4/logs</div><div class="line"><span class="comment">#如果使用HBase自带的Zookeeper值设成true 如果使用自己安装的Zookeeper需要将该值设为false</span></div><div class="line"><span class="built_in">export</span> HBASE_MANAGES_ZK=<span class="literal">true</span></div></pre></td></tr></table></figure>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-site-xml"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-site-xml" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-site.xml"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.rootdir&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000/hbase&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</div><div class="line">        &lt;value&gt;true&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</div><div class="line">        &lt;value&gt;master,worker1,worker2&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.master.maxclockskew&lt;/name&gt;</div><div class="line">        &lt;value&gt;180000&lt;/value&gt;</div><div class="line">        &lt;description&gt;Time difference of regionserver from master&lt;/description&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>hbase.rootdir 指定Hbase数据存储目录<br>hbase.cluster.distributed 指定是否是完全分布式模式，单机模式和伪分布式模式需要将该值设为false<br>hbase.zookeeper.quorum 指定zooke的集群，多台机器以逗号分隔</p>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-regionservers"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-regionservers" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim regionservers"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim regionservers</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">master</div><div class="line">worker1</div><div class="line">worker2</div></pre></td></tr></table></figure>
+<h2 id="启动HBase"><a href="#启动HBase" class="headerlink" title="启动HBase"></a>启动HBase</h2><p>//先启动hdfs<br>cd ${HADOOP_HOME} &amp;&amp; ./sbin/start-dfs.sh<br>//再启动hbase<br>cd ${HBASE_HOME} &amp;&amp; ./bin/start-hbase.sh<br>正确启动后结果如图所示:<br><img src="/images/201701/hbase_1.png"><br>master: HMaster,HQuorumPeer,HRegionServer<br>worker1,worker2: HQuorumPeer,HRegionServer<br>也可以登录：<a href="http://master:16010/" target="_blank" rel="external">http://master:16010/</a> 查看HBase状态<br>如果所示:<br><img src="/images/201701/hbase_2.png"></p>
+<h2 id="测试HBase"><a href="#测试HBase" class="headerlink" title="测试HBase"></a>测试HBase</h2><p>cd ${HBASE_HOME} &amp;&amp; ./bin/hbase shell<br><img src="/images/201701/hbase_3.png"><br><img src="/images/201701/hbase_4.png"><br><img src="/images/201701/hbase_5.png"><br>更多操作参考<a href="http://www.yiibai.com/hbase/hbase_shell.html" target="_blank" rel="external">http://www.yiibai.com/hbase/hbase_shell.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/18/spark提交任务源码浅析/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -451,24 +579,24 @@
       
         
           
-            <h3 id="机器Hostname"><a href="#机器Hostname" class="headerlink" title="机器Hostname"></a>机器Hostname</h3><p>master, worker1, worker2</p>
-<h2 id="安装logstash"><a href="#安装logstash" class="headerlink" title="安装logstash"></a>安装logstash</h2><h5 id="下载logstash"><a href="#下载logstash" class="headerlink" title="下载logstash"></a>下载logstash</h5><p>master,worker1,worker2 重复以下操作<br>官网下载地址：<a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">https://www.elastic.co/downloads/logstash</a><br>我将下载后的压缩包解压在/opt/elasticsearch/logstash-5.1.1目录</p>
-<h4 id="举一个简单的使用例子"><a href="#举一个简单的使用例子" class="headerlink" title="举一个简单的使用例子:"></a>举一个简单的使用例子:</h4><h5 id="编辑测试数据"><a href="#编辑测试数据" class="headerlink" title="编辑测试数据"></a>编辑测试数据</h5><p>vim /opt/elasticsearch/logstash-5.1.1/test_data/2.log<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a</div><div class="line">b</div><div class="line">c</div><div class="line">efg</div></pre></td></tr></table></figure></p>
-<h5 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h5><p>vim /opt/elasticsearch/logstash-5.1.1/config/test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        <span class="comment">#监听文件的路径</span></div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/2.log"</span></div><div class="line">        <span class="comment">#监听文件的起始位置，默认是end</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    <span class="comment">#输出到屏幕上</span></div><div class="line">    stdout &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="启动logstash"><a href="#启动logstash" class="headerlink" title="启动logstash"></a>启动logstash</h5><p>cd /opt/elasticsearch/logstash-5.1.1 &amp;&amp; ./bin/logstash -f ./config/test.conf<br>结果如图所示，PS.追加写文件，logstash也会跟着输出到屏幕上<br><img src="/images/201701/logstash_1.png"></p>
-<h2 id="安装elasticsearch"><a href="#安装elasticsearch" class="headerlink" title="安装elasticsearch"></a>安装elasticsearch</h2><h5 id="下载elasticsearch"><a href="#下载elasticsearch" class="headerlink" title="下载elasticsearch"></a>下载elasticsearch</h5><p>官网下载地址：<a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a><br>将下载后的压缩包解压在/opt/elasticsearch/elasticsearch-5.1.1目录</p>
-<h5 id="编辑配置文件-1"><a href="#编辑配置文件-1" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h5><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; vim ./config/elasticsearch.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-master</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: master</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker1的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker1</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker1</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker2的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker2</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker2</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div></pre></td></tr></table></figure></p>
-<h5 id="启动elasticsearch"><a href="#启动elasticsearch" class="headerlink" title="启动elasticsearch"></a>启动elasticsearch</h5><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/elasticsearch<br>启动结果如果所示(先启动master，再worker1,worker2)<br><img src="/images/201701/elasticSearch_1.png"><br>可以在master的启动日志 看到加入节点worker1、worker2的消息<br>PS.不能用root用户启动，我是创建了elasticSearch用户</p>
-<h2 id="安装kibana"><a href="#安装kibana" class="headerlink" title="安装kibana"></a>安装kibana</h2><h5 id="下载kibana"><a href="#下载kibana" class="headerlink" title="下载kibana"></a>下载kibana</h5><p>官网下载地址：<a href="https://www.elastic.co/downloads/kibana" target="_blank" rel="external">https://www.elastic.co/downloads/kibana</a><br>注.mac和linux版本不一样<br>将下载后的压缩包解压在/opt/elasticsearch/kibana-5.1.1-linux-x86_64目录</p>
-<h5 id="编辑配置文件-2"><a href="#编辑配置文件-2" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h5><p>cd /opt/elasticsearch/kibana-5.1.1-linux-x86_64 &amp;&amp; vim ./config/kibana.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"master"</span></div><div class="line">elasticsearch.url: <span class="string">"http://master:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker1"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker1:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker2的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker2"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker2:9200"</span> <span class="comment">#elasticsearch地址</span></div></pre></td></tr></table></figure></p>
-<h5 id="启动kibana"><a href="#启动kibana" class="headerlink" title="启动kibana"></a>启动kibana</h5><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/kibana</p>
-<h5 id="登录kibana"><a href="#登录kibana" class="headerlink" title="登录kibana"></a>登录kibana</h5><p>访问master:5601<br>结果如图所示:<br><img src="/images/201701/kibana_1.png"></p>
-<h2 id="elk配合使用-elasticsearch-logstash-kibana"><a href="#elk配合使用-elasticsearch-logstash-kibana" class="headerlink" title="elk配合使用(elasticsearch, logstash, kibana)"></a>elk配合使用(elasticsearch, logstash, kibana)</h2><h5 id="创建es的index"><a href="#创建es的index" class="headerlink" title="创建es的index"></a>创建es的index</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#es_test 是index</span></div><div class="line">curl -XPUT <span class="string">'http://master:9200/es_test/'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">  "settings":&#123;</div><div class="line">      "index":&#123;</div><div class="line">          "number_of_shards":3,</div><div class="line">          "number_of_replicas":1</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+            <h2 id="机器Hostname"><a href="#机器Hostname" class="headerlink" title="机器Hostname"></a>机器Hostname</h2><p>master, worker1, worker2</p>
+<h1 id="安装logstash"><a href="#安装logstash" class="headerlink" title="安装logstash"></a>安装logstash</h1><h3 id="下载logstash"><a href="#下载logstash" class="headerlink" title="下载logstash"></a>下载logstash</h3><p>master,worker1,worker2 重复以下操作<br>官网下载地址：<a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">https://www.elastic.co/downloads/logstash</a><br>我将下载后的压缩包解压在/opt/elasticsearch/logstash-5.1.1目录</p>
+<h3 id="举一个简单的使用例子"><a href="#举一个简单的使用例子" class="headerlink" title="举一个简单的使用例子:"></a>举一个简单的使用例子:</h3><p>编辑测试数据<br>vim /opt/elasticsearch/logstash-5.1.1/test_data/2.log<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a</div><div class="line">b</div><div class="line">c</div><div class="line">efg</div></pre></td></tr></table></figure></p>
+<h3 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>vim /opt/elasticsearch/logstash-5.1.1/config/test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        <span class="comment">#监听文件的路径</span></div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/2.log"</span></div><div class="line">        <span class="comment">#监听文件的起始位置，默认是end</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    <span class="comment">#输出到屏幕上</span></div><div class="line">    stdout &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="启动logstash"><a href="#启动logstash" class="headerlink" title="启动logstash"></a>启动logstash</h3><p>cd /opt/elasticsearch/logstash-5.1.1 &amp;&amp; ./bin/logstash -f ./config/test.conf<br>结果如图所示，PS.追加写文件，logstash也会跟着输出到屏幕上<br><img src="/images/201701/logstash_1.png"></p>
+<h1 id="安装elasticsearch"><a href="#安装elasticsearch" class="headerlink" title="安装elasticsearch"></a>安装elasticsearch</h1><h3 id="下载elasticsearch"><a href="#下载elasticsearch" class="headerlink" title="下载elasticsearch"></a>下载elasticsearch</h3><p>官网下载地址：<a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a><br>将下载后的压缩包解压在/opt/elasticsearch/elasticsearch-5.1.1目录</p>
+<h3 id="编辑配置文件-1"><a href="#编辑配置文件-1" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; vim ./config/elasticsearch.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-master</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: master</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker1的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker1</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker1</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker2的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker2</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker2</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div></pre></td></tr></table></figure></p>
+<h3 id="启动elasticsearch"><a href="#启动elasticsearch" class="headerlink" title="启动elasticsearch"></a>启动elasticsearch</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/elasticsearch<br>启动结果如果所示(先启动master，再worker1,worker2)<br><img src="/images/201701/elasticSearch_1.png"><br>可以在master的启动日志 看到加入节点worker1、worker2的消息<br>PS.不能用root用户启动，我是创建了elasticSearch用户</p>
+<h1 id="安装kibana"><a href="#安装kibana" class="headerlink" title="安装kibana"></a>安装kibana</h1><h3 id="下载kibana"><a href="#下载kibana" class="headerlink" title="下载kibana"></a>下载kibana</h3><p>官网下载地址：<a href="https://www.elastic.co/downloads/kibana" target="_blank" rel="external">https://www.elastic.co/downloads/kibana</a><br>注.mac和linux版本不一样<br>将下载后的压缩包解压在/opt/elasticsearch/kibana-5.1.1-linux-x86_64目录</p>
+<h3 id="编辑配置文件-2"><a href="#编辑配置文件-2" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>cd /opt/elasticsearch/kibana-5.1.1-linux-x86_64 &amp;&amp; vim ./config/kibana.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"master"</span></div><div class="line">elasticsearch.url: <span class="string">"http://master:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker1"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker1:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker2的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker2"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker2:9200"</span> <span class="comment">#elasticsearch地址</span></div></pre></td></tr></table></figure></p>
+<h3 id="启动kibana"><a href="#启动kibana" class="headerlink" title="启动kibana"></a>启动kibana</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/kibana</p>
+<h3 id="登录kibana"><a href="#登录kibana" class="headerlink" title="登录kibana"></a>登录kibana</h3><p>访问master:5601<br>结果如图所示:<br><img src="/images/201701/kibana_1.png"></p>
+<h1 id="elk配合使用-elasticsearch-logstash-kibana"><a href="#elk配合使用-elasticsearch-logstash-kibana" class="headerlink" title="elk配合使用(elasticsearch, logstash, kibana)"></a>elk配合使用(elasticsearch, logstash, kibana)</h1><h3 id="创建es的index"><a href="#创建es的index" class="headerlink" title="创建es的index"></a>创建es的index</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#es_test 是index</span></div><div class="line">curl -XPUT <span class="string">'http://master:9200/es_test/'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">  "settings":&#123;</div><div class="line">      "index":&#123;</div><div class="line">          "number_of_shards":3,</div><div class="line">          "number_of_replicas":1</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
 <p>之前我们已经启动了elasticsearch, logstash, kibana<br>接下来我们启动一个新的logstash，数据存入elasticsearch(三台机器一样操作)</p>
-<h5 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master </span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line"><span class="comment">#worker1</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">5</div><div class="line">6</div><div class="line"><span class="comment">#worker2</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">7</div><div class="line">8</div></pre></td></tr></table></figure>
-<h5 id="编辑配置文件-3"><a href="#编辑配置文件-3" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h5><p>vim /opt/elasticsearch/logstash-5.1.1/config/es_test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/1.log"</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output&#123;</div><div class="line">    <span class="comment">#将logstash的输出和elasticsearch对接</span></div><div class="line">    elasticsearch &#123;</div><div class="line">        hosts =&gt; <span class="string">"master:9200"</span></div><div class="line">        <span class="comment">#index类似mysql的database，之后我们会在kibana用到</span></div><div class="line">        index =&gt; <span class="string">"es_test"</span></div><div class="line">    &#125;</div><div class="line">    stdout&#123;codec=&gt;rubydebug&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master </span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line"><span class="comment">#worker1</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">5</div><div class="line">6</div><div class="line"><span class="comment">#worker2</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">7</div><div class="line">8</div></pre></td></tr></table></figure>
+<h3 id="编辑配置文件-3"><a href="#编辑配置文件-3" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>vim /opt/elasticsearch/logstash-5.1.1/config/es_test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/1.log"</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output&#123;</div><div class="line">    <span class="comment">#将logstash的输出和elasticsearch对接</span></div><div class="line">    elasticsearch &#123;</div><div class="line">        hosts =&gt; <span class="string">"master:9200"</span></div><div class="line">        <span class="comment">#index类似mysql的database，之后我们会在kibana用到</span></div><div class="line">        index =&gt; <span class="string">"es_test"</span></div><div class="line">    &#125;</div><div class="line">    stdout&#123;codec=&gt;rubydebug&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>启动logstash<br>cd /opt/elasticsearch/logstash-5.1.1 &amp;&amp; ./bin/logstash -f ./config/es_test.conf</p>
-<h5 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h5><p>再次登录master:5601<br>输入es_test，如图所示<br><img src="/images/201701/kibana_2.png"></p>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>再次登录master:5601<br>输入es_test，如图所示<br><img src="/images/201701/kibana_2.png"></p>
 <p>搜索1，在3台机器上输出源都有，搜索结果如下<br><img src="/images/201701/kibana_3.png"></p>
 
           
@@ -1298,7 +1426,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
