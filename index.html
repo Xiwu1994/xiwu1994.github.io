@@ -241,6 +241,131 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/21/spark机器学习初体验/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/21/spark机器学习初体验/" itemprop="url">
+                  spark机器学习初体验
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-21T18:19:48+08:00">
+                2017-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="垃圾邮件分类例子"><a href="#垃圾邮件分类例子" class="headerlink" title="垃圾邮件分类例子"></a>垃圾邮件分类例子</h2><h3 id="训练数据"><a href="#训练数据" class="headerlink" title="训练数据"></a>训练数据</h3><p>垃圾邮件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">spam.txt</div><div class="line">Dear sir, I am a Prince in a far kingdom you have not heard of.  I want to send you money via wire transfer so please ...</div><div class="line">Get Viagra real cheap!  Send money right away to ...</div><div class="line">Oh my gosh you can be really strong too with these drugs found in the rainforest. Get them cheap right now ...</div><div class="line">YOUR COMPUTER HAS BEEN INFECTED!  YOU MUST RESET YOUR PASSWORD.  Reply to this email with your password and SSN ...</div><div class="line">THIS IS NOT A SCAM!  Send money and get access to awesome stuff really cheap and never have to ...</div></pre></td></tr></table></figure></p>
+<p>正常邮件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ham.txt</div><div class="line">Dear Spark Learner, Thanks so much for attending the Spark Summit 2014!  Check out videos of talks from the summit at ...</div><div class="line">Hi Mom, Apologies for being late about emailing and forgetting to send you the package.  I hope you and bro have been ...</div><div class="line">Wow, hey Fred, just heard about the Spark petabyte sort.  I think we need to take time to try it out immediately ...</div><div class="line">Hi Spark user list, This is my first question to this list, so thanks in advance for your help!  I tried running ...</div><div class="line">Thanks Tom for your email.  I need to refer you to Alice for this one.  I haven&apos;t yet figured out that part either ...</div><div class="line">Good job yesterday!  I was attending your talk, and really enjoyed it.  I want to try out GraphX ...</div><div class="line">Summit demo got whoops from audience!  Had to let you know. --Joe</div></pre></td></tr></table></figure></p>
+<h3 id="Scala代码"><a href="#Scala代码" class="headerlink" title="Scala代码"></a>Scala代码</h3><p>这个程序使用了MLlib两个函数：HashingTF(从文本数据构建 词频特征向量)和LogisticRegressionWithSGD(随机体度下降法实现逻辑回归)<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.apache.log4j.&#123;<span class="type">Level</span>, <span class="type">Logger</span>&#125;</div><div class="line"><span class="keyword">import</span> org.apache.spark.&#123;<span class="type">SparkConf</span>, <span class="type">SparkContext</span>&#125;</div><div class="line"><span class="keyword">import</span> org.apache.spark.mllib.classification.<span class="type">LogisticRegressionWithSGD</span></div><div class="line"><span class="keyword">import</span> org.apache.spark.mllib.feature.<span class="type">HashingTF</span></div><div class="line"><span class="keyword">import</span> org.apache.spark.mllib.regression.<span class="type">LabeledPoint</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">MLlib</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]) &#123;</div><div class="line">    <span class="type">Logger</span>.getLogger(<span class="string">"org"</span>).setLevel(<span class="type">Level</span>.<span class="type">WARN</span>)</div><div class="line">    <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">s"Book example: Scala"</span>).setMaster(<span class="string">"local"</span>)</div><div class="line">    <span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(conf)</div><div class="line"></div><div class="line">    <span class="comment">// Load 2 types of emails from text files: spam and ham (non-spam).</span></div><div class="line">    <span class="comment">// Each line has text from one email.</span></div><div class="line">    <span class="keyword">val</span> spam = sc.textFile(<span class="string">"files/spam.txt"</span>)</div><div class="line">    <span class="keyword">val</span> ham = sc.textFile(<span class="string">"files/ham.txt"</span>)</div><div class="line"></div><div class="line">    <span class="comment">// Create a HashingTF instance to map email text to vectors of 100 features.</span></div><div class="line">    <span class="keyword">val</span> tf = <span class="keyword">new</span> <span class="type">HashingTF</span>(numFeatures = <span class="number">100</span>)</div><div class="line">    <span class="comment">// Each email is split into words, and each word is mapped to one feature.</span></div><div class="line">    <span class="comment">// 1、特征提取</span></div><div class="line">    <span class="keyword">val</span> spamFeatures = spam.map(email =&gt; tf.transform(email.split(<span class="string">" "</span>)))</div><div class="line">    <span class="keyword">val</span> hamFeatures = ham.map(email =&gt; tf.transform(email.split(<span class="string">" "</span>)))</div><div class="line"></div><div class="line">    <span class="comment">// Create LabeledPoint datasets for positive (spam) and negative (ham) examples.</span></div><div class="line">    <span class="comment">// 2、将文本数据转换为数值特征，返回LabeledPoint类型RDD(包含一个特质向量和一个标签)</span></div><div class="line">    <span class="keyword">val</span> positiveExamples = spamFeatures.map(features =&gt; <span class="type">LabeledPoint</span>(<span class="number">1</span>, features))</div><div class="line">    <span class="keyword">val</span> negativeExamples = hamFeatures.map(features =&gt; <span class="type">LabeledPoint</span>(<span class="number">0</span>, features))</div><div class="line">    <span class="keyword">val</span> trainingData = positiveExamples ++ negativeExamples</div><div class="line">    trainingData.cache() <span class="comment">// Cache data since Logistic Regression is an iterative algorithm.</span></div><div class="line"></div><div class="line">    <span class="comment">// Create a Logistic Regression learner which uses the LBFGS optimizer.</span></div><div class="line">    <span class="comment">// 3、调用分类算法，返回模型对象</span></div><div class="line">    <span class="keyword">val</span> lrLearner = <span class="keyword">new</span> <span class="type">LogisticRegressionWithSGD</span>()</div><div class="line">    <span class="comment">// Run the actual learning algorithm on the training data.</span></div><div class="line">    <span class="keyword">val</span> model = lrLearner.run(trainingData)</div><div class="line"></div><div class="line">    <span class="comment">// Test on a positive example (spam) and a negative one (ham).</span></div><div class="line">    <span class="comment">// First apply the same HashingTF feature transformation used on the training data.</span></div><div class="line">    <span class="keyword">val</span> posTestExample = tf.transform(<span class="string">"O M G GET cheap stuff by sending money to ..."</span>.split(<span class="string">" "</span>))</div><div class="line">    <span class="keyword">val</span> negTestExample = tf.transform(<span class="string">"Hi Dad, I started studying Spark the other ..."</span>.split(<span class="string">" "</span>))</div><div class="line">    <span class="comment">// Now use the learned model to predict spam/ham for new emails.</span></div><div class="line">    println(<span class="string">s"Prediction for positive test example: <span class="subst">$&#123;model.predict(posTestExample)&#125;</span>"</span>)</div><div class="line">    println(<span class="string">s"Prediction for negative test example: <span class="subst">$&#123;model.predict(negTestExample)&#125;</span>"</span>)</div><div class="line"></div><div class="line">    sc.stop()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果如果所示：<br><img src="/images/201701/SparkML_1.png"></p>
+<h2 id="机器学习流水线中典型步骤"><a href="#机器学习流水线中典型步骤" class="headerlink" title="机器学习流水线中典型步骤"></a>机器学习流水线中典型步骤</h2><p>源数据ETL-&gt;数据预处理-&gt;特征提取(返回MLlib的数据类型，比如上例的LabeledPoint类型)-&gt;训练(返回模型)-&gt;模型评估</p>
+<h2 id="简单理解"><a href="#简单理解" class="headerlink" title="简单理解"></a>简单理解</h2><p>确定模型—-训练模型—-使用模型<br>模型简单说可以理解为函数。<br>确定模型是说自己认为这些数据的特征符合哪个函数(应该使用什么模型)<br>训练模型就是用已有的数据，通过一些方法（最优化或者其他方法）确定函数的参数，参数确定后的函数就是训练的结果<br>使用模型就是把新的数据代入函数求值</p>
+<p>参考文档：<br>《Spark快速大数据分析》<br><a href="https://www.zhihu.com/question/29271217?sort=created" target="_blank" rel="external">https://www.zhihu.com/question/29271217?sort=created</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/20/spark源码浅析-提交Task到Executor/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1432,7 +1557,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
