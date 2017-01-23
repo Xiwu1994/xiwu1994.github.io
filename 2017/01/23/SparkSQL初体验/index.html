@@ -84,23 +84,16 @@
 
 
 
-<meta name="description" content="mac安装mysql1、官网下载http://dev.mysql.com/downloads/mysql/2、官网默认的下载版本是5.7.15但是我下载后不会安装，所以选择下载以前的版本5.6.33选择下载压缩包
-2、下载后安装配置1234567891011121314151617181920#先cd到下载mysql的目录，mv到/usr/local下并且解压，改名sudo mv mysql-5.">
+<meta name="description" content="SparkSQL输入源Hive、Parquet、JSON、基于RDD(需要隐式转换)因为还没有搭好Hive且没有使用过Parquet，下面主要将JSON和基于RDD的输入源12345678val sqlContext = new org.apache.spark.sql.SQLContext(sc)// Create the DataFrame (From JSON)val df1 = sqlCo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搭建hive">
-<meta property="og:url" content="http://yoursite.com/2016/10/10/build-hive/index.html">
+<meta property="og:title" content="SparkSQL初体验">
+<meta property="og:url" content="http://yoursite.com/2017/01/23/SparkSQL初体验/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="mac安装mysql1、官网下载http://dev.mysql.com/downloads/mysql/2、官网默认的下载版本是5.7.15但是我下载后不会安装，所以选择下载以前的版本5.6.33选择下载压缩包
-2、下载后安装配置1234567891011121314151617181920#先cd到下载mysql的目录，mv到/usr/local下并且解压，改名sudo mv mysql-5.">
-<meta property="og:image" content="http://yoursite.com/images/201610/build_hive/main_download.jpeg">
-<meta property="og:image" content="http://yoursite.com/images/201610/build_hive/default_download_version.jpeg">
-<meta property="og:image" content="http://yoursite.com/images/201610/build_hive/download_mysql.jpeg">
-<meta property="og:updated_time" content="2016-10-11T03:17:53.000Z">
+<meta property="og:description" content="SparkSQL输入源Hive、Parquet、JSON、基于RDD(需要隐式转换)因为还没有搭好Hive且没有使用过Parquet，下面主要将JSON和基于RDD的输入源12345678val sqlContext = new org.apache.spark.sql.SQLContext(sc)// Create the DataFrame (From JSON)val df1 = sqlCo">
+<meta property="og:updated_time" content="2017-01-23T14:03:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="搭建hive">
-<meta name="twitter:description" content="mac安装mysql1、官网下载http://dev.mysql.com/downloads/mysql/2、官网默认的下载版本是5.7.15但是我下载后不会安装，所以选择下载以前的版本5.6.33选择下载压缩包
-2、下载后安装配置1234567891011121314151617181920#先cd到下载mysql的目录，mv到/usr/local下并且解压，改名sudo mv mysql-5.">
-<meta name="twitter:image" content="http://yoursite.com/images/201610/build_hive/main_download.jpeg">
+<meta name="twitter:title" content="SparkSQL初体验">
+<meta name="twitter:description" content="SparkSQL输入源Hive、Parquet、JSON、基于RDD(需要隐式转换)因为还没有搭好Hive且没有使用过Parquet，下面主要将JSON和基于RDD的输入源12345678val sqlContext = new org.apache.spark.sql.SQLContext(sc)// Create the DataFrame (From JSON)val df1 = sqlCo">
 
 
 
@@ -128,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/10/10/build-hive/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/01/23/SparkSQL初体验/"/>
 
 
 
 
 
-  <title> 搭建hive | Refrain </title>
+  <title> SparkSQL初体验 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -247,7 +240,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/10/build-hive/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/23/SparkSQL初体验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -271,7 +264,7 @@
             
             
               
-                搭建hive
+                SparkSQL初体验
               
             
           </h1>
@@ -286,8 +279,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-10T21:06:58+08:00">
-                2016-10-10
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-23T13:57:04+08:00">
+                2017-01-23
               </time>
             
 
@@ -322,11 +315,12 @@
       
 
       
-        <h3 id="mac安装mysql"><a href="#mac安装mysql" class="headerlink" title="mac安装mysql"></a>mac安装mysql</h3><p>1、官网下载<a href="http://dev.mysql.com/downloads/mysql/" target="_blank" rel="external">http://dev.mysql.com/downloads/mysql/</a><br><img src="/images/201610/build_hive/main_download.jpeg" width="400" height="600"><br>2、官网默认的下载版本是5.7.15<br><img src="/images/201610/build_hive/default_download_version.jpeg" width="400" height="600"><br>但是我下载后不会安装，所以选择下载以前的版本5.6.33<br><img src="/images/201610/build_hive/download_mysql.jpeg" width="400" height="600"><br>选择下载压缩包</p>
-<p>2、下载后安装配置<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#先cd到下载mysql的目录，mv到/usr/local下并且解压，改名</span></div><div class="line">sudo mv mysql-5.6.33-osx10.11-x86_64.tar.gz /usr/<span class="built_in">local</span>/</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span></div><div class="line">sudo tar -xzvf mysql-5.6.33-osx10.11-x86_64.tar.gz</div><div class="line">sudo mv mysql-5.6.33-osx10.11-x86_64 mysql</div><div class="line"><span class="comment">#各种修改权限</span></div><div class="line">sudo chown -R mysql:mysql mysql</div><div class="line"><span class="built_in">cd</span> mysql</div><div class="line">sudo scripts/mysql_install_db --user=mysql</div><div class="line">sudo chown -R root .</div><div class="line">sudo chown -R mysql data</div><div class="line"><span class="comment">#配置mysql(可以设置登陆密码，默认为空)</span></div><div class="line"><span class="built_in">cd</span> /bin</div><div class="line">sudo ./mysql_secure_installation</div><div class="line"><span class="comment">#启动mysql</span></div><div class="line">sudo ./mysqld_safe </div><div class="line"><span class="comment">#登录mysql</span></div><div class="line">sudo ./mysql -u root -p </div><div class="line"><span class="comment">#停止mysql:</span></div><div class="line">sudo ./mysqld_safe stop</div></pre></td></tr></table></figure></p>
-<h3 id="centos安装mysql服务"><a href="#centos安装mysql服务" class="headerlink" title="centos安装mysql服务"></a>centos安装mysql服务</h3><p>1、下载mysql<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mysql-server</div></pre></td></tr></table></figure></p>
-<p>安装失败，因为CentOS7版本将MySQL数据库软件从默认的程序列表中移除，用mariadb代替了<br>所以去官网下载安装mysql-server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm</div><div class="line">rpm -ivh mysql-community-release-el7-5.noarch.rpm</div><div class="line">yum install mysql-community-server</div></pre></td></tr></table></figure></p>
-<p>2、配置mysql<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#重启mysql服务</span></div><div class="line">service mysqld restart</div><div class="line"><span class="comment">#登入mysql</span></div><div class="line">mysql -u root</div><div class="line"><span class="comment">#设置密码</span></div><div class="line">mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> <span class="string">'root'</span>@<span class="string">'localhost'</span> =password(<span class="string">'xxx'</span>);</div></pre></td></tr></table></figure></p>
+        <h2 id="SparkSQL输入源"><a href="#SparkSQL输入源" class="headerlink" title="SparkSQL输入源"></a>SparkSQL输入源</h2><p>Hive、Parquet、JSON、基于RDD(需要隐式转换)<br>因为还没有搭好Hive且没有使用过Parquet，下面主要将JSON和基于RDD的输入源<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> sqlContext = <span class="keyword">new</span> org.apache.spark.sql.<span class="type">SQLContext</span>(sc)</div><div class="line"><span class="comment">// Create the DataFrame (From JSON)</span></div><div class="line"><span class="keyword">val</span> df1 = sqlContext.read.json(<span class="string">"spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.json"</span>)</div><div class="line"></div><div class="line"><span class="comment">// Create the DataFrame (From RDD)</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span></span>) <span class="title">//放在main函数外面</span></span></div><div class="line"><span class="keyword">import</span> sqlContext.implicits._</div><div class="line"><span class="keyword">val</span> df2 = sc.textFile(<span class="string">"spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.txt"</span>).map(_.split(<span class="string">","</span>)).map(p =&gt; <span class="type">Person</span>(p(<span class="number">0</span>), p(<span class="number">1</span>).trim.toInt)).toDF()</div></pre></td></tr></table></figure></p>
+<p>上面代码df1和df2都是DataFrame类型</p>
+<p>DataFrame类型的一些常见的api操作<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Show the content of the DataFrame</span></div><div class="line">df.show()</div><div class="line"></div><div class="line"><span class="comment">// Print the schema in a tree format</span></div><div class="line">df.printSchema()</div><div class="line"></div><div class="line"><span class="comment">// Select only the "name" column</span></div><div class="line">df.select(<span class="string">"name"</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Select everybody, but increment the age by 1</span></div><div class="line">df.select(df(<span class="string">"name"</span>), df(<span class="string">"age"</span>) + <span class="number">1</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Select people older than 21</span></div><div class="line">df.filter(df(<span class="string">"age"</span>) &gt; <span class="number">21</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Count people by age</span></div><div class="line">df.groupBy(<span class="string">"age"</span>).count().show()</div></pre></td></tr></table></figure></p>
+<p>下面是简单的sql操作<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 注册输入的DataFrame</span></div><div class="line">df2.registerTempTable(<span class="string">"people"</span>)</div><div class="line"></div><div class="line"><span class="comment">// SQL statements can be run by using the sql methods provided by sqlContext.</span></div><div class="line"><span class="keyword">val</span> teenagers = sqlContext.sql(<span class="string">"SELECT name, age FROM people WHERE age &gt;= 13 AND age &lt;= 19"</span>)</div><div class="line"></div><div class="line"><span class="comment">// The results of SQL queries are DataFrames and support all the normal RDD operations.</span></div><div class="line"><span class="comment">// The columns of a row in the result can be accessed by field index:</span></div><div class="line">teenagers.map(t =&gt; <span class="string">"Name: "</span> + t(<span class="number">0</span>)).collect().foreach(println)</div><div class="line"></div><div class="line"><span class="comment">// or by field name:</span></div><div class="line">teenagers.map(t =&gt; <span class="string">"Name: "</span> + t.getAs[<span class="type">String</span>](<span class="string">"name"</span>)).collect().foreach(println)</div><div class="line"></div><div class="line"><span class="comment">// row.getValuesMap[T] retrieves multiple columns at once into a Map[String, T]</span></div><div class="line">teenagers.map(_.getValuesMap[<span class="type">Any</span>](<span class="type">List</span>(<span class="string">"name"</span>, <span class="string">"age"</span>))).collect().foreach(println)</div></pre></td></tr></table></figure></p>
+<p>测试数据:<br>spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.json<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="string">"name"</span>:<span class="string">"Michael"</span>&#125;</div><div class="line">&#123;<span class="string">"name"</span>:<span class="string">"Andy"</span>, <span class="string">"age"</span>:30&#125;</div><div class="line">&#123;<span class="string">"name"</span>:<span class="string">"Justin"</span>, <span class="string">"age"</span>:19&#125;</div></pre></td></tr></table></figure></p>
+<p>spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.txt<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Michael, 29</div><div class="line">Andy, 30</div><div class="line">Justin, 19</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -353,8 +347,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/03/简易搭建kafka集群/" rel="next" title="搭建简易kafka集群">
-                <i class="fa fa-chevron-left"></i> 搭建简易kafka集群
+              <a href="/2017/01/22/SparkStreaming初体验/" rel="next" title="SparkStreaming初体验">
+                <i class="fa fa-chevron-left"></i> SparkStreaming初体验
               </a>
             
           </div>
@@ -362,10 +356,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/13/azkaban安装/" rel="prev" title="azkaban安装">
-                azkaban安装 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -474,7 +464,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mac安装mysql"><span class="nav-number">1.</span> <span class="nav-text">mac安装mysql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#centos安装mysql服务"><span class="nav-number">2.</span> <span class="nav-text">centos安装mysql服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SparkSQL输入源"><span class="nav-number">1.</span> <span class="nav-text">SparkSQL输入源</span></a></li></ol></div>
             
 
           </div>
