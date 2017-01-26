@@ -84,16 +84,19 @@
 
 
 
-<meta name="description" content="学无止境">
+<meta name="description" content="下载安装Supervisorpip install supervisor如果在命令行中输入echo_supervisord_conf没有找到命令，那么需要在环境变量PATH添加Python的bin目录路径
+配置文件echo_supervisord_conf &amp;gt; /etc/supervisord.confvim /etc/supervisord.conf12345678910111213141">
 <meta property="og:type" content="article">
-<meta property="og:title" content="supervisor使用">
+<meta property="og:title" content="Supervisor使用">
 <meta property="og:url" content="http://yoursite.com/2017/01/25/supervisor使用/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="学无止境">
-<meta property="og:updated_time" content="2017-01-25T07:52:23.000Z">
+<meta property="og:description" content="下载安装Supervisorpip install supervisor如果在命令行中输入echo_supervisord_conf没有找到命令，那么需要在环境变量PATH添加Python的bin目录路径
+配置文件echo_supervisord_conf &amp;gt; /etc/supervisord.confvim /etc/supervisord.conf12345678910111213141">
+<meta property="og:updated_time" content="2017-01-26T04:00:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="supervisor使用">
-<meta name="twitter:description" content="学无止境">
+<meta name="twitter:title" content="Supervisor使用">
+<meta name="twitter:description" content="下载安装Supervisorpip install supervisor如果在命令行中输入echo_supervisord_conf没有找到命令，那么需要在环境变量PATH添加Python的bin目录路径
+配置文件echo_supervisord_conf &amp;gt; /etc/supervisord.confvim /etc/supervisord.conf12345678910111213141">
 
 
 
@@ -127,7 +130,7 @@
 
 
 
-  <title> supervisor使用 | Refrain </title>
+  <title> Supervisor使用 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -264,7 +267,7 @@
             
             
               
-                supervisor使用
+                Supervisor使用
               
             
           </h1>
@@ -315,7 +318,9 @@
       
 
       
-        
+        <h3 id="下载安装Supervisor"><a href="#下载安装Supervisor" class="headerlink" title="下载安装Supervisor"></a>下载安装Supervisor</h3><p>pip install supervisor<br>如果在命令行中输入echo_supervisord_conf没有找到命令，那么需要在环境变量PATH添加Python的bin目录路径</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>echo_supervisord_conf &gt; /etc/supervisord.conf<br>vim /etc/supervisord.conf<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[unix_http_server]</div><div class="line">file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用</div><div class="line">;chmod=0700                 ; socket 文件的 mode，默认是 0700</div><div class="line">;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid</div><div class="line"> </div><div class="line">;[inet_http_server]         ; HTTP 服务器，提供 web 管理界面</div><div class="line">;port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line">;username=user              ; 登录管理后台的用户名</div><div class="line">;password=123               ; 登录管理后台的密码</div><div class="line"> </div><div class="line">[supervisord]</div><div class="line">logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log</div><div class="line">logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB</div><div class="line">logfile_backups=10           ; 日志文件保留备份数量默认 10</div><div class="line">loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace</div><div class="line">pidfile=/tmp/supervisord.pid ; pid 文件</div><div class="line">nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动</div><div class="line">minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024</div><div class="line">minprocs=200                 ; 可以打开的进程数的最小值，默认 200</div><div class="line"> </div><div class="line">; the below section must remain in the config file for RPC</div><div class="line">; (supervisorctl/web interface) to work, additional interfaces may be</div><div class="line">; added by defining them in separate rpcinterface: sections</div><div class="line">[rpcinterface:supervisor]</div><div class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</div><div class="line"> </div><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致</div><div class="line">;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord</div><div class="line"> </div><div class="line">; 包含其他的配置文件</div><div class="line">[include]</div><div class="line">files = relative/directory/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure></p>
+
       
     </div>
 
@@ -350,6 +355,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/26/a/" rel="prev" title="a">
+                a <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -396,8 +405,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -410,7 +428,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -439,6 +457,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载安装Supervisor"><span class="nav-number">1.</span> <span class="nav-text">下载安装Supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">2.</span> <span class="nav-text">配置文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
