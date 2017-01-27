@@ -241,6 +241,124 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/b/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/27/b/" itemprop="url">
+                  b
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-27T22:36:35+08:00">
+                2017-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/26/a/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -385,7 +503,7 @@
               
                 
                 <a class="post-title-link" href="/2017/01/25/supervisor使用/" itemprop="url">
-                  Supervisor使用
+                  Supervisor简单使用
                 </a>
               
             
@@ -440,7 +558,13 @@
         
           
             <h3 id="下载安装Supervisor"><a href="#下载安装Supervisor" class="headerlink" title="下载安装Supervisor"></a>下载安装Supervisor</h3><p>pip install supervisor<br>如果在命令行中输入echo_supervisord_conf没有找到命令，那么需要在环境变量PATH添加Python的bin目录路径</p>
-<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>echo_supervisord_conf &gt; /etc/supervisord.conf<br>vim /etc/supervisord.conf<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[unix_http_server]</div><div class="line">file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用</div><div class="line">;chmod=0700                 ; socket 文件的 mode，默认是 0700</div><div class="line">;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid</div><div class="line"> </div><div class="line">;[inet_http_server]         ; HTTP 服务器，提供 web 管理界面</div><div class="line">;port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line">;username=user              ; 登录管理后台的用户名</div><div class="line">;password=123               ; 登录管理后台的密码</div><div class="line"> </div><div class="line">[supervisord]</div><div class="line">logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log</div><div class="line">logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB</div><div class="line">logfile_backups=10           ; 日志文件保留备份数量默认 10</div><div class="line">loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace</div><div class="line">pidfile=/tmp/supervisord.pid ; pid 文件</div><div class="line">nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动</div><div class="line">minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024</div><div class="line">minprocs=200                 ; 可以打开的进程数的最小值，默认 200</div><div class="line"> </div><div class="line">; the below section must remain in the config file for RPC</div><div class="line">; (supervisorctl/web interface) to work, additional interfaces may be</div><div class="line">; added by defining them in separate rpcinterface: sections</div><div class="line">[rpcinterface:supervisor]</div><div class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</div><div class="line"> </div><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致</div><div class="line">;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord</div><div class="line"> </div><div class="line">; 包含其他的配置文件</div><div class="line">[include]</div><div class="line">files = relative/directory/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure></p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>echo_supervisord_conf &gt; /etc/supervisord.conf<br>vim /etc/supervisord.conf<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[unix_http_server]</div><div class="line">file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用</div><div class="line">;chmod=0700                 ; socket 文件的 mode，默认是 0700</div><div class="line">;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid</div><div class="line"> </div><div class="line">[inet_http_server]         ; HTTP 服务器，提供 web 管理界面</div><div class="line">port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line">username=user              ; 登录管理后台的用户名</div><div class="line">password=123               ; 登录管理后台的密码</div><div class="line"> </div><div class="line">[supervisord]</div><div class="line">logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log</div><div class="line">logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB</div><div class="line">logfile_backups=10           ; 日志文件保留备份数量默认 10</div><div class="line">loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace</div><div class="line">pidfile=/tmp/supervisord.pid ; pid 文件</div><div class="line">nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动</div><div class="line">minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024</div><div class="line">minprocs=200                 ; 可以打开的进程数的最小值，默认 200</div><div class="line"> </div><div class="line">; the below section must remain in the config file for RPC</div><div class="line">; (supervisorctl/web interface) to work, additional interfaces may be</div><div class="line">; added by defining them in separate rpcinterface: sections</div><div class="line">[rpcinterface:supervisor]</div><div class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</div><div class="line"> </div><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致</div><div class="line">;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord</div><div class="line"> </div><div class="line">; 包含其他的配置文件</div><div class="line">[include]</div><div class="line">files = /etc/supervisor/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure></p>
+<h3 id="启动supervisor"><a href="#启动supervisor" class="headerlink" title="启动supervisor"></a>启动supervisor</h3><p>supervisord -c /etc/supervisord.conf<br>登录127.0.0.1:9001查看supervisor<br><img src="/images/201701/Supervisor_1.png"></p>
+<h3 id="添加监控的脚本"><a href="#添加监控的脚本" class="headerlink" title="添加监控的脚本"></a>添加监控的脚本</h3><p>例如在vim /etc/supervisor/test.ini<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[program:<span class="built_in">test</span>]</div><div class="line">directory = /Users/liebaomac ; 程序的启动目录</div><div class="line"><span class="built_in">command</span> = python test.py ; 启动命令，可以看出与手动在命令行启动的命令是一样的</div><div class="line">autostart = <span class="literal">true</span>     ; 在 supervisord 启动的时候也自动启动</div><div class="line">startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了</div><div class="line">autorestart = <span class="literal">true</span>   ; 程序异常退出后自动重启</div><div class="line">startretries = 3     ; 启动失败自动重试次数，默认是 3</div><div class="line">user = liebaomac          ; 用哪个用户启动</div><div class="line">redirect_stderr = <span class="literal">true</span>  ; 把 stderr 重定向到 stdout，默认 <span class="literal">false</span></div><div class="line">; stdout 日志文件，需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录（supervisord 会自动创建日志文件）</div><div class="line">stdout_logfile = /data/logs/test.log</div><div class="line">stdout_logfile_maxbytes = 20MB  ; stdout 日志文件大小，默认 50MB</div><div class="line">stdout_logfile_backups = 20     ; stdout 日志文件备份数</div></pre></td></tr></table></figure></p>
+<p>vim /Users/liebaomac/test.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">"a"</span></div><div class="line"><span class="keyword">print</span> a</div></pre></td></tr></table></figure></p>
+<h3 id="更新supervisor监控"><a href="#更新supervisor监控" class="headerlink" title="更新supervisor监控"></a>更新supervisor监控</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisorctl update</div></pre></td></tr></table></figure>
+<img src="/images/201701/Supervisor_2.png">
+<p>日志如下图所示<br><img src="/images/201701/Supervisor_3.png"></p>
 
           
         
@@ -1407,143 +1531,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/17/elk简单搭建/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/17/elk简单搭建/" itemprop="url">
-                  elk简单分布式搭建
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-17T17:16:52+08:00">
-                2017-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="机器Hostname"><a href="#机器Hostname" class="headerlink" title="机器Hostname"></a>机器Hostname</h2><p>master, worker1, worker2</p>
-<h1 id="安装logstash"><a href="#安装logstash" class="headerlink" title="安装logstash"></a>安装logstash</h1><h3 id="下载logstash"><a href="#下载logstash" class="headerlink" title="下载logstash"></a>下载logstash</h3><p>master,worker1,worker2 重复以下操作<br>官网下载地址：<a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">https://www.elastic.co/downloads/logstash</a><br>我将下载后的压缩包解压在/opt/elasticsearch/logstash-5.1.1目录</p>
-<h3 id="举一个简单的使用例子"><a href="#举一个简单的使用例子" class="headerlink" title="举一个简单的使用例子:"></a>举一个简单的使用例子:</h3><p>编辑测试数据<br>vim /opt/elasticsearch/logstash-5.1.1/test_data/2.log<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a</div><div class="line">b</div><div class="line">c</div><div class="line">efg</div></pre></td></tr></table></figure></p>
-<h3 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>vim /opt/elasticsearch/logstash-5.1.1/config/test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        <span class="comment">#监听文件的路径</span></div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/2.log"</span></div><div class="line">        <span class="comment">#监听文件的起始位置，默认是end</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    <span class="comment">#输出到屏幕上</span></div><div class="line">    stdout &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="启动logstash"><a href="#启动logstash" class="headerlink" title="启动logstash"></a>启动logstash</h3><p>cd /opt/elasticsearch/logstash-5.1.1 &amp;&amp; ./bin/logstash -f ./config/test.conf<br>结果如图所示，PS.追加写文件，logstash也会跟着输出到屏幕上<br><img src="/images/201701/logstash_1.png"></p>
-<h1 id="安装elasticsearch"><a href="#安装elasticsearch" class="headerlink" title="安装elasticsearch"></a>安装elasticsearch</h1><h3 id="下载elasticsearch"><a href="#下载elasticsearch" class="headerlink" title="下载elasticsearch"></a>下载elasticsearch</h3><p>官网下载地址：<a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a><br>将下载后的压缩包解压在/opt/elasticsearch/elasticsearch-5.1.1目录</p>
-<h3 id="编辑配置文件-1"><a href="#编辑配置文件-1" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; vim ./config/elasticsearch.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-master</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: master</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker1的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker1</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker1</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div><div class="line"></div><div class="line"><span class="comment">#worker2的config/elasticsearch.yml</span></div><div class="line">cluster.name: elasticsearch_cluster</div><div class="line">node.name: node-worker2</div><div class="line">path.data: /opt/elasticsearch/elasticsearch-5.1.1/data <span class="comment">#需要自己建目录</span></div><div class="line">path.logs: /opt/elasticsearch/elasticsearch-5.1.1/logs <span class="comment">#需要自己建目录</span></div><div class="line">network.host: worker2</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master"</span>, <span class="string">"worker1"</span>, <span class="string">"worker2"</span>]</div></pre></td></tr></table></figure></p>
-<h3 id="启动elasticsearch"><a href="#启动elasticsearch" class="headerlink" title="启动elasticsearch"></a>启动elasticsearch</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/elasticsearch<br>启动结果如果所示(先启动master，再worker1,worker2)<br><img src="/images/201701/elasticSearch_1.png"><br>可以在master的启动日志 看到加入节点worker1、worker2的消息<br>PS.不能用root用户启动，我是创建了elasticSearch用户</p>
-<h1 id="安装kibana"><a href="#安装kibana" class="headerlink" title="安装kibana"></a>安装kibana</h1><h3 id="下载kibana"><a href="#下载kibana" class="headerlink" title="下载kibana"></a>下载kibana</h3><p>官网下载地址：<a href="https://www.elastic.co/downloads/kibana" target="_blank" rel="external">https://www.elastic.co/downloads/kibana</a><br>注.mac和linux版本不一样<br>将下载后的压缩包解压在/opt/elasticsearch/kibana-5.1.1-linux-x86_64目录</p>
-<h3 id="编辑配置文件-2"><a href="#编辑配置文件-2" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>cd /opt/elasticsearch/kibana-5.1.1-linux-x86_64 &amp;&amp; vim ./config/kibana.yml<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"master"</span></div><div class="line">elasticsearch.url: <span class="string">"http://master:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker1的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker1"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker1:9200"</span> <span class="comment">#elasticsearch地址</span></div><div class="line"></div><div class="line"><span class="comment">#worker2的config/kibana.yml</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"worker2"</span></div><div class="line">elasticsearch.url: <span class="string">"http://worker2:9200"</span> <span class="comment">#elasticsearch地址</span></div></pre></td></tr></table></figure></p>
-<h3 id="启动kibana"><a href="#启动kibana" class="headerlink" title="启动kibana"></a>启动kibana</h3><p>cd /opt/elasticsearch/elasticsearch-5.1.1 &amp;&amp; ./bin/kibana</p>
-<h3 id="登录kibana"><a href="#登录kibana" class="headerlink" title="登录kibana"></a>登录kibana</h3><p>访问master:5601<br>结果如图所示:<br><img src="/images/201701/kibana_1.png"></p>
-<h1 id="elk配合使用-elasticsearch-logstash-kibana"><a href="#elk配合使用-elasticsearch-logstash-kibana" class="headerlink" title="elk配合使用(elasticsearch, logstash, kibana)"></a>elk配合使用(elasticsearch, logstash, kibana)</h1><h3 id="创建es的index"><a href="#创建es的index" class="headerlink" title="创建es的index"></a>创建es的index</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#es_test 是index</span></div><div class="line">curl -XPUT <span class="string">'http://master:9200/es_test/'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">  "settings":&#123;</div><div class="line">      "index":&#123;</div><div class="line">          "number_of_shards":3,</div><div class="line">          "number_of_replicas":1</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
-<p>之前我们已经启动了elasticsearch, logstash, kibana<br>接下来我们启动一个新的logstash，数据存入elasticsearch(三台机器一样操作)</p>
-<h3 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#master </span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line"><span class="comment">#worker1</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">5</div><div class="line">6</div><div class="line"><span class="comment">#worker2</span></div><div class="line">cat /opt/elasticsearch/logstash-5.1.1/test_data/1.log</div><div class="line">1</div><div class="line">7</div><div class="line">8</div></pre></td></tr></table></figure>
-<h3 id="编辑配置文件-3"><a href="#编辑配置文件-3" class="headerlink" title="编辑配置文件"></a>编辑配置文件</h3><p>vim /opt/elasticsearch/logstash-5.1.1/config/es_test.conf<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/opt/elasticsearch/logstash-5.1.1/test_data/1.log"</span></div><div class="line">        start_position =&gt; beginning</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output&#123;</div><div class="line">    <span class="comment">#将logstash的输出和elasticsearch对接</span></div><div class="line">    elasticsearch &#123;</div><div class="line">        hosts =&gt; <span class="string">"master:9200"</span></div><div class="line">        <span class="comment">#index类似mysql的database，之后我们会在kibana用到</span></div><div class="line">        index =&gt; <span class="string">"es_test"</span></div><div class="line">    &#125;</div><div class="line">    stdout&#123;codec=&gt;rubydebug&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>启动logstash<br>cd /opt/elasticsearch/logstash-5.1.1 &amp;&amp; ./bin/logstash -f ./config/es_test.conf</p>
-<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>再次登录master:5601<br>输入es_test，如图所示<br><img src="/images/201701/kibana_2.png"></p>
-<p>搜索1，在3台机器上输出源都有，搜索结果如下<br><img src="/images/201701/kibana_3.png"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1591,7 +1578,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
