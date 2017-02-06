@@ -241,6 +241,135 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/19/hbase分布式搭建/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/19/hbase分布式搭建/" itemprop="url">
+                  hbase分布式搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-19T11:45:40+08:00">
+                2017-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="已有的环境"><a href="#已有的环境" class="headerlink" title="已有的环境"></a>已有的环境</h2><p>三台机器hostname: master, worker1, worker2<br>并已安装好分布式Hadoop2.6.0</p>
+<h3 id="定位JAVA-HOME"><a href="#定位JAVA-HOME" class="headerlink" title="定位JAVA_HOME"></a>定位JAVA_HOME</h3><p>mac: 使用命令/usr/libexec/java_home<br><img src="/images/201701/JAVA_HOME_2.png"><br>linux: 如下图所示<br><img src="/images/201701/JAVA_HOME_1.png"></p>
+<h2 id="下载HBase"><a href="#下载HBase" class="headerlink" title="下载HBase"></a>下载HBase</h2><p>官网下载地址：<a href="http://www.apache.org/dyn/closer.cgi/hbase/" target="_blank" rel="external">http://www.apache.org/dyn/closer.cgi/hbase/</a><br>我下载的是Stable版本：<a href="http://mirrors.cnnic.cn/apache/hbase/stable/hbase-1.2.4-bin.tar.gz" target="_blank" rel="external">http://mirrors.cnnic.cn/apache/hbase/stable/hbase-1.2.4-bin.tar.gz</a></p>
+<h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><p>将下载后的压缩包解压后 放到/Users/xiwu/hbase-1.2.4目录下</p>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-env-sh"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-env-sh" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-env.sh"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-env.sh</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> JAVA_HOME=通过之前方法定位</div><div class="line"><span class="built_in">export</span> HBASE_LOG_DIR=/Users/xiwu/hbase-1.2.4/logs</div><div class="line"><span class="comment">#如果使用HBase自带的Zookeeper值设成true 如果使用自己安装的Zookeeper需要将该值设为false</span></div><div class="line"><span class="built_in">export</span> HBASE_MANAGES_ZK=<span class="literal">true</span></div></pre></td></tr></table></figure>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-site-xml"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-hbase-site-xml" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-site.xml"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim hbase-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.rootdir&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000/hbase&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</div><div class="line">        &lt;value&gt;true&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</div><div class="line">        &lt;value&gt;master,worker1,worker2&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hbase.master.maxclockskew&lt;/name&gt;</div><div class="line">        &lt;value&gt;180000&lt;/value&gt;</div><div class="line">        &lt;description&gt;Time difference of regionserver from master&lt;/description&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>hbase.rootdir 指定Hbase数据存储目录<br>hbase.cluster.distributed 指定是否是完全分布式模式，单机模式和伪分布式模式需要将该值设为false<br>hbase.zookeeper.quorum 指定zooke的集群，多台机器以逗号分隔</p>
+<h3 id="cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-regionservers"><a href="#cd-Users-xiwu-hbase-1-2-4-conf-amp-amp-vim-regionservers" class="headerlink" title="cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim regionservers"></a>cd /Users/xiwu/hbase-1.2.4/conf &amp;&amp; vim regionservers</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">master</div><div class="line">worker1</div><div class="line">worker2</div></pre></td></tr></table></figure>
+<p>PS.以上操作在三台机器都相同。可以在一台机器上弄好后，scp复制过去</p>
+<h2 id="启动HBase"><a href="#启动HBase" class="headerlink" title="启动HBase"></a>启动HBase</h2><p>//先启动hdfs<br>cd ${HADOOP_HOME} &amp;&amp; ./sbin/start-dfs.sh<br>//再启动hbase<br>cd ${HBASE_HOME} &amp;&amp; ./bin/start-hbase.sh<br>正确启动后结果如图所示:<br><img src="/images/201701/hbase_1.png"><br>master: HMaster,HQuorumPeer,HRegionServer<br>worker1,worker2: HQuorumPeer,HRegionServer<br>也可以登录：<a href="http://master:16010/" target="_blank" rel="external">http://master:16010/</a> 查看HBase状态<br>如果所示:<br><img src="/images/201701/hbase_2.png"></p>
+<h2 id="测试HBase"><a href="#测试HBase" class="headerlink" title="测试HBase"></a>测试HBase</h2><p>cd ${HBASE_HOME} &amp;&amp; ./bin/hbase shell<br><img src="/images/201701/hbase_3.png"><br><img src="/images/201701/hbase_4.png"><br><img src="/images/201701/hbase_5.png"><br>更多操作参考<a href="http://www.yiibai.com/hbase/hbase_shell.html" target="_blank" rel="external">http://www.yiibai.com/hbase/hbase_shell.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/18/spark提交任务源码浅析/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1176,7 +1305,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
