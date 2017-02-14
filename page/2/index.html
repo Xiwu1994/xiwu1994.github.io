@@ -241,6 +241,130 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/22/SparkStreaming初体验/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/22/SparkStreaming初体验/" itemprop="url">
+                  SparkStreaming初体验
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-22T15:53:39+08:00">
+                2017-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="SparkStreaming简单介绍"><a href="#SparkStreaming简单介绍" class="headerlink" title="SparkStreaming简单介绍"></a>SparkStreaming简单介绍</h2><p>Spark Streaming是建立在Spark上的实时计算框架<br>输入和输出概览：<br><img src="/images/201701/SparkStreaming_1.png"><br>Spark Streaming把实时输入数据流以时间片(如1秒)为单位切分成块。SparkStreaming会把每块数据作为一个RDD，并使用RDD操作处理每一小块数据<br><img src="/images/201701/SparkStreaming_2.png"></p>
+<h2 id="例子-从kafka输入源-读取数据后-直接输出"><a href="#例子-从kafka输入源-读取数据后-直接输出" class="headerlink" title="例子:从kafka输入源 读取数据后 直接输出"></a>例子:从kafka输入源 读取数据后 直接输出</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.apache.log4j.&#123;<span class="type">Level</span>, <span class="type">Logger</span>&#125;</div><div class="line"><span class="keyword">import</span> org.apache.spark.<span class="type">SparkConf</span></div><div class="line"><span class="keyword">import</span> org.apache.spark.streaming.kafka.<span class="type">KafkaUtils</span></div><div class="line"><span class="keyword">import</span> org.apache.spark.streaming.&#123;<span class="type">Seconds</span>, <span class="type">StreamingContext</span>&#125;</div><div class="line"><span class="keyword">import</span> kafka.serializer.<span class="type">StringDecoder</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">process_58_data</span> </span>&#123;</div><div class="line">  <span class="type">Logger</span>.getLogger(<span class="string">"org"</span>).setLevel(<span class="type">Level</span>.<span class="type">ERROR</span>)</div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</div><div class="line">    <span class="keyword">val</span> masterUrl = <span class="string">"local[2]"</span> <span class="comment">//不能local，需要两个核以上</span></div><div class="line">    <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setMaster(masterUrl).setAppName(<span class="string">"58_data"</span>)</div><div class="line">    <span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf, <span class="type">Seconds</span>(<span class="number">5</span>))</div><div class="line">    <span class="keyword">val</span> topics = <span class="type">Set</span>(<span class="string">"58_data"</span>) <span class="comment">//kafka的topic</span></div><div class="line">    <span class="keyword">val</span> brokers = <span class="string">"master:9092,worker1:9092,worker2:9092"</span> <span class="comment">//kafka端口</span></div><div class="line">    <span class="keyword">val</span> kafkaParams = <span class="type">Map</span>[<span class="type">String</span>, <span class="type">String</span>](<span class="string">"metadata.broker.list"</span> -&gt; brokers)</div><div class="line">    <span class="keyword">val</span> kafkaStream = <span class="type">KafkaUtils</span>.createDirectStream[<span class="type">String</span>, <span class="type">String</span>, <span class="type">StringDecoder</span>, <span class="type">StringDecoder</span>](ssc, kafkaParams, topics) <span class="comment">//调用Kafka工具包创建DSteam</span></div><div class="line">    kafkaStream.foreachRDD(rdd =&gt;&#123;</div><div class="line">      rdd.foreachPartition(iter =&gt; &#123;</div><div class="line">        iter.foreach( x =&gt;</div><div class="line">          println(x._2)</div><div class="line">        )</div><div class="line">      &#125;)</div><div class="line">    &#125;)</div><div class="line">    ssc.start() <span class="comment">//启动流计算环境StreamingContext</span></div><div class="line">    ssc.awaitTermination() <span class="comment">//等待作业完成</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之前写过简单的爬虫用来抓取网页信息，将数据放入kafka中，配合SparkStreaming，最后输出结果如下:<br><img src="/images/201701/SparkStreaming_3.png"></p>
+<h2 id="SparkStreaming中DSteam转化操作"><a href="#SparkStreaming中DSteam转化操作" class="headerlink" title="SparkStreaming中DSteam转化操作"></a>SparkStreaming中DSteam转化操作</h2><h3 id="无状态："><a href="#无状态：" class="headerlink" title="无状态："></a>无状态：</h3><p>SparkStreaming是建立在Spark，所以很多RDD转化操作都适用于Dsteam.<br>例如: map, flatMap, filter, repartition, join, reduceByKey<br>(注: 针对键值对的Dsteam转化操作需要import StreamingContext._)</p>
+<h3 id="有状态-SparkStreaming特有的操作-："><a href="#有状态-SparkStreaming特有的操作-：" class="headerlink" title="有状态(SparkStreaming特有的操作)："></a>有状态(SparkStreaming特有的操作)：</h3><p>滑动窗口和updateStateByKey<br>滑动窗口使用详情可以参考：<a href="http://blog.csdn.net/legotime/article/details/51836040" target="_blank" rel="external">http://blog.csdn.net/legotime/article/details/51836040</a></p>
+<p>参考文档：<br><a href="http://spark.apache.org/docs/latest/streaming-programming-guide.html" target="_blank" rel="external">http://spark.apache.org/docs/latest/streaming-programming-guide.html</a><br>《Spark快速大数据分析》</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/21/spark机器学习初体验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1395,130 +1519,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/02/MyFisrtBlog/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/02/MyFisrtBlog/" itemprop="url">
-                  my first essay
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-02T13:19:46+08:00">
-                2016-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"Today is a nice day."</span></div><div class="line">    sleep $(( <span class="variable">$RANDOM</span> % 10 ))</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1561,7 +1566,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

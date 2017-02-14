@@ -84,29 +84,16 @@
 
 
 
-<meta name="description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
+<meta name="description" content="先了解Hadoop是如何分块的。分为两部分：Block和Split。（1）Block块：数据的划分，这个是真实的物理划分。数据文件上传到HDFS后，会被分成一块一块的。每一块的大小可以自己配置（hadoop-default.xml中），默认的选项是64MB，一个文件被分成多个64MB的小文件，最后一个可能会小于64MB。Block是有冗余的，Hadoop为了保证数据的安全，每个Block都会被复制">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark运行框架">
-<meta property="og:url" content="http://yoursite.com/2017/01/26/Spark运行框架/index.html">
+<meta property="og:title" content="MapReduce的Shuffle过程">
+<meta property="og:url" content="http://yoursite.com/2017/02/14/MapReduce的Shuffle过程/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_2.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_3.png">
-<meta property="og:updated_time" content="2017-01-27T15:11:11.000Z">
+<meta property="og:description" content="先了解Hadoop是如何分块的。分为两部分：Block和Split。（1）Block块：数据的划分，这个是真实的物理划分。数据文件上传到HDFS后，会被分成一块一块的。每一块的大小可以自己配置（hadoop-default.xml中），默认的选项是64MB，一个文件被分成多个64MB的小文件，最后一个可能会小于64MB。Block是有冗余的，Hadoop为了保证数据的安全，每个Block都会被复制">
+<meta property="og:updated_time" content="2017-02-14T15:11:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark运行框架">
-<meta name="twitter:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta name="twitter:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
+<meta name="twitter:title" content="MapReduce的Shuffle过程">
+<meta name="twitter:description" content="先了解Hadoop是如何分块的。分为两部分：Block和Split。（1）Block块：数据的划分，这个是真实的物理划分。数据文件上传到HDFS后，会被分成一块一块的。每一块的大小可以自己配置（hadoop-default.xml中），默认的选项是64MB，一个文件被分成多个64MB的小文件，最后一个可能会小于64MB。Block是有冗余的，Hadoop为了保证数据的安全，每个Block都会被复制">
 
 
 
@@ -134,13 +121,13 @@ Spark YARN Cluster Mode 运行流程示意图
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/26/Spark运行框架/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/14/MapReduce的Shuffle过程/"/>
 
 
 
 
 
-  <title> Spark运行框架 | Refrain </title>
+  <title> MapReduce的Shuffle过程 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -253,7 +240,7 @@ Spark YARN Cluster Mode 运行流程示意图
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/26/Spark运行框架/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/MapReduce的Shuffle过程/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -277,7 +264,7 @@ Spark YARN Cluster Mode 运行流程示意图
             
             
               
-                Spark运行框架
+                MapReduce的Shuffle过程
               
             
           </h1>
@@ -292,8 +279,8 @@ Spark YARN Cluster Mode 运行流程示意图
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-26T12:00:43+08:00">
-                2017-01-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-14T22:24:33+08:00">
+                2017-02-14
               </time>
             
 
@@ -328,10 +315,18 @@ Spark YARN Cluster Mode 运行流程示意图
       
 
       
-        <h3 id="Spark官网展示了如下的集群运行架构"><a href="#Spark官网展示了如下的集群运行架构" class="headerlink" title="Spark官网展示了如下的集群运行架构"></a>Spark官网展示了如下的集群运行架构</h3><img src="/images/201701/Spark_Frame_1.png">
-<h3 id="Spark-Standalone-Client-Mode-运行流程示意图"><a href="#Spark-Standalone-Client-Mode-运行流程示意图" class="headerlink" title="Spark Standalone Client Mode 运行流程示意图"></a>Spark Standalone Client Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_2.png">
-<h3 id="Spark-YARN-Cluster-Mode-运行流程示意图"><a href="#Spark-YARN-Cluster-Mode-运行流程示意图" class="headerlink" title="Spark YARN Cluster Mode 运行流程示意图"></a>Spark YARN Cluster Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_3.png">
-<p>转载: <a href="http://blog.csdn.net/bigdata_wang/article/details/48245581" target="_blank" rel="external">http://blog.csdn.net/bigdata_wang/article/details/48245581</a></p>
+        <p>先了解Hadoop是如何分块的。分为两部分：Block和Split。<br>（1）Block块：数据的划分，这个是真实的物理划分。<br>数据文件上传到HDFS后，会被分成一块一块的。每一块的大小可以自己配置（hadoop-default.xml中），默认的选项是64MB，一个文件被分成多个64MB的小文件，最后一个可能会小于64MB。<br>Block是有冗余的，Hadoop为了保证数据的安全，每个Block都会被复制3份，作为备份，分布在3个不同的DataNode中，当一份宕掉，其余的可以即刻补上。同样，这个备份的数量也是可以配置的，具体配置自己百度。<br>（2）Split块：Split是一个逻辑概念，它只包含一些元数据信息，比如数据起始位置、数据长度、数据所在节点等。<br>Split划分是由InputFormat这个接口来定义的，其中就有一个getSplits方法。<br>不同的Hadoop版本是由不同的job任务来完成的。早先的版本split是由JobTracker完成的，后来的版本是由JobClient完成的，JobClient划分好后，把split.file写入HDFS中，到时候JobTracker读这个文件，就知道split是如何划分的了。<br>举例了解Split的划分：</p>
+<blockquote>
+<p>File1 :   Block11 ,   Block12 ,   Block13 ,   Block14 ,   Block15<br>File2 :   Block21 ,   Block22 ,   Block23</p>
+</blockquote>
+<p>File1有5个Block，最后一个可能会小于64MB；File2有3个Block。<br>若用户在程序中指定了map tasks的个数，比如说是2（若不指定，则默认为1），那么在FileInputFormat（最常见的InputFormat实现）的getSplits方法中，首先会计算totalSize=8（对照源码看看，注意getSplits这个函数里的计量单位是Block个数，而不是Byte个数），然后会计算goalSize=totalSize / numSplits = 4，对于File1，计算一个Split有多少个Block是下面这样计算的：</p>
+<blockquote>
+<p>max ( minSize ,   min ( goalSize ,  blockSize )); </p>
+</blockquote>
+<p>这里的minSize是1（当然也是默认值），计算得出splitSize = 4，代表的是一个Split包含了多少个Block，所以接下来的Split划分是这样的：</p>
+<blockquote>
+<p>Split1 :   Block11 ,   Block12 ,   Block13 ,   Block14<br>Split2 :   Block15<br>Split3 :   Block21 ,   Block22 ,   Block23</p>
+</blockquote>
 
       
     </div>
@@ -358,8 +353,8 @@ Spark YARN Cluster Mode 运行流程示意图
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/25/supervisor使用/" rel="next" title="Supervisor简单使用">
-                <i class="fa fa-chevron-left"></i> Supervisor简单使用
+              <a href="/2017/02/12/大数据初学者学习之路/" rel="next" title="大数据初学者学习之路">
+                <i class="fa fa-chevron-left"></i> 大数据初学者学习之路
               </a>
             
           </div>
@@ -367,10 +362,6 @@ Spark YARN Cluster Mode 运行流程示意图
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/27/大数据面试总结-1/" rel="prev" title="大数据面试总结-1">
-                大数据面试总结-1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -417,17 +408,8 @@ Spark YARN Cluster Mode 运行流程示意图
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -469,22 +451,6 @@ Spark YARN Cluster Mode 运行流程示意图
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark官网展示了如下的集群运行架构"><span class="nav-number">1.</span> <span class="nav-text">Spark官网展示了如下的集群运行架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Standalone-Client-Mode-运行流程示意图"><span class="nav-number">2.</span> <span class="nav-text">Spark Standalone Client Mode 运行流程示意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-YARN-Cluster-Mode-运行流程示意图"><span class="nav-number">3.</span> <span class="nav-text">Spark YARN Cluster Mode 运行流程示意图</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
     </div>
