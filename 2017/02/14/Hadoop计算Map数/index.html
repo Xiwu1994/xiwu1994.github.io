@@ -84,33 +84,16 @@
 
 
 
-<meta name="description" content="已有的环境:IntelliJ IDEA
-一、去官网下载spark源码http://spark.apache.org/downloads.html注意package type选择Source Code
-二、解压spark-1.6.1.tgz到目录xxx/spark-1.6.1
-三、打开IntelliJ IDEA import project找到xxx/spark-1.6.1/pom.xml
-四、接下">
+<meta name="description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spark源码环境搭建">
-<meta property="og:url" content="http://yoursite.com/2016/09/25/spark源码环境搭建/index.html">
+<meta property="og:title" content="Hadoop计算Map数">
+<meta property="og:url" content="http://yoursite.com/2017/02/14/Hadoop计算Map数/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="已有的环境:IntelliJ IDEA
-一、去官网下载spark源码http://spark.apache.org/downloads.html注意package type选择Source Code
-二、解压spark-1.6.1.tgz到目录xxx/spark-1.6.1
-三、打开IntelliJ IDEA import project找到xxx/spark-1.6.1/pom.xml
-四、接下">
-<meta property="og:image" content="http://yoursite.com/images/201609/download_sparkSourceCode.png">
-<meta property="og:image" content="http://yoursite.com/images/201609/import_project.png">
-<meta property="og:image" content="http://yoursite.com/images/201609/get_pom.png">
-<meta property="og:image" content="http://yoursite.com/images/201609/updating_indices.png">
-<meta property="og:updated_time" content="2016-09-25T07:23:52.000Z">
+<meta property="og:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
+<meta property="og:updated_time" content="2017-02-15T03:11:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="spark源码环境搭建">
-<meta name="twitter:description" content="已有的环境:IntelliJ IDEA
-一、去官网下载spark源码http://spark.apache.org/downloads.html注意package type选择Source Code
-二、解压spark-1.6.1.tgz到目录xxx/spark-1.6.1
-三、打开IntelliJ IDEA import project找到xxx/spark-1.6.1/pom.xml
-四、接下">
-<meta name="twitter:image" content="http://yoursite.com/images/201609/download_sparkSourceCode.png">
+<meta name="twitter:title" content="Hadoop计算Map数">
+<meta name="twitter:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
 
 
 
@@ -138,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/25/spark源码环境搭建/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/14/Hadoop计算Map数/"/>
 
 
 
 
 
-  <title> spark源码环境搭建 | Refrain </title>
+  <title> Hadoop计算Map数 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -257,7 +240,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/25/spark源码环境搭建/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/Hadoop计算Map数/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -281,7 +264,7 @@
             
             
               
-                spark源码环境搭建
+                Hadoop计算Map数
               
             
           </h1>
@@ -296,8 +279,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-25T12:26:47+08:00">
-                2016-09-25
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-14T22:24:33+08:00">
+                2017-02-14
               </time>
             
 
@@ -332,11 +315,16 @@
       
 
       
-        <p>已有的环境:<br>IntelliJ IDEA</p>
-<p>一、去官网下载spark源码<br><a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">http://spark.apache.org/downloads.html</a><br><img src="/images/201609/download_sparkSourceCode.png"><br>注意package type选择Source Code</p>
-<p>二、解压spark-1.6.1.tgz到目录xxx/spark-1.6.1</p>
-<p>三、打开IntelliJ IDEA import project<br><img src="/images/201609/import_project.png" width="500" height="500"><br>找到xxx/spark-1.6.1/pom.xml<br><img src="/images/201609/get_pom.png" width="500" height="600"></p>
-<p>四、接下来一直点击next就行<br>最后出现这个说明快成功了<br><img src="/images/201609/updating_indices.png"><br>PS.如果出现Unable to save settings: Failed to save settings. Please restart IntelliJ<br>那么可能是导入的路径没有权限写入</p>
+        <h3 id="计算splitSize"><a href="#计算splitSize" class="headerlink" title="计算splitSize"></a>计算splitSize</h3><p>split的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:<br>1、读取参数mapred.map.tasks，这个参数默认设置为1<br>2、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks<br>3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数默认设置为1B<br>4、blockSize，文件物理划分成块，大小配置在hadoop-default.xml，它的默认值是64MB<br>5、splitSize= Math.max(minSize, Math.min(goalSize, blockSize))</p>
+<h3 id="通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><a href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数" class="headerlink" title="通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)"></a>通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</h3><p>计算方法逻辑如下：<br>1、 文件大小/splitSize &gt; 1.1，创建一个split，这个split的大小=splitSize，文件剩余大小=文件大小-splitSize<br>2、 文件剩余大小/splitSize&lt;1.1，剩余的部分作为一个split<br>举例：</p>
+<ol>
+<li>input只有一个文件，大小为100M，splitSize为64M。则Split数为2，一个64M，一个36M</li>
+<li>input只有一个文件，大小为65M，splitSize为64M。则Split数为1，split大小为65M</li>
+<li>input只有一个文件，大小为129M，splitSize为64M。则Split数为2，一个64M，一个65M</li>
+<li>input只有一个文件，大小为20M，splitSize为64M。则Split数为1，split大小为20M<br>两个特殊例子:</li>
+<li>input两个文件，分别为40M和20M，mapred.map.tasks人工设置为2。则goalSize=(40+20)/2=30M，splitSize为30M。逻辑切分文件后，第一个文件切分成30M,10M两个split，第二个还是20M。最后有3个MapTask</li>
+<li>input两个文件，分别为40M和20M，mapred.map.tasks默认为1。则goalSize=(40+20)/1=60M，splitSize为60M。逻辑切分文件最后生成两个切片，一个40M，一个20M。即2个MapTask<br>特殊例子总结：<br>mapred.map.tasks并不是设置的越大，JOB执行的效率就越高。Hadoop在处理小文件时效率会变差。</li>
+</ol>
 
       
     </div>
@@ -363,8 +351,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/02/MyFisrtBlog/" rel="next" title="my first essay">
-                <i class="fa fa-chevron-left"></i> my first essay
+              <a href="/2017/02/12/大数据初学者学习之路/" rel="next" title="大数据初学者学习之路">
+                <i class="fa fa-chevron-left"></i> 大数据初学者学习之路
               </a>
             
           </div>
@@ -373,8 +361,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/10/03/简易搭建kafka集群/" rel="prev" title="搭建简易kafka集群">
-                搭建简易kafka集群 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/15/MapReduce的Shuffle过程/" rel="prev" title="MapReduce的Shuffle过程">
+                MapReduce的Shuffle过程 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -422,8 +410,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -465,6 +462,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算splitSize"><span class="nav-number">1.</span> <span class="nav-text">计算splitSize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><span class="nav-number">2.</span> <span class="nav-text">通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>

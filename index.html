@@ -241,7 +241,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/MapReduce的Shuffle过程/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/15/MapReduce的Shuffle过程/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -266,8 +266,126 @@
             
               
                 
-                <a class="post-title-link" href="/2017/02/14/MapReduce的Shuffle过程/" itemprop="url">
+                <a class="post-title-link" href="/2017/02/15/MapReduce的Shuffle过程/" itemprop="url">
                   MapReduce的Shuffle过程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T11:12:32+08:00">
+                2017-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/Hadoop计算Map数/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/14/Hadoop计算Map数/" itemprop="url">
+                  Hadoop计算Map数
                 </a>
               
             
@@ -321,18 +439,16 @@
       
         
           
-            <p>先了解Hadoop是如何分块的。分为两部分：Block和Split。<br>（1）Block块：数据的划分，这个是真实的物理划分。<br>数据文件上传到HDFS后，会被分成一块一块的。每一块的大小可以自己配置（hadoop-default.xml中），默认的选项是64MB，一个文件被分成多个64MB的小文件，最后一个可能会小于64MB。<br>Block是有冗余的，Hadoop为了保证数据的安全，每个Block都会被复制3份，作为备份，分布在3个不同的DataNode中，当一份宕掉，其余的可以即刻补上。同样，这个备份的数量也是可以配置的，具体配置自己百度。<br>（2）Split块：Split是一个逻辑概念，它只包含一些元数据信息，比如数据起始位置、数据长度、数据所在节点等。<br>Split划分是由InputFormat这个接口来定义的，其中就有一个getSplits方法。<br>不同的Hadoop版本是由不同的job任务来完成的。早先的版本split是由JobTracker完成的，后来的版本是由JobClient完成的，JobClient划分好后，把split.file写入HDFS中，到时候JobTracker读这个文件，就知道split是如何划分的了。<br>举例了解Split的划分：</p>
-<blockquote>
-<p>File1 :   Block11 ,   Block12 ,   Block13 ,   Block14 ,   Block15<br>File2 :   Block21 ,   Block22 ,   Block23</p>
-</blockquote>
-<p>File1有5个Block，最后一个可能会小于64MB；File2有3个Block。<br>若用户在程序中指定了map tasks的个数，比如说是2（若不指定，则默认为1），那么在FileInputFormat（最常见的InputFormat实现）的getSplits方法中，首先会计算totalSize=8（对照源码看看，注意getSplits这个函数里的计量单位是Block个数，而不是Byte个数），然后会计算goalSize=totalSize / numSplits = 4，对于File1，计算一个Split有多少个Block是下面这样计算的：</p>
-<blockquote>
-<p>max ( minSize ,   min ( goalSize ,  blockSize )); </p>
-</blockquote>
-<p>这里的minSize是1（当然也是默认值），计算得出splitSize = 4，代表的是一个Split包含了多少个Block，所以接下来的Split划分是这样的：</p>
-<blockquote>
-<p>Split1 :   Block11 ,   Block12 ,   Block13 ,   Block14<br>Split2 :   Block15<br>Split3 :   Block21 ,   Block22 ,   Block23</p>
-</blockquote>
+            <h3 id="计算splitSize"><a href="#计算splitSize" class="headerlink" title="计算splitSize"></a>计算splitSize</h3><p>split的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:<br>1、读取参数mapred.map.tasks，这个参数默认设置为1<br>2、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks<br>3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数默认设置为1B<br>4、blockSize，文件物理划分成块，大小配置在hadoop-default.xml，它的默认值是64MB<br>5、splitSize= Math.max(minSize, Math.min(goalSize, blockSize))</p>
+<h3 id="通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><a href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数" class="headerlink" title="通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)"></a>通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</h3><p>计算方法逻辑如下：<br>1、 文件大小/splitSize &gt; 1.1，创建一个split，这个split的大小=splitSize，文件剩余大小=文件大小-splitSize<br>2、 文件剩余大小/splitSize&lt;1.1，剩余的部分作为一个split<br>举例：</p>
+<ol>
+<li>input只有一个文件，大小为100M，splitSize为64M。则Split数为2，一个64M，一个36M</li>
+<li>input只有一个文件，大小为65M，splitSize为64M。则Split数为1，split大小为65M</li>
+<li>input只有一个文件，大小为129M，splitSize为64M。则Split数为2，一个64M，一个65M</li>
+<li>input只有一个文件，大小为20M，splitSize为64M。则Split数为1，split大小为20M<br>两个特殊例子:</li>
+<li>input两个文件，分别为40M和20M，mapred.map.tasks人工设置为2。则goalSize=(40+20)/2=30M，splitSize为30M。逻辑切分文件后，第一个文件切分成30M,10M两个split，第二个还是20M。最后有3个MapTask</li>
+<li>input两个文件，分别为40M和20M，mapred.map.tasks默认为1。则goalSize=(40+20)/1=60M，splitSize为60M。逻辑切分文件最后生成两个切片，一个40M，一个20M。即2个MapTask<br>特殊例子总结：<br>mapred.map.tasks并不是设置的越大，JOB执行的效率就越高。Hadoop在处理小文件时效率会变差。</li>
+</ol>
 
           
         
@@ -1427,130 +1543,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/23/SparkSQL初体验/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/23/SparkSQL初体验/" itemprop="url">
-                  SparkSQL初体验
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-23T13:57:04+08:00">
-                2017-01-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="SparkSQL输入源"><a href="#SparkSQL输入源" class="headerlink" title="SparkSQL输入源"></a>SparkSQL输入源</h2><p>Hive、Parquet、JSON、基于RDD(需要隐式转换)<br>因为还没有搭好Hive且没有使用过Parquet，下面主要将JSON和基于RDD的输入源<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> sqlContext = <span class="keyword">new</span> org.apache.spark.sql.<span class="type">SQLContext</span>(sc)</div><div class="line"><span class="comment">// Create the DataFrame (From JSON)</span></div><div class="line"><span class="keyword">val</span> df1 = sqlContext.read.json(<span class="string">"spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.json"</span>)</div><div class="line"></div><div class="line"><span class="comment">// Create the DataFrame (From RDD) 方法一</span></div><div class="line"><span class="comment">// 利用反射机制，推导包含某种类型的RDD，通过反射将其转换为指定类型的DataFrame，</span></div><div class="line"><span class="comment">// 适用于提前知道RDD的schema</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span></span>) <span class="title">//放在main函数外面</span></span></div><div class="line"><span class="keyword">import</span> sqlContext.implicits._</div><div class="line"><span class="keyword">val</span> df2 = sc.textFile(<span class="string">"spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.txt"</span>)</div><div class="line">    .map(_.split(<span class="string">","</span>)).map(p =&gt; <span class="type">Person</span>(p(<span class="number">0</span>), p(<span class="number">1</span>).trim.toInt)).toDF()</div><div class="line"></div><div class="line"><span class="comment">// Create the DataFrame (From RDD) 方法二</span></div><div class="line"><span class="comment">// 当case class不能提前定义好时，通过编程接口与RDD进行交互获取schema，</span></div><div class="line"><span class="comment">// 并动态创建DataFrame，在运行时决定列及其类型。</span></div><div class="line"><span class="keyword">val</span> people = sc.textFile(<span class="string">"spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.txt"</span>)</div><div class="line"><span class="keyword">val</span> schemaString = <span class="string">"name age"</span></div><div class="line"><span class="keyword">import</span> org.apache.spark.sql.<span class="type">Row</span>;</div><div class="line"><span class="keyword">import</span> org.apache.spark.sql.types.&#123;<span class="type">StructType</span>,<span class="type">StructField</span>,<span class="type">StringType</span>&#125;;</div><div class="line"><span class="keyword">val</span> schema =</div><div class="line">  <span class="type">StructType</span>(schemaString.split(<span class="string">" "</span>).map(fieldName =&gt; <span class="type">StructField</span>(fieldName,</div><div class="line">  <span class="type">StringType</span>, <span class="literal">true</span>))) <span class="comment">//基于structType类型创建schema</span></div><div class="line"><span class="keyword">val</span> rowRDD = people.map(_.split(<span class="string">","</span>)).map(p =&gt; <span class="type">Row</span>(p(<span class="number">0</span>), p(<span class="number">1</span>).trim)) <span class="comment">//与创建的RDD相匹配</span></div><div class="line"><span class="comment">// 通过SQLContext的createDataFrame方法对rowRDD应用schema</span></div><div class="line"><span class="keyword">val</span> df3 = sqlContext.createDataFrame(rowRDD, schema)</div></pre></td></tr></table></figure></p>
-<p>上面代码df1、df2、df3都是DataFrame类型</p>
-<p>DataFrame类型的一些常见的api操作<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Show the content of the DataFrame</span></div><div class="line">df.show()</div><div class="line"></div><div class="line"><span class="comment">// Print the schema in a tree format</span></div><div class="line">df.printSchema()</div><div class="line"></div><div class="line"><span class="comment">// Select only the "name" column</span></div><div class="line">df.select(<span class="string">"name"</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Select everybody, but increment the age by 1</span></div><div class="line">df.select(df(<span class="string">"name"</span>), df(<span class="string">"age"</span>) + <span class="number">1</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Select people older than 21</span></div><div class="line">df.filter(df(<span class="string">"age"</span>) &gt; <span class="number">21</span>).show()</div><div class="line"></div><div class="line"><span class="comment">// Count people by age</span></div><div class="line">df.groupBy(<span class="string">"age"</span>).count().show()</div></pre></td></tr></table></figure></p>
-<p>下面是简单的sql操作<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 注册输入的DataFrame</span></div><div class="line">df2.registerTempTable(<span class="string">"people"</span>)</div><div class="line"></div><div class="line"><span class="comment">// SQL statements can be run by using the sql methods provided by sqlContext.</span></div><div class="line"><span class="keyword">val</span> teenagers = sqlContext.sql(<span class="string">"SELECT name, age FROM people WHERE age &gt;= 13 AND age &lt;= 19"</span>)</div><div class="line"></div><div class="line"><span class="comment">// The results of SQL queries are DataFrames and support all the normal RDD operations.</span></div><div class="line"><span class="comment">// The columns of a row in the result can be accessed by field index:</span></div><div class="line">teenagers.map(t =&gt; <span class="string">"Name: "</span> + t(<span class="number">0</span>)).collect().foreach(println)</div><div class="line"></div><div class="line"><span class="comment">// or by field name:</span></div><div class="line">teenagers.map(t =&gt; <span class="string">"Name: "</span> + t.getAs[<span class="type">String</span>](<span class="string">"name"</span>)).collect().foreach(println)</div><div class="line"></div><div class="line"><span class="comment">// row.getValuesMap[T] retrieves multiple columns at once into a Map[String, T]</span></div><div class="line">teenagers.map(_.getValuesMap[<span class="type">Any</span>](<span class="type">List</span>(<span class="string">"name"</span>, <span class="string">"age"</span>))).collect().foreach(println)</div></pre></td></tr></table></figure></p>
-<p>测试数据:<br>spark-1.6.2-bin-hadoop2.6/examples/src/main/resources/people.txt<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Michael, 29</div><div class="line">Andy, 30</div><div class="line">Justin, 19</div></pre></td></tr></table></figure></p>
-<p>测试结果如图：<br><img src="/images/201701/SparkSql_1.png"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1598,7 +1590,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
