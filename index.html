@@ -370,7 +370,7 @@
 <blockquote>
 <p>company    1    1<br>is    1    1<br>is    1    1<br>EMC    1    1<br>My    1    2<br>My    1    2<br>name    1    2<br>Lisa    1    2</p>
 </blockquote>
-<h3 id="Combine"><a href="#Combine" class="headerlink" title="Combine"></a>Combine</h3><p>combine：执行combine操作要求开发者必须在程序中设置了combine（程序中通过job.setCombinerClass(myCombine.class)自定义combine操作)<br>程序中有<strong>两个阶段</strong>可能会执行combine操作：<br>1、map输出数据根据分区排序完成后，在写入文件之前会执行一次combine操作<br>2、(下面merge过程)如果map输出比较大，溢出文件个数大于<strong>3</strong>（此值可以通过属性min.num.spills.for.combine配置）时，在merge的过程（多个spill文件合并为一个大文件）中还会执行combine操作<br>combine主要是把形如<aa,1>,<aa,2>这样的key值相同的数据进行计算，计算规则与reduce一致，比如：当前计算是求key对应的值求和，则combine操作后得到<aa,3>这样的结果</aa,3></aa,2></aa,1></p>
+<h3 id="Combine"><a href="#Combine" class="headerlink" title="Combine"></a>Combine</h3><p>combine：执行combine操作要求开发者必须在程序中设置了combine（程序中通过job.setCombinerClass(myCombine.class)自定义combine操作)<br>程序中有<strong>两个阶段</strong>可能会执行combine操作：<br>1、map输出数据根据分区排序完成后，在写入文件之前会执行一次combine操作<br>2、(下面merge过程)如果map输出比较大，溢出文件个数大于  <strong>3</strong>  （此值可以通过属性min.num.spills.for.combine配置）时，在merge的过程（多个spill文件合并为一个大文件）中还会执行combine操作<br>combine主要是把形如<aa,1>,<aa,2>这样的key值相同的数据进行计算，计算规则与reduce一致，比如：当前计算是求key对应的值求和，则combine操作后得到<aa,3>这样的结果</aa,3></aa,2></aa,1></p>
 <p>接着例子说明:<br><strong>split 0</strong></p>
 <blockquote>
 <p>company    1    1<br>is    2    1<br>My    2    2<br>name    1    2<br>Pivotal    1    2<br>Tony    1    2</p>
@@ -379,7 +379,7 @@
 <blockquote>
 <p>company    1    1<br>EMC    1    1<br>is    2    1<br>name    1    2<br>Lisa    1    2<br>My    2    2</p>
 </blockquote>
-<h3 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h3><p>merge过程：当map很大时，每次溢写会产生一个spill_file，这样会有多个spill_file，而最终的一个map task输出只有一个文件，因此，最终的结果输出之前会对多个中间过程进行多次溢写文件（spill_file）的合并，此过程就是merge过程。也即是，待Map Task任务的所有数据都处理完后，会对任务产生的所有中间数据文件做一次合并操作，以确保一个Map Task最终只生成一个中间数据文件。<br>注意：<br>1、如果生成的文件太多，可能会执行多次合并，每次最多能合并的文件数默认为<strong>10</strong>，可以通过属性min.num.spills.for.combine配置；<br>2、多个溢出文件合并时，会进行一次排序，排序算法是多路归并排序<br>3、最终生成的文件格式与单个溢出文件一致，也是按分区顺序存储，并且输出文件会有一个对应的索引文件，记录每个分区数据的起始位置，长度以及压缩长度，这个索引文件名叫做file.out.index</p>
+<h3 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h3><p>merge过程：当map很大时，每次溢写会产生一个spill_file，这样会有多个spill_file，而最终的一个map task输出只有一个文件，因此，最终的结果输出之前会对多个中间过程进行多次溢写文件（spill_file）的合并，此过程就是merge过程。也即是，待Map Task任务的所有数据都处理完后，会对任务产生的所有中间数据文件做一次合并操作，以确保一个Map Task最终只生成一个中间数据文件。<br>注意：<br>1、如果生成的文件太多，可能会执行多次合并，每次最多能合并的文件数默认为  <strong>10</strong>  ，可以通过属性min.num.spills.for.combine配置；<br>2、多个溢出文件合并时，会进行一次排序，排序算法是多路归并排序<br>3、最终生成的文件格式与单个溢出文件一致，也是按分区顺序存储，并且输出文件会有一个对应的索引文件，记录每个分区数据的起始位置，长度以及压缩长度，这个索引文件名叫做file.out.index</p>
 <p>例子没有Merge过程，所以省略</p>
 <h2 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h2><img src="/images/201702/mr_3.png">
 <h3 id="Copy"><a href="#Copy" class="headerlink" title="Copy"></a>Copy</h3><p>作用：拉取数据<br>过程：Reduce进程启动一些数据copy线程(Fetcher)，通过HTTP方式请求map task所在的TaskTracker获取map task的输出文件。因为这时map task早已结束，这些文件就归TaskTracker管理在本地磁盘中<br>默认情况下，当整个MapReduce作业的所有已执行完成的Map Task任务数超过Map Task总数的5%后，JobTracker便会开始调度执行Reduce Task任务。然后Reduce Task任务默认启动mapred.reduce.parallel.copies(默认为5）个MapOutputCopier线程到已完成的Map Task任务节点上分别copy一份属于自己的数据。 这些copy的数据会首先保存的内存缓冲区中，当内冲缓冲区的使用率达到一定阀值后，则写到磁盘上</p>
