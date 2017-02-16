@@ -241,6 +241,180 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/24/Spark性能调优简单总结/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/24/Spark性能调优简单总结/" itemprop="url">
+                  Spark性能调优简单总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-24T14:00:44+08:00">
+                2017-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="spark性能调优：初级-开发调优、资源调优-高级-数据倾斜调优、shuffle调优"><a href="#spark性能调优：初级-开发调优、资源调优-高级-数据倾斜调优、shuffle调优" class="headerlink" title="spark性能调优：初级(开发调优、资源调优) 高级(数据倾斜调优、shuffle调优)"></a>spark性能调优：初级(开发调优、资源调优) 高级(数据倾斜调优、shuffle调优)</h2><h3 id="开发调优"><a href="#开发调优" class="headerlink" title="开发调优"></a>开发调优</h3><p>RDD lineage设计、算子的合理使用、特殊操作的优化<br>原则一：避免创建重复的RDD<br>原则二：尽可能复用同一个RDD<br>原则三：对多次使用的RDD进行持久化<br>原则四：尽量避免使用shuffle类算子<br>原则五：使用map-side预聚合的shuffle操作 (reduceByKey优于groupByKey)<br>原则六：使用高性能的算子<br>    使用reduceByKey/aggregateByKey替代groupByKey<br>    使用mapPartitions替代普通map(mapPartitions单次函数调用就要处理掉一个partition所有的数据,很可能出现OOM异常)<br>    使用foreachPartitions替代foreach<br>    使用filter之后进行coalesce操作(重新分区，但是不用排序)<br>    使用repartitionAndSortWithinPartitions替代repartition与sort类操作<br>原则七：广播大变量(大变量存储转变 task-&gt;executor)<br>原则八：使用Kryo优化序列化性能<br>原则九：优化数据结构(内存使用  集合类型&gt;数组 对象&gt;字符串&gt;原始类型)</p>
+<h3 id="资源调优"><a href="#资源调优" class="headerlink" title="资源调优"></a>资源调优</h3><p>num-executors = 总共要用多少个Executor进程来执行<br>executor-memory = 每个Executor进程的内存<br>executor-cores = 每个Executor进程的CPU core数量<br>driver-memory = Driver进程的内存<br>spark.default.parallelism = 每个stage的task数量(默认根据底层HDFS的block数量来设置task的数量,Spark官网建议的设置原则是，设置该参数为num-executors * executor-cores的2~3倍较为合适)<br>spark.storage.memoryFraction = RDD持久化数据在Executor内存占比，默认是0.6<br>spark.shuffle.memoryFraction = shuffle过程在Executor内存占比，默认是0.2<br><img src="/images/201701/Spark_Performance_1.png"></p>
+<h3 id="数据倾斜"><a href="#数据倾斜" class="headerlink" title="数据倾斜"></a>数据倾斜</h3><p>数据倾斜-&gt;shuffle key量大</p>
+<h4 id="数据倾斜的原因"><a href="#数据倾斜的原因" class="headerlink" title="数据倾斜的原因"></a>数据倾斜的原因</h4><p>进行shuffle(操作有distinct、groupByKey、reduceByKey、aggregateByKey、join、cogroup、repartition)的时候，<br>必须将各个节点上相同的key拉取到某个节点上的一个task来进行处理，可能出现某一个key的量特别的大</p>
+<h4 id="数据倾斜的定位"><a href="#数据倾斜的定位" class="headerlink" title="数据倾斜的定位"></a>数据倾斜的定位</h4><p>1、WebUI或者log日志可以告诉我们哪些个stage(task)运行的数据量大小<br>2、分析代码，重点看有shuffle操作关键代码，定位到具体造成倾斜的操作</p>
+<h4 id="数据倾斜的解决方案"><a href="#数据倾斜的解决方案" class="headerlink" title="数据倾斜的解决方案"></a>数据倾斜的解决方案</h4><p>一：提高shuffle操作的并行度(最简单，但是解决不了某个key的量特别大，因为同一个key必须放到一个task下)<br>提高shuffle算子执行时shuffle read task的数量<br>1、对RDD执行shuffle算子时，给shuffle算子传入一个参数，设置reduceByKey(1000)<br>2、对于Spark SQL中的shuffle类语句，group by、join等，设置spark.sql.shuffle.partitions<br>二：使用Hive ETL预处理数据<br>对数据倾斜的数据进行清洗后，供spark程序使用<br>三：过滤少数导致倾斜的key<br>先通过sample算子对数据进行采样，计算每个key对应的数量，再用filter过滤掉这些key<br>四、两阶段聚合，局部聚合+全局聚合<br>适用场景：只对聚合类操作reduceByKey有效，对join操作无效<br>先局部聚合，先给每个key都打上一个随机数(比如10以内的随机数，目的是打散巨大的key)，再执行reduceByKey<br>再全局聚合，将各个key的前缀给去掉，再次进行全局聚合操作<br>五、将reduce join转为map join<br>适用场景：对RDD使用join类操作，或者是在Spark SQL中使用join语句时，而且join操作中的一个RDD或表的数据量比较小<br>解决办法：不使用join算子进行连接操作，而使用Broadcast变量与map类算子实现join操作，进而完全规避掉shuffle类的操作<br>六：采样倾斜key并分拆join操作<br>适用场景：因为其中某一个RDD/Hive表中的少数几个key的数据量过大，而另一个RDD/Hive表中的所有key都分布比较均匀<br>将少数几个key分拆成独立RDD，并附加随机前缀打散成n份去进行join，此时这几个key对应的数据就不会集中在少数几个task上，而是分散到多个task进行join了。<br>七：使用随机前缀和扩容RDD进行join<br>使用场景：如果在进行join操作时，RDD中有大量的key导致数据倾斜<br>和方案六差不多，只不过不拆分RDD了，对整体RDD进行扩容(对内存消耗很大)<br><img src="/images/201701/Spark_Performance_2.png"></p>
+<h3 id="shuffle调优"><a href="#shuffle调优" class="headerlink" title="shuffle调优"></a>shuffle调优</h3><p>影响一个Spark作业性能的因素，主要还是代码开发、资源参数以 及数据倾斜 shuffle调优只能在整个Spark的性能调优中占到一小部分而已</p>
+<p>以下是Shffule过程中的一些主要参数，这里详细讲解了各个参数的功能、默认值以及基于实践经验给出的调优建议。</p>
+<p>spark.shuffle.file.buffer</p>
+<ul>
+<li>默认值：32k</li>
+<li>参数说明：该参数用于设置shuffle write task的BufferedOutputStream的buffer缓冲大小。将数据写到磁盘文件之前，会先写入buffer缓冲中，待缓冲写满之后，才会溢写到磁盘。</li>
+<li>调优建议：如果作业可用的内存资源较为充足的话，可以适当增加这个参数的大小（比如64k），从而减少shuffle write过程中溢写磁盘文件的次数，也就可以减少磁盘IO次数，进而提升性能。在实践中发现，合理调节该参数，性能会有1%~5%的提升。</li>
+</ul>
+<p>spark.reducer.maxSizeInFlight</p>
+<ul>
+<li>默认值：48m</li>
+<li>参数说明：该参数用于设置shuffle read task的buffer缓冲大小，而这个buffer缓冲决定了每次能够拉取多少数据。</li>
+<li>调优建议：如果作业可用的内存资源较为充足的话，可以适当增加这个参数的大小（比如96m），从而减少拉取数据的次数，也就可以减少网络传输的次数，进而提升性能。在实践中发现，合理调节该参数，性能会有1%~5%的提升。</li>
+</ul>
+<p>spark.shuffle.io.maxRetries</p>
+<ul>
+<li>默认值：3</li>
+<li>参数说明：shuffle read task从shuffle write task所在节点拉取属于自己的数据时，如果因为网络异常导致拉取失败，是会自动进行重试的。该参数就代表了可以重试的最大次数。如果在指定次数之内拉取 还是没有成功，就可能会导致作业执行失败。</li>
+<li>调优建议：对于那些包含了特别耗时的shuffle操作的作业，建议增加重试最大次数（比如60次），以避免由于JVM的full gc或者网络不稳定等因素导致的数据拉取失败。在实践中发现，对于针对超大数据量（数十亿~上百亿）的shuffle过程，调节该参数可以大幅度提升稳定 性。</li>
+</ul>
+<p>spark.shuffle.io.retryWait</p>
+<ul>
+<li>默认值：5s</li>
+<li>参数说明：具体解释同上，该参数代表了每次重试拉取数据的等待间隔，默认是5s。</li>
+<li>调优建议：建议加大间隔时长（比如60s），以增加shuffle操作的稳定性。</li>
+</ul>
+<p>spark.shuffle.memoryFraction</p>
+<ul>
+<li>默认值：0.2</li>
+<li>参数说明：该参数代表了Executor内存中，分配给shuffle read task进行聚合操作的内存比例，默认是20%。</li>
+<li>调优建议：在资源参数调优中讲解过这个参数。如果内存充足，而且很少使用持久化操作，建议调高这个比例，给shuffle read的聚合操作更多内存，以避免由于内存不足导致聚合过程中频繁读写磁盘。在实践中发现，合理调节该参数可以将性能提升10%左右。</li>
+</ul>
+<p>spark.shuffle.manager</p>
+<ul>
+<li>默认值：sort</li>
+<li>参数说明：该参数用于设置ShuffleManager的类型。Spark 1.5以后，有三个可选项：hash、sort和tungsten-sort。HashShuffleManager是Spark 1.2以前的默认选项，但是Spark 1.2以及之后的版本默认都是SortShuffleManager了。tungsten-sort与sort类似，但是使用了tungsten计划中的 堆外内存管理机制，内存使用效率更高。</li>
+<li>调优建议：由于SortShuffleManager默认会对数据进行排序，因此如果你的业务逻辑中需要该排序机制的话，则使用默认的 SortShuffleManager就可以；而如果你的业务逻辑不需要对数据进行排序，那么建议参考后面的几个参数调优，通过bypass机制或优化的 HashShuffleManager来避免排序操作，同时提供较好的磁盘读写性能。这里要注意的是，tungsten-sort要慎用，因为之前发现了 一些相应的bug。</li>
+</ul>
+<p>spark.shuffle.sort.bypassMergeThreshold</p>
+<ul>
+<li>默认值：200</li>
+<li>参数说明：当ShuffleManager为SortShuffleManager时，如果shuffle read task的数量小于这个阈值（默认是200），则shuffle write过程中不会进行排序操作，而是直接按照未经优化的HashShuffleManager的方式去写数据，但是最后会将每个task产生的所有临 时磁盘文件都合并成一个文件，并会创建单独的索引文件。</li>
+<li>调优建议：当你使用SortShuffleManager时，如果的确不需要排序操作，那么建议将这个参数调大一些，大于shuffle read task的数量。那么此时就会自动启用bypass机制，map-side就不会进行排序了，减少了排序的性能开销。但是这种方式下，依然会产生大量的磁 盘文件，因此shuffle write性能有待提高。</li>
+</ul>
+<p>spark.shuffle.consolidateFiles</p>
+<ul>
+<li>默认值：false</li>
+<li>参数说明：如果使用HashShuffleManager，该参数有效。如果设置为true，那么就会开启consolidate机制，会大幅度 合并shuffle write的输出文件，对于shuffle read task数量特别多的情况下，这种方法可以极大地减少磁盘IO开销，提升性能。</li>
+<li>调优建议：如果的确不需要SortShuffleManager的排序机制，那么除了使用bypass机制，还可以尝试将 spark.shffle.manager参数手动指定为hash，使用HashShuffleManager，同时开启consolidate机制。在 实践中尝试过，发现其性能比开启了bypass机制的SortShuffleManager要高出10%~30%。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/23/SparkSQL初体验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1385,141 +1559,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/简易搭建kafka集群/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/03/简易搭建kafka集群/" itemprop="url">
-                  搭建简易kafka集群
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-03T11:47:06+08:00">
-                2016-10-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="选择kafka版本"><a href="#选择kafka版本" class="headerlink" title="选择kafka版本"></a>选择kafka版本</h3><p>首先看你要用来做什么，比如我要选择配合sparkstreaming来使用(已经配置好了spark1.6.1的环境)<br>1、进入spark官网的文档页<a href="http://spark.apache.org/documentation.html" target="_blank" rel="external">http://spark.apache.org/documentation.html</a><br>2、点击Spark 1.6.1<br>3、顶部有Programming Guides，点击SparkStreaming<br><img src="/images/201610/build_kafka/sparkstreaming_guide.jpeg" width="400" height="600"><br>4、command+F 或者 ctrl+F 搜索kafka，能找到kafka版本<br><img src="/images/201610/build_kafka/kafka_version.jpeg" width="400" height="600"></p>
-<h3 id="kafka下载"><a href="#kafka下载" class="headerlink" title="kafka下载"></a>kafka下载</h3><p>进入官网下载页面<a href="http://kafka.apache.org/downloads.html" target="_blank" rel="external">http://kafka.apache.org/downloads.html</a><br><img src="/images/201610/build_kafka/download_kafka.jpeg"><br>binary是编译好的可以直接使用，source是还没编译过的源代码(编译挺麻烦的，直接使用编译好的)<br>Binary downloads提供不同scala版本的kafka下载，所以我们还得找到scala版本<br>回到我们已经有的环境，查看spark1.6.1需要的scala版本<br><img src="/images/201610/build_kafka/spark_scala_version.jpeg" width="400" height="600"><br>得知scala版本是2.10<br>开始下载kafka_2.10-0.8.2.1.tgz</p>
-<h3 id="zookeeper下载"><a href="#zookeeper下载" class="headerlink" title="zookeeper下载"></a>zookeeper下载</h3><p>为什么要下载zookeeper，因为kafka使用zookeeper来管理，存储一些meta信息。<br>(虽然kafka文件包里带有zookeeper的服务，但是我没有试过)<br>1、选择zookeeper版本，通过官网的Kafka 0.8.2 Documentation<br><a href="http://kafka.apache.org/082/documentation.html#zkversion" target="_blank" rel="external">http://kafka.apache.org/082/documentation.html#zkversion</a><br><img src="/images/201610/build_kafka/zookeeper_version.jpeg" width="400" height="600"><br>2、开始下载zookeeper 3.3.x版本<br><a href="http://apache.fayea.com/zookeeper/" target="_blank" rel="external">http://apache.fayea.com/zookeeper/</a><br><img src="/images/201610/build_kafka/download_zookeeper.jpeg" width="400" height="600"><br>3.3.x版本的只有3.3.6<br>PS.我的下载地址都在/opt下</p>
-<h3 id="zookeeper配置"><a href="#zookeeper配置" class="headerlink" title="zookeeper配置"></a>zookeeper配置</h3><p>1、配置zookeeper<br>cd /opt/zookeeper-3.3.6/conf<br>cp zoo_sample.cfg zoo.cfg<br>打开zoo.cfg 默认的配置如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># The number of milliseconds of each tick</span></div><div class="line">tickTime=2000 <span class="comment">#心跳时间，为了确保client-server连接存在的，以毫秒为单位，最小超时时间为两个心跳时间。</span></div><div class="line"><span class="comment"># The number of ticks that the initial</span></div><div class="line"><span class="comment"># synchronization phase can take</span></div><div class="line">initLimit=10 <span class="comment">#多少个tickTime内，允许其他server连接并初始化数据，如果zooKeeper管理的数据较大，则应相应增大这个值。</span></div><div class="line"><span class="comment"># The number of ticks that can pass between</span></div><div class="line"><span class="comment"># sending a request and getting an acknowledgement</span></div><div class="line">syncLimit=5 <span class="comment">#多少个tickTime内，允许follower同步，如果follower落后太多，则会被丢弃。</span></div><div class="line"><span class="comment"># the directory where the snapshot is stored.</span></div><div class="line">dataDir=/tmp/zookeeper <span class="comment">#用于存放内存数据库快照的文件夹，同时用于集群的myid文件也存在这个文件夹里</span></div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2181 <span class="comment">#客户端监听端口</span></div></pre></td></tr></table></figure></p>
-<p>2、添加如下配置(添加到zoo.cfg文件末尾即可)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">server.1=master:2888:3888</div><div class="line">server.2=worker1:2888:3888</div><div class="line">server.3=worker2:2888:3888</div><div class="line"><span class="comment">#server.x=[hostname]:nnnnn[:nnnnn]</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#　　配置集群里面的主机信息，其中：</span></div><div class="line"><span class="comment">#　　①server.x：server.x的x要写在myid文件中，决定当前机器的id，</span></div><div class="line"><span class="comment">#　　②第一个port用于连接leader，</span></div><div class="line"><span class="comment">#　　③第二个用于leader选举。</span></div><div class="line"><span class="comment">#　　④如果electionAlg为0，则不需要第二个port。</span></div><div class="line"><span class="comment">#　　⑤hostname也可以填ip。</span></div><div class="line"><span class="comment">#PS.配置文件中的master,worker1,worker2是你的机器地址</span></div><div class="line"><span class="comment">#比如我的/etc/hosts里是</span></div><div class="line"><span class="comment">#192.168.1.104 master</span></div><div class="line"><span class="comment">#192.168.1.108 worker1</span></div><div class="line"><span class="comment">#192.168.1.109 worker2</span></div></pre></td></tr></table></figure></p>
-<p>然后在dataDir目录下即/tmp/zookeeper下<br>echo 1 &gt; myid</p>
-<p>3、启动zookeeper<br>cd /opt/zookeeper-3.3.6/bin<br>./zkServer.sh start zoo.cfg<br>判断是否启动成功<br><img src="/images/201610/build_kafka/sucess_zoo.jpeg" width="300" height="500"></p>
-<p>4、集群化<br>scp -r /opt/zookeeper-3.3.6 worker1:/opt<br>scp -r /opt/zookeeper-3.3.6 worker2:/opt<br>还需要把不同机器的myid改成相应的数值，比如worker1下的/tmp/zookeeper/myid 改成2<br>在其他机器也同样启动zookeeper</p>
-<h3 id="kafka配置"><a href="#kafka配置" class="headerlink" title="kafka配置"></a>kafka配置</h3><p>kafka的简单介绍<a href="http://wangzzu.github.io/2015/11/14/The-Introduce-of-Kafka/" target="_blank" rel="external">http://wangzzu.github.io/2015/11/14/The-Introduce-of-Kafka/</a><br>1、配置kafka<br>cd /opt/kafka_2.10-0.8.2.1/config<br>打开server.properties<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#需要修改的有</span></div><div class="line">broker.id=1 <span class="comment">#broker的标识，id为正数，kafka集群内不能重复，推荐用ip地址设置</span></div><div class="line">host.name=master <span class="comment">#指定broker绑定的网络接口地址</span></div><div class="line">advertised.host.name=master</div><div class="line">zookeeper.connect=master:2181,worker1:2181,worker2:2181 <span class="comment">#连接的zookeeper对应的IP和端口</span></div><div class="line">log.dirs=/tmp/kafka-logs <span class="comment">#日志文件保存的目录(可以不用修改) PS.Mac电脑不建议放在tmp目录下,同样zookeeper的dataDir也不建议</span></div></pre></td></tr></table></figure></p>
-<p>2、启动kafka<br>cd /opt/kafka_2.10-0.8.2.1/bin<br>nohup ./kafka-server-start.sh ../config/server.properties &amp;<br>输入jps后 出现kafka，说明在运行中</p>
-<p>3、集群化<br>scp 到其他机器，并修改对应config/server.properties中的host.name和advertised.host.name</p>
-<p>4、测试<br>a.创建topic<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./kafka-topics.sh --create --zookeeper master:2181 --replication-factor 1 --partitions 1 --topic <span class="built_in">test</span>1</div></pre></td></tr></table></figure></p>
-<img src="/images/201610/build_kafka/kafka_create_topic.jpeg" width="500" height="800">
-<p>b.生产和消费<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./kafka-console-producer.sh --broker-list master:9092 --topic <span class="built_in">test</span>1</div><div class="line">./kafka-console-consumer.sh --zookeeper master:2181 --topic <span class="built_in">test</span>1</div></pre></td></tr></table></figure></p>
-<img src="/images/201610/build_kafka/kafka_pro_con.jpeg" width="600" height="800">
-<h3 id="kafka监控"><a href="#kafka监控" class="headerlink" title="kafka监控"></a>kafka监控</h3><p>参考<a href="http://top.jobbole.com/31084/" target="_blank" rel="external">http://top.jobbole.com/31084/</a><br><a href="https://www.iteblog.com/archives/1083" target="_blank" rel="external">https://www.iteblog.com/archives/1083</a></p>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a href="http://www.cnblogs.com/sunddenly/articles/4071730.html" target="_blank" rel="external">http://www.cnblogs.com/sunddenly/articles/4071730.html</a><br><a href="http://yanliu.org/2015/08/31/kafka%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/" target="_blank" rel="external">http://yanliu.org/2015/08/31/kafka%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1567,7 +1606,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

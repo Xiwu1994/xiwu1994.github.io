@@ -84,16 +84,24 @@
 
 
 
-<meta name="description" content="1234while true; do    echo &quot;Today is a nice day.&quot;    sleep $(( $RANDOM % 10 ))done">
+<meta name="description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
+二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="my first essay">
-<meta property="og:url" content="http://yoursite.com/2016/09/02/MyFisrtBlog/index.html">
+<meta property="og:title" content="MapReduce自定义二次排序">
+<meta property="og:url" content="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="1234while true; do    echo &quot;Today is a nice day.&quot;    sleep $(( $RANDOM % 10 ))done">
-<meta property="og:updated_time" content="2016-09-02T05:43:10.000Z">
+<meta property="og:description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
+二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
+<meta property="og:image" content="http://yoursite.com/images/201702/map.png">
+<meta property="og:image" content="http://yoursite.com/images/201702/reduce.png">
+<meta property="og:image" content="http://yoursite.com/images/201702/map_secondSort.png">
+<meta property="og:image" content="http://yoursite.com/images/201702/reduce_secondSort.png">
+<meta property="og:updated_time" content="2017-02-16T14:50:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="my first essay">
-<meta name="twitter:description" content="1234while true; do    echo &quot;Today is a nice day.&quot;    sleep $(( $RANDOM % 10 ))done">
+<meta name="twitter:title" content="MapReduce自定义二次排序">
+<meta name="twitter:description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
+二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
+<meta name="twitter:image" content="http://yoursite.com/images/201702/map.png">
 
 
 
@@ -121,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/02/MyFisrtBlog/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/"/>
 
 
 
 
 
-  <title> my first essay | Refrain </title>
+  <title> MapReduce自定义二次排序 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -240,7 +248,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/02/MyFisrtBlog/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -264,7 +272,7 @@
             
             
               
-                my first essay
+                MapReduce自定义二次排序
               
             
           </h1>
@@ -279,8 +287,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-02T13:19:46+08:00">
-                2016-09-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-16T20:14:34+08:00">
+                2017-02-16
               </time>
             
 
@@ -315,7 +323,17 @@
       
 
       
-        <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"Today is a nice day."</span></div><div class="line">    sleep $(( <span class="variable">$RANDOM</span> % 10 ))</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+        <h2 id="具体需求"><a href="#具体需求" class="headerlink" title="具体需求"></a>具体需求</h2><p>1、输入数据：<br>sort1    1<br>sort2    3<br>sort2    77<br>sort2    54<br>sort1    2<br>sort6    22<br>sort6    221<br>sort6    20<br>2、目标输出<br>sort1 1,2<br>sort2 3,54,77<br>sort6 20,22,221</p>
+<h2 id="二次排序解决思路"><a href="#二次排序解决思路" class="headerlink" title="二次排序解决思路"></a>二次排序解决思路</h2><p>MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是key值，怎么办？其实我们可以将原始数据的Key值和其对应的数据组合成一个新的Key值，然后新的Key值对应的还是之前的数字。那么我们就可以将原始数据的map输出变成类似下面的数据结构：<br>{[sort1,1],1}<br>{[sort2,3],3}<br>{[sort2,77],77}<br>{[sort2,54],54}<br>{[sort1,2],2}<br>{[sort6,22],22}<br>{[sort6,221],221}<br>{[sort6,20],20}<br>那么我们只需要对[]里面的新key值进行排序就ok了。然后我们需要自定义一个分区处理器，因为我的目标不是想将新key相同的传到同一个reduce中，而是想将新key中的第一个字段相同的才放到同一个reduce中进行分组合并，所以我们需要根据新key值中的第一个字段来自定义一个分区处理器。通过分区操作后，得到的数据流如下：<br>Partition1:{[sort1,1],1}、{[sort1,2],2}<br>Partition2:{[sort2,3],3}、{[sort2,77],77}、{[sort2,54],54}<br>Partition3:{[sort6,22],22}、{[sort6,221],221}、{[sort6,20],20}</p>
+<h2 id="MR的运行流程简单说明"><a href="#MR的运行流程简单说明" class="headerlink" title="MR的运行流程简单说明"></a>MR的运行流程简单说明</h2><img src="/images/201702/map.png">
+<img src="/images/201702/reduce.png">
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><img src="/images/201702/map_secondSort.png">
+<img src="/images/201702/reduce_secondSort.png">
+<h3 id="自定义组合键-更改key结构"><a href="#自定义组合键-更改key结构" class="headerlink" title="自定义组合键(更改key结构)"></a>自定义组合键(更改key结构)</h3><p>自定义组合键的时候，我们需要特别注意，一定要实现WritableComparable接口，并且实现compareTo方法的比较策略。这个用于mapreduce的第一次默认排序，也就是发生在map阶段的sort小阶段，发生地点为环形缓冲区(可以通过io.sort.mb进行大小调整)，但是其对我们最终的二次排序结果是没有影响的。我们二次排序的最终结果是由我们的自定义比较器决定的。</p>
+<h3 id="自定义分区器"><a href="#自定义分区器" class="headerlink" title="自定义分区器"></a>自定义分区器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//默认的Hash分区</span></div><div class="line">key.hashCode()&amp;Integer.MAX_VALUE)%numPartitions</div><div class="line"><span class="comment">//自定义分区</span></div><div class="line">key.getFirstKey().hashCode()&amp;Integer.MAX_VALUE)%numPartitions</div></pre></td></tr></table></figure>
+<h3 id="自定义比较器"><a href="#自定义比较器" class="headerlink" title="自定义比较器"></a>自定义比较器</h3><p>自定义比较器决定了我们二次排序的结果。自定义比较器需要继承WritableComparator类，并且重写compare方法实现自己的比较策略。</p>
+<h3 id="自定义分组策略"><a href="#自定义分组策略" class="headerlink" title="自定义分组策略"></a>自定义分组策略</h3><p>将组合键中第一个值相同的分在一组<br>PS. 每处理完一个分组数据就会去调用一次的reduce函对这个分组来进行处理和输出</p>
+<p>JAVA代码在下面参考资料(PS. 因为不会JAVA，所以我的重点在理解)<br>参考资料：<br><a href="http://zengzhaozheng.blog.51cto.com/8219051/1379271" target="_blank" rel="external">http://zengzhaozheng.blog.51cto.com/8219051/1379271</a></p>
 
       
     </div>
@@ -342,15 +360,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/02/15/MapReduce的Shuffle过程/" rel="next" title="MapReduce的Shuffle过程">
+                <i class="fa fa-chevron-left"></i> MapReduce的Shuffle过程
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/25/spark源码环境搭建/" rel="prev" title="spark源码环境搭建">
-                spark源码环境搭建 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -397,8 +415,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -440,6 +467,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#具体需求"><span class="nav-number">1.</span> <span class="nav-text">具体需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二次排序解决思路"><span class="nav-number">2.</span> <span class="nav-text">二次排序解决思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MR的运行流程简单说明"><span class="nav-number">3.</span> <span class="nav-text">MR的运行流程简单说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决办法"><span class="nav-number">4.</span> <span class="nav-text">解决办法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义组合键-更改key结构"><span class="nav-number">4.1.</span> <span class="nav-text">自定义组合键(更改key结构)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分区器"><span class="nav-number">4.2.</span> <span class="nav-text">自定义分区器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义比较器"><span class="nav-number">4.3.</span> <span class="nav-text">自定义比较器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分组策略"><span class="nav-number">4.4.</span> <span class="nav-text">自定义分组策略</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
