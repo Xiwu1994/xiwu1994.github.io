@@ -267,7 +267,7 @@
               
                 
                 <a class="post-title-link" href="/2017/02/18/一个hive优化的例子/" itemprop="url">
-                  一个hive优化的例子
+                  一个Hive优化的例子
                 </a>
               
             
@@ -321,7 +321,64 @@
       
         
           
-            
+            <h3 id="表结构和需求"><a href="#表结构和需求" class="headerlink" title="表结构和需求"></a>表结构和需求</h3><h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><p>TableName: <strong>logFile</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>city1</th>
+<th>city2</th>
+<th>city3</th>
+<th>action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BeiJing</td>
+<td>ShangHai</td>
+<td>ShenZhen</td>
+<td>Dance</td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+</tbody>
+</table>
+<p>TableName: <strong>City</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>CityName</th>
+<th>CityCode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BeiJing</td>
+<td>Jing</td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+</tbody>
+</table>
+<h4 id="需求按照传统SQL语句"><a href="#需求按照传统SQL语句" class="headerlink" title="需求按照传统SQL语句:"></a>需求按照传统SQL语句:</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">on</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure>
+<h4 id="具体表和sql操作结果"><a href="#具体表和sql操作结果" class="headerlink" title="具体表和sql操作结果:"></a>具体表和sql操作结果:</h4><img src="/images/201702/hive_ex_1.png">
+<h3 id="把SQL复制到Hive中执行-—-gt-笛卡尔积"><a href="#把SQL复制到Hive中执行-—-gt-笛卡尔积" class="headerlink" title="把SQL复制到Hive中执行 —&gt; 笛卡尔积"></a>把SQL复制到Hive中执行 —&gt; 笛卡尔积</h3><p><strong>报错!</strong> 这是因为 hive 受限于 MapReduce 算法模型，只支持 equi-joins（等值join），要实现上述的非等值 join，可以采用笛卡儿积(full Cartesian product)来实现：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">where</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure></p>
+<h3 id="笛卡尔积占用资源太大-—-gt-union-all"><a href="#笛卡尔积占用资源太大-—-gt-union-all" class="headerlink" title="笛卡尔积占用资源太大 —&gt; union all"></a>笛卡尔积占用资源太大 —&gt; union all</h3><p><strong>笛卡尔积默认不让执行</strong><br>既然不允许非等值 join，采用多个子查询union all，然后汇总(假设logFile表中每一行的三个city都不一样)<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
+<h3 id="优化：map-side-join"><a href="#优化：map-side-join" class="headerlink" title="优化：map side join"></a>优化：map side join</h3><p>如果City是一张小表<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
+<h2 id="开启-parallel"><a href="#开启-parallel" class="headerlink" title="开启 parallel"></a>开启 parallel</h2><p>三个 union 语句之间没有依赖关系，其实是可以并行执行的<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">set</span> hive.exec.parallel=<span class="literal">true</span>;</div></pre></td></tr></table></figure></p>
+<p>参考文档:<br><a href="https://my.oschina.net/leejun2005/blog/307812" target="_blank" rel="external">https://my.oschina.net/leejun2005/blog/307812</a></p>
+
           
         
       

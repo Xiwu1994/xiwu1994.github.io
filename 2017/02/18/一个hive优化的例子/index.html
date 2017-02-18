@@ -84,16 +84,168 @@
 
 
 
-<meta name="description" content="学无止境">
+<meta name="description" content="表结构和需求表TableName: logFile
+
+
+
+id
+city1
+city2
+city3
+action
+
+
+
+
+1
+BeiJing
+ShangHai
+ShenZhen
+Dance
+
+
+..
+..
+..
+..
+..
+
+
+
+TableName: City
+
+
+
+id
+CityName
+CityCode
+
+
+
+
+1
+BeiJing
+Jing
+
+
+..
+..
+..
+
+
+
+需求按照传统SQL语句:">
 <meta property="og:type" content="article">
-<meta property="og:title" content="一个hive优化的例子">
+<meta property="og:title" content="一个Hive优化的例子">
 <meta property="og:url" content="http://yoursite.com/2017/02/18/一个hive优化的例子/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="学无止境">
-<meta property="og:updated_time" content="2017-02-17T14:04:57.000Z">
+<meta property="og:description" content="表结构和需求表TableName: logFile
+
+
+
+id
+city1
+city2
+city3
+action
+
+
+
+
+1
+BeiJing
+ShangHai
+ShenZhen
+Dance
+
+
+..
+..
+..
+..
+..
+
+
+
+TableName: City
+
+
+
+id
+CityName
+CityCode
+
+
+
+
+1
+BeiJing
+Jing
+
+
+..
+..
+..
+
+
+
+需求按照传统SQL语句:">
+<meta property="og:image" content="http://yoursite.com/images/201702/hive_ex_1.png">
+<meta property="og:updated_time" content="2017-02-18T13:17:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="一个hive优化的例子">
-<meta name="twitter:description" content="学无止境">
+<meta name="twitter:title" content="一个Hive优化的例子">
+<meta name="twitter:description" content="表结构和需求表TableName: logFile
+
+
+
+id
+city1
+city2
+city3
+action
+
+
+
+
+1
+BeiJing
+ShangHai
+ShenZhen
+Dance
+
+
+..
+..
+..
+..
+..
+
+
+
+TableName: City
+
+
+
+id
+CityName
+CityCode
+
+
+
+
+1
+BeiJing
+Jing
+
+
+..
+..
+..
+
+
+
+需求按照传统SQL语句:">
+<meta name="twitter:image" content="http://yoursite.com/images/201702/hive_ex_1.png">
 
 
 
@@ -127,7 +279,7 @@
 
 
 
-  <title> 一个hive优化的例子 | Refrain </title>
+  <title> 一个Hive优化的例子 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -264,7 +416,7 @@
             
             
               
-                一个hive优化的例子
+                一个Hive优化的例子
               
             
           </h1>
@@ -315,7 +467,64 @@
       
 
       
-        
+        <h3 id="表结构和需求"><a href="#表结构和需求" class="headerlink" title="表结构和需求"></a>表结构和需求</h3><h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><p>TableName: <strong>logFile</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>city1</th>
+<th>city2</th>
+<th>city3</th>
+<th>action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BeiJing</td>
+<td>ShangHai</td>
+<td>ShenZhen</td>
+<td>Dance</td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+</tbody>
+</table>
+<p>TableName: <strong>City</strong></p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>CityName</th>
+<th>CityCode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BeiJing</td>
+<td>Jing</td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+</tbody>
+</table>
+<h4 id="需求按照传统SQL语句"><a href="#需求按照传统SQL语句" class="headerlink" title="需求按照传统SQL语句:"></a>需求按照传统SQL语句:</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">on</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure>
+<h4 id="具体表和sql操作结果"><a href="#具体表和sql操作结果" class="headerlink" title="具体表和sql操作结果:"></a>具体表和sql操作结果:</h4><img src="/images/201702/hive_ex_1.png">
+<h3 id="把SQL复制到Hive中执行-—-gt-笛卡尔积"><a href="#把SQL复制到Hive中执行-—-gt-笛卡尔积" class="headerlink" title="把SQL复制到Hive中执行 —&gt; 笛卡尔积"></a>把SQL复制到Hive中执行 —&gt; 笛卡尔积</h3><p><strong>报错!</strong> 这是因为 hive 受限于 MapReduce 算法模型，只支持 equi-joins（等值join），要实现上述的非等值 join，可以采用笛卡儿积(full Cartesian product)来实现：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">where</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure></p>
+<h3 id="笛卡尔积占用资源太大-—-gt-union-all"><a href="#笛卡尔积占用资源太大-—-gt-union-all" class="headerlink" title="笛卡尔积占用资源太大 —&gt; union all"></a>笛卡尔积占用资源太大 —&gt; union all</h3><p><strong>笛卡尔积默认不让执行</strong><br>既然不允许非等值 join，采用多个子查询union all，然后汇总(假设logFile表中每一行的三个city都不一样)<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
+<h3 id="优化：map-side-join"><a href="#优化：map-side-join" class="headerlink" title="优化：map side join"></a>优化：map side join</h3><p>如果City是一张小表<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
+<h2 id="开启-parallel"><a href="#开启-parallel" class="headerlink" title="开启 parallel"></a>开启 parallel</h2><p>三个 union 语句之间没有依赖关系，其实是可以并行执行的<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">set</span> hive.exec.parallel=<span class="literal">true</span>;</div></pre></td></tr></table></figure></p>
+<p>参考文档:<br><a href="https://my.oschina.net/leejun2005/blog/307812" target="_blank" rel="external">https://my.oschina.net/leejun2005/blog/307812</a></p>
+
       
     </div>
 
@@ -396,8 +605,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -446,6 +664,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#表结构和需求"><span class="nav-number">1.</span> <span class="nav-text">表结构和需求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表"><span class="nav-number">1.1.</span> <span class="nav-text">表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#需求按照传统SQL语句"><span class="nav-number">1.2.</span> <span class="nav-text">需求按照传统SQL语句:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体表和sql操作结果"><span class="nav-number">1.3.</span> <span class="nav-text">具体表和sql操作结果:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把SQL复制到Hive中执行-—-gt-笛卡尔积"><span class="nav-number">2.</span> <span class="nav-text">把SQL复制到Hive中执行 —> 笛卡尔积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#笛卡尔积占用资源太大-—-gt-union-all"><span class="nav-number">3.</span> <span class="nav-text">笛卡尔积占用资源太大 —> union all</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化：map-side-join"><span class="nav-number">4.</span> <span class="nav-text">优化：map side join</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开启-parallel"><span class="nav-number"></span> <span class="nav-text">开启 parallel</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
