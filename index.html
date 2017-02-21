@@ -241,7 +241,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/20/HDFS框架/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/21/Hadoop2的Hdfs框架/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -266,8 +266,316 @@
             
               
                 
-                <a class="post-title-link" href="/2017/02/20/HDFS框架/" itemprop="url">
-                  HDFS框架
+                <a class="post-title-link" href="/2017/02/21/Hadoop2的Hdfs框架/" itemprop="url">
+                  Hadoop2.x的Hdfs框架
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-21T17:09:38+08:00">
+                2017-02-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/20/Hadoop1.x的Hdfs框架/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/20/Hadoop1.x的Hdfs框架/" itemprop="url">
+                  Hadoop1.x的Hdfs框架
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-20T22:10:18+08:00">
+                2017-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>hdfs是一个分布式文件系统。它以文件分块的形式实现对大文件安全的、可靠的以及可快速（高吞吐量）访问的分布式存储。</p>
+<h2 id="HDFS架构图"><a href="#HDFS架构图" class="headerlink" title="HDFS架构图"></a>HDFS架构图</h2><img src="/images/201702/hdfs1_1.png">
+<h2 id="HDFS一些概念"><a href="#HDFS一些概念" class="headerlink" title="HDFS一些概念"></a>HDFS一些概念</h2><ul>
+<li>Block数据块</li>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+</ul>
+<h3 id="Block数据块"><a href="#Block数据块" class="headerlink" title="Block数据块"></a>Block数据块</h3><p>HDFS中的所有文件都是<strong>分割成块</strong>存储在Datanode上的，每个块默认64M。每个块都有多个副本存储在不同的机器上：默认有3个副本，3个副本不可能存放在同一个机器上。<br>HDFS副本存放策略:<br><img src="/images/201702/hdfs1_2.png"></p>
+<h3 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h3><p>NameNode是Hdfs中的master节点<br>主要功能:</p>
+<ul>
+<li>管理整个文件系统的<strong>命名空间</strong>和控制着客户端对文件的访问。(它不保存文件的内容，而是保存着文件的元数据: <strong>文件名称，所在目录，文件权限，文件拥有者，文件有多少块，每个块有多少副本，块都存在哪些节点上</strong>)</li>
+<li>NameNode也负责维护所有这些<strong>文件或目录的打开、关闭、移动、重命名</strong>等操作。(对于实际文件数据的保存与操作，都是由DataNode负责。当一个客户端请求数据时，它仅仅是从NameNode中获取文件的元信息，而具体的数据传输不需要经过NameNode，是由客户端直接与相应的DataNode进行交互)</li>
+</ul>
+<p>PS. NameNode元信息<em>并不包含每个块的位置信息</em>，这些信息会在NameNode启动时从各个DataNode获取并保存在内存中</p>
+<h4 id="fsimage"><a href="#fsimage" class="headerlink" title="fsimage"></a>fsimage</h4><p>fsimage是元数据镜像文件: NameNode启动后，fsimage被加载到内存中</p>
+<h4 id="editslog"><a href="#editslog" class="headerlink" title="editslog"></a>editslog</h4><p>editslog是元数据操作日志文件: 客户端要对文件进行读写操作，在这些操作产生的日志就存在了editslog文件中</p>
+<h3 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h3><p>DataNode是Hdfs中的worker节点<br>主要功能:</p>
+<ul>
+<li>存储数据块</li>
+<li>为客户端提供数据块的读写服务</li>
+<li>根据NameNode的指示来进行创建、删除、和复制等操作</li>
+<li>通过心跳定期向NameNode发送所存储文件块列表信息</li>
+</ul>
+<h3 id="SecondaryNameNode"><a href="#SecondaryNameNode" class="headerlink" title="SecondaryNameNode"></a>SecondaryNameNode</h3><p>NameNode作为Hdfs中的master，不能负载太高，所以需要一个助手来分担压力<br>主要功能:</p>
+<ul>
+<li>镜像备份（当NameNode出现故障后，通过备份的镜像能挽回一些损失）</li>
+<li>日志editslog与镜像fsimage的定期合并(分担NameNode工作)</li>
+</ul>
+<h4 id="日志editslog与镜像fsimage的定期合并过程"><a href="#日志editslog与镜像fsimage的定期合并过程" class="headerlink" title="日志editslog与镜像fsimage的定期合并过程"></a>日志editslog与镜像fsimage的定期合并过程</h4><p>1、合并之前告知NameNode把所有的操作写到新的edites文件并将其命名为edits.new。<br>2、SecondaryNameNode从NameNode请求fsimage和edits文件<br>3、SecondaryNameNode把fsimage和edits文件合并成新的fsimage文件<br>4、NameNode从SecondaryNameNode获取合并好的新的fsimage并将旧的替换掉，并把edits用第一步创建的edits.new文件替换掉<br>5、更新fstime文件中的检查点</p>
+<p>再总结一下整个过程中涉及到NameNode中的相关文件</p>
+<ul>
+<li>fsimage ：保存的是上个检查点的HDFS的元信息</li>
+<li>edits ：保存的是从上个检查点开始发生的HDFS元信息状态改变信息</li>
+<li>fstime：保存了最后一个检查点的时间戳</li>
+</ul>
+<h2 id="HDFS读写操作"><a href="#HDFS读写操作" class="headerlink" title="HDFS读写操作"></a>HDFS读写操作</h2><h3 id="读"><a href="#读" class="headerlink" title="读"></a>读</h3><ol>
+<li>客户端发起读请求</li>
+<li>客户端与NameNode得到文件的块及位置信息列表</li>
+<li>客户端直接和DataNode交互读取数据</li>
+<li>读取完成关闭连接</li>
+</ol>
+<img src="/images/201702/hdfs1_3.png">
+<h3 id="写"><a href="#写" class="headerlink" title="写"></a>写</h3><ol>
+<li>客户端在向NameNode请求之前先写入文件数据到本地文件系统的一个<strong>临时文件</strong></li>
+<li>待临时文件<strong>达到块大小</strong>时开始向NameNode请求DataNode信息</li>
+<li>NameNode在文件系统中创建文件并返回给客户端一个数据块及其对应DataNode的地址列表（列表中包含副本存放的地址）</li>
+<li>客户端通过上一步得到的信息把创建临时文件块flush到列表中的第一个DataNode</li>
+<li>当文件关闭，NameNode会提交这次文件创建，此时，文件在文件系统中可见</li>
+</ol>
+<p>上面第四步描述的flush过程实际处理过程比较负杂，现在单独描述一下:</p>
+<ol>
+<li>首先，第一个DataNode是以数据包(数据包一般4KB)的形式从客户端接收数据的，DataNode在把数据包写入到本地磁盘的同时会向第二个DataNode（作为副本节点）传送数据。</li>
+<li>在第二个DataNode把接收到的数据包写入本地磁盘时会向第三个DataNode发送数据包</li>
+<li>第三个DataNode开始向本地磁盘写入数据包。此时，数据包以流水线的形式被写入和备份到所有DataNode节点</li>
+<li>传送管道中的每个DataNode节点在收到数据后都会向前面那个DataNode发送一个ACK,最终，第一个DataNode会向客户端发回一个ACK</li>
+<li>当客户端收到数据块的确认之后，数据块被认为已经持久化到所有节点。然后，客户端会向NameNode发送一个确认</li>
+<li>如果管道中的任何一个DataNode失败，管道会被关闭。数据将会继续写到剩余的DataNode中。同时NameNode会被告知待备份状态，NameNode会继续备份数据到新的可用的节点</li>
+<li>数据块都会通过计算校验和来检测数据的完整性，校验和以隐藏文件的形式被单独存放在hdfs中，供读取时进行完整性校验</li>
+</ol>
+<img src="/images/201702/hdfs1_4.png">
+<h2 id="HDFS的优缺点"><a href="#HDFS的优缺点" class="headerlink" title="HDFS的优缺点"></a>HDFS的优缺点</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>高容错性<br>数据自动保存多个副本<br>副本丢失后，自动恢复</li>
+<li>适合批处理<br>移动计算而非数据<br>数据位置暴露给计算框架</li>
+<li>适合大数据处理<br>GB、TB、甚至PB级数据<br>百万规模以上的文件数量<br>10K+节点规模</li>
+<li>流式文件访问<br>一次性写入，多次读取<br>保证数据一致性</li>
+<li>可构建在廉价机器上<br>通过多副本提高可靠性<br>提供了容错和恢复机制<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3></li>
+<li>低延迟与高吞吐率的数据访问</li>
+<li>小文件存取<br>占用NameNode大量内存<br>寻道时间超过读取时间</li>
+<li>并发写入、文件随机修改<br>一个文件同一个时间只能有一个写者 </li>
+</ul>
+<h2 id="HDFS启动内部操作"><a href="#HDFS启动内部操作" class="headerlink" title="HDFS启动内部操作"></a>HDFS启动内部操作</h2><p>参考文档:<br><a href="http://blog.csdn.net/suifeng3051/article/details/48548341" target="_blank" rel="external">http://blog.csdn.net/suifeng3051/article/details/48548341</a><br><a href="http://www.cnblogs.com/meet/p/5439805.html" target="_blank" rel="external">http://www.cnblogs.com/meet/p/5439805.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/20/Hadoop1的Hdfs框架/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/20/Hadoop1的Hdfs框架/" itemprop="url">
+                  Hadoop1.x的Hdfs框架
                 </a>
               
             
@@ -1431,274 +1739,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/08/Mongodb安装和简单使用/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/08/Mongodb安装和简单使用/" itemprop="url">
-                  Mongodb安装和简单使用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-08T14:20:03+08:00">
-                2017-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Mongodb-下载安装"><a href="#Mongodb-下载安装" class="headerlink" title="Mongodb 下载安装"></a>Mongodb 下载安装</h2><p>下载地址：<a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tar -xzvf mongodb-osx-ssl-x86_64-3.4.2.tgz</div><div class="line">mv mongodb-osx-x86_64-3.4.2 /opt</div></pre></td></tr></table></figure></p>
-<p>MongoDB 的可执行文件位于 bin 目录下，所以可以将其添加到 PATH 路径中：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=&lt;mongodb-install-directory&gt;/bin:<span class="variable">$PATH</span></div></pre></td></tr></table></figure></p>
-<p><mongodb-install-directory> 为你 MongoDB 的安装路径。如本文的 /opt/mongodb-osx-x86_64-3.4.2</mongodb-install-directory></p>
-<h2 id="创建数据库目录并启动"><a href="#创建数据库目录并启动" class="headerlink" title="创建数据库目录并启动"></a>创建数据库目录并启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/mongodb_data</div><div class="line">mongod --dbpath /data/mongodb_data</div></pre></td></tr></table></figure>
-<p>PS./data/db 是MongoDB默认启动的数据库目录<br>MongoDB 提供了简单的HTTP用户界面，启用该功能需要在启动的时候指定参数–rest<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongod --dbpath /data/mongodb_data --rest</div></pre></td></tr></table></figure></p>
-<p>登录<a href="http://localhost:28017/可查看" target="_blank" rel="external">http://localhost:28017/可查看</a><br><img src="/images/201702/mongodb_1.png"></p>
-<h2 id="概念简单说明"><a href="#概念简单说明" class="headerlink" title="概念简单说明"></a>概念简单说明</h2><p>mongodb中基本的概念是文档、集合、数据库<br><img src="/images/201702/mongodb_2.png"></p>
-<h2 id="简单shell操作"><a href="#简单shell操作" class="headerlink" title="简单shell操作"></a>简单shell操作</h2><p>之前启动了mongodb服务<br>在本机使用mongo命令进入客户端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongo</div></pre></td></tr></table></figure></p>
-<h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">use DATABASE_NAME</div></pre></td></tr></table></figure>
-<p>如果数据库不存在，则创建数据库，否则切换到指定数据库。<br><img src="/images/201702/mongodb_3.png"></p>
-<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">use DATABASE_NAME</div><div class="line">db.dropDatabase()</div></pre></td></tr></table></figure>
-<p>先切换数据库，再使用删除命令<br><img src="/images/201702/mongodb_4.png"></p>
-<h3 id="插入文档"><a href="#插入文档" class="headerlink" title="插入文档"></a>插入文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.COLLECTION_NAME.insert(document)</div></pre></td></tr></table></figure>
-<p>例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.insert(&#123;title: &apos;mongodbTest&apos;, tags: [&apos;mongodb&apos;, &apos;nosql&apos;]&#125;)</div></pre></td></tr></table></figure></p>
-<p>以上实例中test1是我们的集合名，如果该集合不在该数据库中，MongoDB 会自动创建该集合并插入文档。<br>查看已插入文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.find()</div></pre></td></tr></table></figure></p>
-<h3 id="更新文档"><a href="#更新文档" class="headerlink" title="更新文档"></a>更新文档</h3><h4 id="update"><a href="#update" class="headerlink" title="update"></a>update</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">db.collection.update(</div><div class="line">   &lt;query&gt;,</div><div class="line">   &lt;update&gt;,</div><div class="line">   &#123;</div><div class="line">     upsert: &lt;boolean&gt;,</div><div class="line">     multi: &lt;boolean&gt;,</div><div class="line">     writeConcern: &lt;document&gt;</div><div class="line">   &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>参数说明：<br>query : update的查询条件，类似sql update查询内where后面的。<br>update : update的对象和一些更新的操作符（如$,$inc…）等，也可以理解为sql update查询内set后面的<br>upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入objNew,true为插入，默认是false，不插入。<br>multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。<br>writeConcern :可选，抛出异常的级别。<br>例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.update(&#123;&apos;title&apos;:&apos;mongodbTest&apos;&#125;,&#123;$set:&#123;&apos;title&apos;:&apos;MongoDB&apos;&#125;&#125;)</div></pre></td></tr></table></figure></p>
-<img src="/images/201702/mongodb_5.png">
-<h4 id="save"><a href="#save" class="headerlink" title="save"></a>save</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">db.collection.save(</div><div class="line">   &lt;document&gt;,</div><div class="line">   &#123;</div><div class="line">     writeConcern: &lt;document&gt;</div><div class="line">   &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>参数说明：<br>document : 文档数据。<br>writeConcern :可选，抛出异常的级别。<br>例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.save(&#123;&quot;_id&quot; : ObjectId(&quot;589d38f38d1f1dec8daa9d27&quot;),&quot;title&quot; : &quot;mongodb&quot;,&quot;tags&quot; : [&quot;mongodb&quot;,&quot;NoSQL&quot;, &quot;database&quot;]&#125;)</div></pre></td></tr></table></figure></p>
-<img src="/images/201702/mongodb_6.png">
-<h3 id="删除文档"><a href="#删除文档" class="headerlink" title="删除文档"></a>删除文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">db.collection.remove(</div><div class="line">   &lt;query&gt;,</div><div class="line">   &#123;</div><div class="line">     justOne: &lt;boolean&gt;,</div><div class="line">     writeConcern: &lt;document&gt;</div><div class="line">   &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>参数说明：<br>query :（可选）删除的文档的条件。<br>justOne : （可选）如果设为 true 或 1，则只删除一个文档。<br>writeConcern :（可选）抛出异常的级别。<br>例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.remove(&#123;&apos;title&apos;:&apos;mongodb&apos;&#125;)</div></pre></td></tr></table></figure></p>
-<h3 id="查询文档"><a href="#查询文档" class="headerlink" title="查询文档"></a>查询文档</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.collection.find(&#123;key1:value1, key2:value2&#125;).pretty()</div></pre></td></tr></table></figure>
-<p>例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.test1.find(&#123;&apos;title&apos;:&apos;mongodb&apos;&#125;).pretty()</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/04/数据库简单总结/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/04/数据库简单总结/" itemprop="url">
-                  关系型数据库和非关系型数据库简单总结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-04T13:24:03+08:00">
-                2017-02-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><h3 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h3><p>关系型数据库，采用了关系模型来组织数据的数据库。<br>关系模型指的就是二维表格模型，而一个关系型数据库就是由二维表及其之间的联系所组成的一个数据组织。</p>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>容易理解：二维表结构是非常贴近逻辑世界的一个概念，关系模型相对网状、层次等其他模型来说更容易理解<br>使用方便：通用的SQL语言使得操作关系型数据库非常方便<br>易于维护：丰富的完整性(实体完整性、参照完整性和用户定义的完整性)大大减低了数据冗余和数据不一致的概率</p>
-<h3 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h3><p>非关系型数据库产品是传统关系型数据库的功能阉割版本(去除ACID)，通过减少用不到或很少用的功能，来大幅度提高产品性能。</p>
-<h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><p>以下的这几种情况下比较适用：<br>1、数据模型比较简单<br>2、需要灵活性更强的IT系统<br>3、对数据库性能要求较高<br>4、不需要高度的数据一致性<br>5、对于给定key，比较容易映射复杂值的环境</p>
-<h4 id="常见的Nosql"><a href="#常见的Nosql" class="headerlink" title="常见的Nosql"></a>常见的Nosql</h4><p>高性能并发读写的key-value数据库:Redis,Tokyo<br>列存储数据库:HBase,Cassandra<br>文档型数据库:MongoDB,CouchDB<br>图形(Graph)数据库:Neo4J, InfoGrid</p>
-<h2 id="主要优势"><a href="#主要优势" class="headerlink" title="主要优势"></a>主要优势</h2><p>非关系型数据库:操作的扩展性和大数据量处理<br>关系型数据库:事务的一致性(安全性能高)和复杂SQL查询</p>
-<h2 id="分布式一些比较"><a href="#分布式一些比较" class="headerlink" title="分布式一些比较"></a>分布式一些比较</h2><img src="/images/201702/database_1.png">
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1746,7 +1786,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
