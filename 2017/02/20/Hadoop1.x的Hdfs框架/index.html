@@ -110,7 +110,8 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_2.png">
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_3.png">
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_4.png">
-<meta property="og:updated_time" content="2017-02-21T12:54:06.000Z">
+<meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_5.png">
+<meta property="og:updated_time" content="2017-02-21T13:45:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hadoop1.x的Hdfs框架">
 <meta name="twitter:description" content="hdfs是一个分布式文件系统。它以文件分块的形式实现对大文件安全的、可靠的以及可快速（高吞吐量）访问的分布式存储。
@@ -387,6 +388,13 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
 <li>读取完成关闭连接</li>
 </ol>
 <img src="/images/201702/hdfs1_3.png">
+<p>在上图中3步骤中，客户端通过网络拓扑，选择最优的DataNode去读取数据<br>网络拓扑简单理解(按照优先级排序):</p>
+<ol>
+<li>同一节点中的进程</li>
+<li>同一机架上的不同节点</li>
+<li>同一数据中心不同机架</li>
+<li>不同数据中心的节点</li>
+</ol>
 <h3 id="写"><a href="#写" class="headerlink" title="写"></a>写</h3><ol>
 <li>客户端在向NameNode请求之前先写入文件数据到本地文件系统的一个<strong>临时文件</strong></li>
 <li>待临时文件<strong>达到块大小</strong>时开始向NameNode请求DataNode信息</li>
@@ -415,7 +423,8 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
 <li>小文件存取<br>占用NameNode大量内存<br>寻道时间超过读取时间</li>
 <li>并发写入、文件随机修改<br>一个文件同一个时间只能有一个写者 </li>
 </ul>
-<h2 id="HDFS启动内部操作"><a href="#HDFS启动内部操作" class="headerlink" title="HDFS启动内部操作"></a>HDFS启动内部操作</h2><p>参考文档:<br><a href="http://blog.csdn.net/suifeng3051/article/details/48548341" target="_blank" rel="external">http://blog.csdn.net/suifeng3051/article/details/48548341</a><br><a href="http://www.cnblogs.com/meet/p/5439805.html" target="_blank" rel="external">http://www.cnblogs.com/meet/p/5439805.html</a></p>
+<img src="/images/201702/hdfs1_5.png">
+<p>参考文档:<br><a href="http://blog.csdn.net/suifeng3051/article/details/48548341" target="_blank" rel="external">http://blog.csdn.net/suifeng3051/article/details/48548341</a><br><a href="http://www.cnblogs.com/meet/p/5439805.html" target="_blank" rel="external">http://www.cnblogs.com/meet/p/5439805.html</a></p>
 
       
     </div>
@@ -570,7 +579,7 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS架构图"><span class="nav-number">1.</span> <span class="nav-text">HDFS架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS一些概念"><span class="nav-number">2.</span> <span class="nav-text">HDFS一些概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Block数据块"><span class="nav-number">2.1.</span> <span class="nav-text">Block数据块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode"><span class="nav-number">2.2.</span> <span class="nav-text">NameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fsimage"><span class="nav-number">2.2.1.</span> <span class="nav-text">fsimage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#editslog"><span class="nav-number">2.2.2.</span> <span class="nav-text">editslog</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataNode"><span class="nav-number">2.3.</span> <span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SecondaryNameNode"><span class="nav-number">2.4.</span> <span class="nav-text">SecondaryNameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#日志editslog与镜像fsimage的定期合并过程"><span class="nav-number">2.4.1.</span> <span class="nav-text">日志editslog与镜像fsimage的定期合并过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS读写操作"><span class="nav-number">3.</span> <span class="nav-text">HDFS读写操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读"><span class="nav-number">3.1.</span> <span class="nav-text">读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写"><span class="nav-number">3.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS的优缺点"><span class="nav-number">4.</span> <span class="nav-text">HDFS的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">4.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">4.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS启动内部操作"><span class="nav-number">5.</span> <span class="nav-text">HDFS启动内部操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS架构图"><span class="nav-number">1.</span> <span class="nav-text">HDFS架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS一些概念"><span class="nav-number">2.</span> <span class="nav-text">HDFS一些概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Block数据块"><span class="nav-number">2.1.</span> <span class="nav-text">Block数据块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode"><span class="nav-number">2.2.</span> <span class="nav-text">NameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fsimage"><span class="nav-number">2.2.1.</span> <span class="nav-text">fsimage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#editslog"><span class="nav-number">2.2.2.</span> <span class="nav-text">editslog</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataNode"><span class="nav-number">2.3.</span> <span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SecondaryNameNode"><span class="nav-number">2.4.</span> <span class="nav-text">SecondaryNameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#日志editslog与镜像fsimage的定期合并过程"><span class="nav-number">2.4.1.</span> <span class="nav-text">日志editslog与镜像fsimage的定期合并过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS读写操作"><span class="nav-number">3.</span> <span class="nav-text">HDFS读写操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读"><span class="nav-number">3.1.</span> <span class="nav-text">读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写"><span class="nav-number">3.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS的优缺点"><span class="nav-number">4.</span> <span class="nav-text">HDFS的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">4.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">4.2.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></div>
             
 
           </div>

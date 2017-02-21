@@ -482,6 +482,13 @@
 <li>读取完成关闭连接</li>
 </ol>
 <img src="/images/201702/hdfs1_3.png">
+<p>在上图中3步骤中，客户端通过网络拓扑，选择最优的DataNode去读取数据<br>网络拓扑简单理解(按照优先级排序):</p>
+<ol>
+<li>同一节点中的进程</li>
+<li>同一机架上的不同节点</li>
+<li>同一数据中心不同机架</li>
+<li>不同数据中心的节点</li>
+</ol>
 <h3 id="写"><a href="#写" class="headerlink" title="写"></a>写</h3><ol>
 <li>客户端在向NameNode请求之前先写入文件数据到本地文件系统的一个<strong>临时文件</strong></li>
 <li>待临时文件<strong>达到块大小</strong>时开始向NameNode请求DataNode信息</li>
@@ -510,7 +517,8 @@
 <li>小文件存取<br>占用NameNode大量内存<br>寻道时间超过读取时间</li>
 <li>并发写入、文件随机修改<br>一个文件同一个时间只能有一个写者 </li>
 </ul>
-<h2 id="HDFS启动内部操作"><a href="#HDFS启动内部操作" class="headerlink" title="HDFS启动内部操作"></a>HDFS启动内部操作</h2><p>参考文档:<br><a href="http://blog.csdn.net/suifeng3051/article/details/48548341" target="_blank" rel="external">http://blog.csdn.net/suifeng3051/article/details/48548341</a><br><a href="http://www.cnblogs.com/meet/p/5439805.html" target="_blank" rel="external">http://www.cnblogs.com/meet/p/5439805.html</a></p>
+<img src="/images/201702/hdfs1_5.png">
+<p>参考文档:<br><a href="http://blog.csdn.net/suifeng3051/article/details/48548341" target="_blank" rel="external">http://blog.csdn.net/suifeng3051/article/details/48548341</a><br><a href="http://www.cnblogs.com/meet/p/5439805.html" target="_blank" rel="external">http://www.cnblogs.com/meet/p/5439805.html</a></p>
 
           
         
