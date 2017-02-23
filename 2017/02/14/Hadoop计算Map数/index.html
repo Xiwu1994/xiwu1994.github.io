@@ -90,10 +90,12 @@
 <meta property="og:url" content="http://yoursite.com/2017/02/14/Hadoop计算Map数/index.html">
 <meta property="og:site_name" content="Refrain">
 <meta property="og:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
-<meta property="og:updated_time" content="2017-02-15T03:14:48.000Z">
+<meta property="og:image" content="http://yoursite.com/images/201702/splitSize.png">
+<meta property="og:updated_time" content="2017-02-23T12:55:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hadoop计算Map数">
 <meta name="twitter:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
+<meta name="twitter:image" content="http://yoursite.com/images/201702/splitSize.png">
 
 
 
@@ -317,7 +319,7 @@
       
         <h3 id="计算splitSize"><a href="#计算splitSize" class="headerlink" title="计算splitSize"></a>计算splitSize</h3><p>split的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:<br>1、读取参数mapred.map.tasks，这个参数默认设置为1<br>2、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks<br>3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数默认设置为1B<br>4、blockSize，文件物理划分成块，大小配置在hadoop-default.xml，它的默认值是64MB<br>5、splitSize= Math.max(minSize, Math.min(goalSize, blockSize))</p>
 <h3 id="通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><a href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数" class="headerlink" title="通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)"></a>通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</h3><p>计算方法逻辑如下:<br>1、 文件大小/splitSize &gt; 1.1，创建一个split，这个split的大小=splitSize，文件剩余大小=文件大小-splitSize<br>2、 文件剩余大小/splitSize&lt;1.1，剩余的部分作为一个split<br>举例:<br>1.input只有一个文件，大小为100M，splitSize为64M。则Split数为2，一个64M，一个36M<br>2.input只有一个文件，大小为65M，splitSize为64M。则Split数为1，split大小为65M<br>3.input只有一个文件，大小为129M，splitSize为64M。则Split数为2，一个64M，一个65M<br>4.input只有一个文件，大小为20M，splitSize为64M。则Split数为1，split大小为20M<br>两个特殊例子:<br>1.input两个文件，分别为40M和20M，mapred.map.tasks人工设置为2。则goalSize=(40+20)/2=30M，splitSize为30M。逻辑切分文件后，第一个文件切分成30M,10M两个split，第二个还是20M。最后有3个MapTask<br>2.input两个文件，分别为40M和20M，mapred.map.tasks默认为1。则goalSize=(40+20)/1=60M，splitSize为60M。逻辑切分文件最后生成两个切片，一个40M，一个20M。即2个MapTask<br>特殊例子总结：<br>mapred.map.tasks并不是设置的越大，JOB执行的效率就越高。Hadoop在处理小文件时效率会变差。</p>
-
+<img src="/images/201702/splitSize.png">
       
     </div>
 

@@ -111,7 +111,7 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_3.png">
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_4.png">
 <meta property="og:image" content="http://yoursite.com/images/201702/hdfs1_5.png">
-<meta property="og:updated_time" content="2017-02-22T04:05:22.000Z">
+<meta property="og:updated_time" content="2017-02-22T06:11:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hadoop1.x的Hdfs框架">
 <meta name="twitter:description" content="hdfs是一个分布式文件系统。它以文件分块的形式实现对大文件安全的、可靠的以及可快速（高吞吐量）访问的分布式存储。
@@ -396,15 +396,15 @@ Block数据块HDFS中的所有文件都是分割成块存储在Datanode上的，
 <li>不同数据中心的节点</li>
 </ol>
 <h3 id="写"><a href="#写" class="headerlink" title="写"></a>写</h3><ol>
-<li>客户端在向NameNode请求之前先写入文件数据到本地文件系统的一个<strong>临时文件</strong></li>
-<li>待临时文件<strong>达到块大小</strong>时开始向NameNode请求DataNode信息</li>
+<li>客户端在向NameNode请求之前先写入文件数据到本地文件系统的一个 <strong>临时文件</strong> </li>
+<li>待临时文件 <strong>达到块大小</strong> 时开始向NameNode请求DataNode信息</li>
 <li>NameNode在文件系统中创建文件并返回给客户端一个数据块及其对应DataNode的地址列表（列表中包含副本存放的地址）</li>
 <li>客户端通过上一步得到的信息把创建临时文件块flush到列表中的第一个DataNode</li>
 <li>当文件关闭，NameNode会提交这次文件创建，此时，文件在文件系统中可见</li>
 </ol>
 <p>上面第四步描述的flush过程实际处理过程比较负杂，现在单独描述一下:</p>
 <ol>
-<li>首先，第一个DataNode是以数据包(数据包一般4KB)的形式从客户端接收数据的，DataNode在把数据包写入到本地磁盘的同时会向第二个DataNode（作为副本节点）传送数据。</li>
+<li>首先，第一个DataNode是以数据包(数据包一般4KB)的形式从客户端接收数据的，DataNode在把数据包写入到本地磁盘的 <strong>同时</strong> 会向第二个DataNode（作为副本节点）传送数据。</li>
 <li>在第二个DataNode把接收到的数据包写入本地磁盘时会向第三个DataNode发送数据包</li>
 <li>第三个DataNode开始向本地磁盘写入数据包。此时，数据包以流水线的形式被写入和备份到所有DataNode节点</li>
 <li>传送管道中的每个DataNode节点在收到数据后都会向前面那个DataNode发送一个ACK,最终，第一个DataNode会向客户端发回一个ACK</li>
