@@ -241,6 +241,229 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/MapReduce调优简单总结/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/28/MapReduce调优简单总结/" itemprop="url">
+                  MapReduce调优简单总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-28T13:57:14+08:00">
+                2017-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <img src="/images/201702/mr_optimize_1.png">
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>类型</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapred.min.split.size</td>
+<td>int</td>
+<td>1</td>
+<td>Input Split的最小值</td>
+</tr>
+<tr>
+<td>mapred.map.tasks</td>
+<td>int</td>
+<td>1</td>
+<td>Map Task的数量</td>
+</tr>
+<tr>
+<td>io.sort.mb</td>
+<td>int</td>
+<td>100</td>
+<td>map缓冲区大小</td>
+</tr>
+<tr>
+<td>io.sort.factor</td>
+<td>int</td>
+<td>10</td>
+<td>并行处理spill的个数</td>
+</tr>
+<tr>
+<td>min.num.spill.for.combine</td>
+<td>int</td>
+<td>3</td>
+<td>最少有3个Spill文件需要Merge时，执行combine操作</td>
+</tr>
+<tr>
+<td>mapred.compress.map.output</td>
+<td>boolean</td>
+<td>false</td>
+<td>map中间数据是否采用压缩</td>
+</tr>
+<tr>
+<td>mapred.map.output.compression.codec</td>
+<td>String</td>
+<td>.</td>
+<td>压缩算法</td>
+</tr>
+</tbody>
+</table>
+<img src="/images/201702/mr_optimize_2.png">
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>类型</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapred.reduce.parallel.copies</td>
+<td>int</td>
+<td>5</td>
+<td>每个reduce去map中拿数据的并行数</td>
+</tr>
+<tr>
+<td>mapred.reduce.copy.backoff</td>
+<td>int</td>
+<td>300</td>
+<td>获取map数据最大超时时间</td>
+</tr>
+<tr>
+<td>mapred.job.shuffle.input.buffer.percent float</td>
+<td>0.7</td>
+<td>buffer大小占reduce可用内存的比例</td>
+</tr>
+<tr>
+<td>mapred.child.java.opts</td>
+<td>String</td>
+<td>.</td>
+<td>-Xmx1024m设置reduce可用内存为1g</td>
+</tr>
+<tr>
+<td>mapred.job.shuffle.merge.percent</td>
+<td>float</td>
+<td>0.66</td>
+<td>buffer中的数据达到多少比例开始写入磁盘</td>
+</tr>
+<tr>
+<td>mapred.job.reduce.input.buffer.percent</td>
+<td>float</td>
+<td>0.0</td>
+<td>指定多少比例的内存用来存放buffer中的数据</td>
+</tr>
+</tbody>
+</table>
+<p>一个通用的原则是给shuffle过程分配尽可能大的内存。<br>运行map和reduce任务的JVM，内存通过mapred.child.java.opts属性来设置，尽可能设大内存。<br>容器的内存大小通过mapreduce.map.memory.mb和mapreduce.reduce.memory.mb来设置，默认都是1024M。<br>Hadoop默认使用4KB作为缓冲，这个算是很小的，可以通过io.file.buffer.size来调高缓冲池大小。</p>
+<p>Map Task和Reduce Task调优的一个原则就是<br>减少数据的传输量 =&gt; 预聚合combine<br>尽量使用内存 =&gt; 提高内存使用(1、map环形缓冲区 2、reduce的Merge阶段)<br>减少磁盘IO的次数 =&gt; 增加Spill大小<br>增大任务并行数 =&gt; Reduce数量，Map数量</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/hive优化简单总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1709,136 +1932,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/12/大数据初学者学习之路/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/12/大数据初学者学习之路/" itemprop="url">
-                  大数据初学者学习之路
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-12T20:30:41+08:00">
-                2017-02-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>第一章：初识Hadoop<br>第二章：更高效的WordCount<br>第三章：把别处的数据搞到Hadoop上<br>第四章：把Hadoop上的数据搞到别处去<br>第五章：快一点吧，我的SQL<br>第六章：一夫多妻制<br>第七章：越来越多的分析任务<br>第八章：我的数据要实时<br>第九章：我的数据要对外<br>第十章：牛逼高大上的机器学习</p>
-<h2 id="第一章：初识Hadoop"><a href="#第一章：初识Hadoop" class="headerlink" title="第一章：初识Hadoop"></a>第一章：初识Hadoop</h2><p>主要了解Hadoop基础知识，并且能搭建Hadoop，编写MR程序能跑起来</p>
-<h2 id="第二章：更高效的WordCount"><a href="#第二章：更高效的WordCount" class="headerlink" title="第二章：更高效的WordCount"></a>第二章：更高效的WordCount</h2><p>使用SQL处理分析Hadoop上的数据，方便、高效、易上手、更是趋势<br>主要了解数据仓库工具——Hive，搭建Hive，学习Hive的基本命令<br><img src="/images/201702/lxw1234_1.png"></p>
-<h2 id="第三章：把别处的数据搞到Hadoop上"><a href="#第三章：把别处的数据搞到Hadoop上" class="headerlink" title="第三章：把别处的数据搞到Hadoop上"></a>第三章：把别处的数据搞到Hadoop上</h2><p>把各个数据源的数据采集到Hadoop上<br>1、HDFS API<br>比如：Hive中的INSERT语句，Spark中的saveAsTextfile等<br>2、Sqoop<br>Sqoop是一个主要用于Hadoop/Hive与传统关系型数据库Oracle/MySQL/SQLServer等之间进行数据交换的开源框架。<br>3、Flume<br>Flume可以实时的从网络协议、消息系统、文件系统采集日志，并传输到HDFS上<br>4、阿里开源的DataX<br>Hadoop与关系型数据库数据交换的工具，和Sqoop很像<br><img src="/images/201702/lxw1234_2.png"></p>
-<h2 id="第四章：把Hadoop上的数据搞到别处去"><a href="#第四章：把Hadoop上的数据搞到别处去" class="headerlink" title="第四章：把Hadoop上的数据搞到别处去"></a>第四章：把Hadoop上的数据搞到别处去</h2><p>1、HDFS API<br>2、Sqoop<br>3、DataX<br><img src="/images/201702/lxw1234_3.png"></p>
-<h2 id="第五章：快一点吧，我的SQL"><a href="#第五章：快一点吧，我的SQL" class="headerlink" title="第五章：快一点吧，我的SQL"></a>第五章：快一点吧，我的SQL</h2><p>SQLOnHadoop的框架越来越多，按我的了解，最常用的按照流行度依次为SparkSQL、Impala和Presto.<br>可以了解一下SparkSQL<br><img src="/images/201702/lxw1234_4.png"></p>
-<h2 id="第六章：一夫多妻制"><a href="#第六章：一夫多妻制" class="headerlink" title="第六章：一夫多妻制"></a>第六章：一夫多妻制</h2><p>数据的一次采集、多次消费——kafka<br><img src="/images/201702/lxw1234_5.png"></p>
-<h2 id="第七章：越来越多的分析任务"><a href="#第七章：越来越多的分析任务" class="headerlink" title="第七章：越来越多的分析任务"></a>第七章：越来越多的分析任务</h2><p>调度监控系统是整个数据平台的中枢系统，类似于AppMaster，负责分配和监控任务。<br>1、Apache Oozie 2、Azkaban 3、Zeus<br><img src="/images/201702/lxw1234_6.png"></p>
-<h2 id="第八章：我的数据要实时"><a href="#第八章：我的数据要实时" class="headerlink" title="第八章：我的数据要实时"></a>第八章：我的数据要实时</h2><p>对于需要绝对实时的业务场景，用的比较多的是Storm，对于其他准实时的业务场景，可以是Storm，也可以是Spark Streaming<br><img src="/images/201702/lxw1234_7.png"></p>
-<h2 id="第九章：我的数据要对外"><a href="#第九章：我的数据要对外" class="headerlink" title="第九章：我的数据要对外"></a>第九章：我的数据要对外</h2><p>离线：比如，每天将前一天的数据提供到指定的数据源（DB、FILE、FTP）等；<br>离线数据的提供可以采用Sqoop、DataX等离线数据交换工具。<br>实时：比如，在线网站的推荐系统，需要实时从数据平台中获取给用户的推荐数据，这种要求延时非常低（50毫秒以内）。<br>OLAP分析：OLAP除了要求底层的数据模型比较规范，另外，对查询的响应速度要求也越来越高，可能的方案有：Impala、Presto、SparkSQL、Kylin。如果你的数据模型比较规模，那么Kylin是最好的选择。<br>即席查询：即席查询的数据比较随意，一般很难建立通用的数据模型，因此可能的方案有：Impala、Presto、SparkSQL。<br>还有一些方案: HBase、Redis、MongoDB、ElasticSearch<br><img src="/images/201702/lxw1234_8.png"></p>
-<h2 id="第十章：牛逼高大上的机器学习"><a href="#第十章：牛逼高大上的机器学习" class="headerlink" title="第十章：牛逼高大上的机器学习"></a>第十章：牛逼高大上的机器学习</h2><p>在我们的业务中，遇到的能用机器学习解决的问题大概这么三类：<br>1、分类问题：包括二分类和多分类，二分类就是解决了预测的问题，就像预测一封邮件是否垃圾邮件；多分类解决的是文本的分类；<br>2、聚类问题：从用户搜索过的关键词，对用户进行大概的归类。<br>3、推荐问题：根据用户的历史浏览和点击行为进行相关推荐。</p>
-<p>转载:<a href="http://lxw1234.com/archives/2016/11/779.htm" target="_blank" rel="external">http://lxw1234.com/archives/2016/11/779.htm</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1886,7 +1979,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

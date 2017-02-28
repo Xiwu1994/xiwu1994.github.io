@@ -84,18 +84,118 @@
 
 
 
-<meta name="description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
+<meta name="description" content="选项
+类型
+默认值
+描述
+
+
+
+
+mapred.min.split.size
+int
+1
+Input Split的最小值
+
+
+mapred.map.tasks
+int
+1
+Map Task的数量
+
+
+io.sort.mb
+int
+100
+map缓冲区大小
+
+
+io.sort.factor
+int
+10
+并行处理spill的个数
+
+
+min.num.spill.for.combine
+int">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hadoop计算Map数">
-<meta property="og:url" content="http://yoursite.com/2017/02/14/Hadoop计算Map数/index.html">
+<meta property="og:title" content="MapReduce调优简单总结">
+<meta property="og:url" content="http://yoursite.com/2017/02/28/MapReduce调优简单总结/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
-<meta property="og:image" content="http://yoursite.com/images/201702/splitSize.png">
-<meta property="og:updated_time" content="2017-02-23T12:55:42.000Z">
+<meta property="og:description" content="选项
+类型
+默认值
+描述
+
+
+
+
+mapred.min.split.size
+int
+1
+Input Split的最小值
+
+
+mapred.map.tasks
+int
+1
+Map Task的数量
+
+
+io.sort.mb
+int
+100
+map缓冲区大小
+
+
+io.sort.factor
+int
+10
+并行处理spill的个数
+
+
+min.num.spill.for.combine
+int">
+<meta property="og:image" content="http://yoursite.com/images/201702/mr_optimize_1.png">
+<meta property="og:image" content="http://yoursite.com/images/201702/mr_optimize_2.png">
+<meta property="og:updated_time" content="2017-02-28T11:35:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hadoop计算Map数">
-<meta name="twitter:description" content="计算splitSizesplit的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:1、读取参数mapred.map.tasks，这个参数默认设置为12、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数">
-<meta name="twitter:image" content="http://yoursite.com/images/201702/splitSize.png">
+<meta name="twitter:title" content="MapReduce调优简单总结">
+<meta name="twitter:description" content="选项
+类型
+默认值
+描述
+
+
+
+
+mapred.min.split.size
+int
+1
+Input Split的最小值
+
+
+mapred.map.tasks
+int
+1
+Map Task的数量
+
+
+io.sort.mb
+int
+100
+map缓冲区大小
+
+
+io.sort.factor
+int
+10
+并行处理spill的个数
+
+
+min.num.spill.for.combine
+int">
+<meta name="twitter:image" content="http://yoursite.com/images/201702/mr_optimize_1.png">
 
 
 
@@ -123,13 +223,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/14/Hadoop计算Map数/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/28/MapReduce调优简单总结/"/>
 
 
 
 
 
-  <title> Hadoop计算Map数 | Refrain </title>
+  <title> MapReduce调优简单总结 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -242,7 +342,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/14/Hadoop计算Map数/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/MapReduce调优简单总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -266,7 +366,7 @@
             
             
               
-                Hadoop计算Map数
+                MapReduce调优简单总结
               
             
           </h1>
@@ -281,8 +381,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-14T22:24:33+08:00">
-                2017-02-14
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-28T13:57:14+08:00">
+                2017-02-28
               </time>
             
 
@@ -317,9 +417,112 @@
       
 
       
-        <h3 id="计算splitSize"><a href="#计算splitSize" class="headerlink" title="计算splitSize"></a>计算splitSize</h3><p>split的个数由FileInputFormat.getSplits计算出，方法的逻辑如下:<br>1、读取参数mapred.map.tasks，这个参数默认设置为1<br>2、goalSize = totalSize(input文件的总字节数) / mapred.map.tasks<br>3、minSize指的是每个split的最小值，由mapred.min.split.size参数设置，这个参数默认设置为1B<br>4、blockSize，文件物理划分成块，大小配置在hadoop-default.xml，它的默认值是64MB<br>5、splitSize= Math.max(minSize, Math.min(goalSize, blockSize))</p>
-<h3 id="通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><a href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数" class="headerlink" title="通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)"></a>通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</h3><p>计算方法逻辑如下:<br>1、 文件大小/splitSize &gt; 1.1，创建一个split，这个split的大小=splitSize，文件剩余大小=文件大小-splitSize<br>2、 文件剩余大小/splitSize&lt;1.1，剩余的部分作为一个split<br>举例:<br>1.input只有一个文件，大小为100M，splitSize为64M。则Split数为2，一个64M，一个36M<br>2.input只有一个文件，大小为65M，splitSize为64M。则Split数为1，split大小为65M<br>3.input只有一个文件，大小为129M，splitSize为64M。则Split数为2，一个64M，一个65M<br>4.input只有一个文件，大小为20M，splitSize为64M。则Split数为1，split大小为20M<br>两个特殊例子:<br>1.input两个文件，分别为40M和20M，mapred.map.tasks人工设置为2。则goalSize=(40+20)/2=30M，splitSize为30M。逻辑切分文件后，第一个文件切分成30M,10M两个split，第二个还是20M。最后有3个MapTask<br>2.input两个文件，分别为40M和20M，mapred.map.tasks默认为1。则goalSize=(40+20)/1=60M，splitSize为60M。逻辑切分文件最后生成两个切片，一个40M，一个20M。即2个MapTask<br>特殊例子总结：<br>mapred.map.tasks并不是设置的越大，JOB执行的效率就越高。Hadoop在处理小文件时效率会变差。</p>
-<img src="/images/201702/splitSize.png">
+        <img src="/images/201702/mr_optimize_1.png">
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>类型</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapred.min.split.size</td>
+<td>int</td>
+<td>1</td>
+<td>Input Split的最小值</td>
+</tr>
+<tr>
+<td>mapred.map.tasks</td>
+<td>int</td>
+<td>1</td>
+<td>Map Task的数量</td>
+</tr>
+<tr>
+<td>io.sort.mb</td>
+<td>int</td>
+<td>100</td>
+<td>map缓冲区大小</td>
+</tr>
+<tr>
+<td>io.sort.factor</td>
+<td>int</td>
+<td>10</td>
+<td>并行处理spill的个数</td>
+</tr>
+<tr>
+<td>min.num.spill.for.combine</td>
+<td>int</td>
+<td>3</td>
+<td>最少有3个Spill文件需要Merge时，执行combine操作</td>
+</tr>
+<tr>
+<td>mapred.compress.map.output</td>
+<td>boolean</td>
+<td>false</td>
+<td>map中间数据是否采用压缩</td>
+</tr>
+<tr>
+<td>mapred.map.output.compression.codec</td>
+<td>String</td>
+<td>.</td>
+<td>压缩算法</td>
+</tr>
+</tbody>
+</table>
+<img src="/images/201702/mr_optimize_2.png">
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>类型</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapred.reduce.parallel.copies</td>
+<td>int</td>
+<td>5</td>
+<td>每个reduce去map中拿数据的并行数</td>
+</tr>
+<tr>
+<td>mapred.reduce.copy.backoff</td>
+<td>int</td>
+<td>300</td>
+<td>获取map数据最大超时时间</td>
+</tr>
+<tr>
+<td>mapred.job.shuffle.input.buffer.percent float</td>
+<td>0.7</td>
+<td>buffer大小占reduce可用内存的比例</td>
+</tr>
+<tr>
+<td>mapred.child.java.opts</td>
+<td>String</td>
+<td>.</td>
+<td>-Xmx1024m设置reduce可用内存为1g</td>
+</tr>
+<tr>
+<td>mapred.job.shuffle.merge.percent</td>
+<td>float</td>
+<td>0.66</td>
+<td>buffer中的数据达到多少比例开始写入磁盘</td>
+</tr>
+<tr>
+<td>mapred.job.reduce.input.buffer.percent</td>
+<td>float</td>
+<td>0.0</td>
+<td>指定多少比例的内存用来存放buffer中的数据</td>
+</tr>
+</tbody>
+</table>
+<p>一个通用的原则是给shuffle过程分配尽可能大的内存。<br>运行map和reduce任务的JVM，内存通过mapred.child.java.opts属性来设置，尽可能设大内存。<br>容器的内存大小通过mapreduce.map.memory.mb和mapreduce.reduce.memory.mb来设置，默认都是1024M。<br>Hadoop默认使用4KB作为缓冲，这个算是很小的，可以通过io.file.buffer.size来调高缓冲池大小。</p>
+<p>Map Task和Reduce Task调优的一个原则就是<br>减少数据的传输量 =&gt; 预聚合combine<br>尽量使用内存 =&gt; 提高内存使用(1、map环形缓冲区 2、reduce的Merge阶段)<br>减少磁盘IO的次数 =&gt; 增加Spill大小<br>增大任务并行数 =&gt; Reduce数量，Map数量</p>
+
       
     </div>
 
@@ -345,8 +548,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/12/大数据初学者学习之路/" rel="next" title="大数据初学者学习之路">
-                <i class="fa fa-chevron-left"></i> 大数据初学者学习之路
+              <a href="/2017/02/27/hive优化简单总结/" rel="next" title="hive优化简单总结">
+                <i class="fa fa-chevron-left"></i> hive优化简单总结
               </a>
             
           </div>
@@ -354,10 +557,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/15/MapReduce的Shuffle过程/" rel="prev" title="MapReduce的Shuffle过程">
-                MapReduce的Shuffle过程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -404,17 +603,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -463,22 +653,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算splitSize"><span class="nav-number">1.</span> <span class="nav-text">计算splitSize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过splitSize逻辑划分文件，计算split的个数-job的MapTask数量就等于split的个数"><span class="nav-number">2.</span> <span class="nav-text">通过splitSize逻辑划分文件，计算split的个数(job的MapTask数量就等于split的个数)</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
     </div>
