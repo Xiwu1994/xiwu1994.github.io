@@ -1,0 +1,710 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="合理控制Map和Reduce数map数
+Map数过大 
+
+Map阶段输出文件太小，产生大量小文件（下一个阶段就需要进行小文件合并，或者到reduce阶段就会浪费很多reduce数）。初始化和创建map的开销很大。
+
+Map数过小 
+
+文件处理或查询并发度小，Job执行空间过长。大量作业时，容易堵塞集群。
+Map数过大过小解决办法一、过大，通过合并小文件有三个阶段可以合并文件Map输入，Reduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hive优化简单总结">
+<meta property="og:url" content="http://yoursite.com/2017/02/27/hive优化简单总结/index.html">
+<meta property="og:site_name" content="Refrain">
+<meta property="og:description" content="合理控制Map和Reduce数map数
+Map数过大 
+
+Map阶段输出文件太小，产生大量小文件（下一个阶段就需要进行小文件合并，或者到reduce阶段就会浪费很多reduce数）。初始化和创建map的开销很大。
+
+Map数过小 
+
+文件处理或查询并发度小，Job执行空间过长。大量作业时，容易堵塞集群。
+Map数过大过小解决办法一、过大，通过合并小文件有三个阶段可以合并文件Map输入，Reduce">
+<meta property="og:updated_time" content="2017-02-28T03:49:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hive优化简单总结">
+<meta name="twitter:description" content="合理控制Map和Reduce数map数
+Map数过大 
+
+Map阶段输出文件太小，产生大量小文件（下一个阶段就需要进行小文件合并，或者到reduce阶段就会浪费很多reduce数）。初始化和创建map的开销很大。
+
+Map数过小 
+
+文件处理或查询并发度小，Job执行空间过长。大量作业时，容易堵塞集群。
+Map数过大过小解决办法一、过大，通过合并小文件有三个阶段可以合并文件Map输入，Reduce">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/27/hive优化简单总结/"/>
+
+
+
+
+
+  <title> hive优化简单总结 | Refrain </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Refrain</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/hive优化简单总结/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hive优化简单总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-27T22:31:08+08:00">
+                2017-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="合理控制Map和Reduce数"><a href="#合理控制Map和Reduce数" class="headerlink" title="合理控制Map和Reduce数"></a>合理控制Map和Reduce数</h3><h4 id="map数"><a href="#map数" class="headerlink" title="map数"></a>map数</h4><ul>
+<li>Map数过大 </li>
+</ul>
+<p>Map阶段输出文件太小，产生大量小文件（下一个阶段就需要进行小文件合并，或者到reduce阶段就会浪费很多reduce数）。<br>初始化和创建map的开销很大。</p>
+<ul>
+<li>Map数过小 </li>
+</ul>
+<p>文件处理或查询并发度小，Job执行空间过长。<br>大量作业时，容易堵塞集群。</p>
+<p><strong>Map数过大过小解决办法</strong><br>一、过大，<strong>通过合并小文件</strong><br>有三个阶段可以合并文件<br>Map输入，Reduce输出，Map-only任务结束时<br>1、Map输入</p>
+<ul>
+<li>set hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat</li>
+<li>合并文件数大小由mapred.max.split.size的大小决定</li>
+<li>mapred.min.split.size.per.node 决定了 多少datanode上的文件 是否需要合并</li>
+</ul>
+<p>2、 Reduce输出:<br>set hive.merge.mapredfiles = true(默认false)<br>3、 Map-only任务结束时:<br>set hive.merge.mapfiles=true(默认true)</p>
+<p>二、 过小，<strong>通过设置mapred.map.tasks</strong><br><a href="https://xiwu1994.github.io/2017/02/14/Hadoop%E8%AE%A1%E7%AE%97Map%E6%95%B0/" target="_blank" rel="external">Map数量是如何计算的参考文档</a></p>
+<h4 id="Reduce数"><a href="#Reduce数" class="headerlink" title="Reduce数"></a>Reduce数</h4><ul>
+<li>Reduce数过大</li>
+</ul>
+<p>生成了很多个小文件（最终输出文件由reduce决定，一个reduce一个文件），那么如果这些小文件作为下一个Job输入，则也会出现小文件过多需要进行合并（耗费资源）的问题。<br>启动和初始化reduce也会消耗大量的时间和资源，有多少个reduce就会有多少个输出文件</p>
+<ul>
+<li>Reduce数过小<br>每个文件很大，执行耗时。<br>可能出现数据领斜。</li>
+</ul>
+<p><strong>Reduce数默认计算方法</strong><br>Hive分配reduce数基于以下参数：<br>参数1：hive.exec.reducers.bytes.per.reducer(默认是1G)<br>参数2：hive.exec.reducers.max(最大reduce数，默认为999)<br>计算Reduce数的公式：<br>N=min(参数2，总输入数据量/参数1)<br><strong>即默认一个reduce处理1G数据量</strong></p>
+<p><strong>通过设置Reduce数来解决</strong><br>参数mapred.reduce.tasks 默认是1<br>set mapred.reduce.tasks=XX</p>
+<h3 id="数据倾斜-Join-Or-GroupBy"><a href="#数据倾斜-Join-Or-GroupBy" class="headerlink" title="数据倾斜(Join Or GroupBy)"></a>数据倾斜(Join Or GroupBy)</h3><h4 id="参数调节"><a href="#参数调节" class="headerlink" title="参数调节"></a>参数调节</h4><p>如果出现数据倾斜，应当做如下处理：</p>
+<ul>
+<li><strong>增加Shuffle并行度(Reduce个数)</strong></li>
+</ul>
+<p>set hive.exec.reducers.max=200;<br>set mapred.reduce.tasks= 200; –增大Reduce个数</p>
+<ul>
+<li><strong>Group By</strong></li>
+</ul>
+<p>set hive.groupby.mapaggr.checkinterval=100000; –这个是group的键对应的记录条数超过这个值则会进行分拆,值根据具体数据量设置<br>set hive.groupby.skewindata=true; –如果是 <strong>Group By</strong> 过程出现倾斜 应该设置为true</p>
+<ul>
+<li><strong>Join</strong></li>
+</ul>
+<p>set hive.skewjoin.key=100000; –这个是join的键对应的记录条数超过这个值则会进行分拆,值根据具体数据量设置<br>set hive.optimize.skewjoin=true; –如果是 <strong>Join</strong> 过程出现倾斜 应该设置为true</p>
+<h4 id="SQL语句调节"><a href="#SQL语句调节" class="headerlink" title="SQL语句调节"></a>SQL语句调节</h4><ul>
+<li>Join操作</li>
+</ul>
+<p>1、<strong>若其中有一个表很小使用map join /<em>+ MAPJOIN(table) </em>/</strong>，否则使用普通的reduce join<br>2、<strong>使用普通reduce join时 将条目少的表/子查询放在 Join 操作符的 左边</strong>（位于 Join 操作符左边的表的内容会被加载进内存）</p>
+<p>PS. 熟练运用 <strong>union all和 创建临时表insert overwrite table</strong> 优化SQL语句</p>
+<h4 id="常见数据倾斜场景"><a href="#常见数据倾斜场景" class="headerlink" title="常见数据倾斜场景"></a>常见数据倾斜场景</h4><ul>
+<li>空值产生的数据倾斜 </li>
+</ul>
+<p>解决办法：赋予空值一个随机值<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> A a</div><div class="line"><span class="keyword">left</span> <span class="keyword">join</span> B b</div><div class="line"><span class="keyword">on</span> <span class="keyword">case</span> <span class="keyword">when</span> a.id <span class="keyword">is</span> <span class="literal">null</span> <span class="keyword">then</span> <span class="keyword">concat</span>(<span class="string">'hive'</span>, <span class="keyword">rand</span>()) <span class="keyword">else</span> a.id <span class="keyword">end</span> = b.id</div></pre></td></tr></table></figure></p>
+<ul>
+<li>不同数据类型关联产生数据倾斜</li>
+</ul>
+<p>解决方法：把数字类型转换成字符串类型<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> A a</div><div class="line"><span class="keyword">left</span> <span class="keyword">join</span> B b</div><div class="line"><span class="keyword">on</span> a.id = <span class="keyword">cast</span>(b.id <span class="keyword">as</span> <span class="keyword">string</span>)</div></pre></td></tr></table></figure></p>
+<ul>
+<li>小表不小不大，用map join不好解决</li>
+</ul>
+<p>抽出业务中的小数据源，作为map join中的小表。 进行多次的map join<br>例如业务：A表有大表，但是id的去重后的量少。 B表是小表，但是也比较大<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="comment">/*+mapjoin(c)*/</span> c.*</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">  <span class="keyword">select</span> <span class="comment">/*+mapjoin(a)*/</span> b.* </div><div class="line">  <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">distinct</span> <span class="keyword">id</span> <span class="keyword">from</span> A) a</div><div class="line">  <span class="keyword">join</span> B b</div><div class="line">  <span class="keyword">on</span> a.id = b.id</div><div class="line">)c</div><div class="line"><span class="keyword">join</span> A d</div><div class="line"><span class="keyword">on</span> c.id = d.id</div></pre></td></tr></table></figure></p>
+<p>参考文档：<br><a href="http://www.cnblogs.com/smartloli/p/4356660.html" target="_blank" rel="external">http://www.cnblogs.com/smartloli/p/4356660.html</a><br><a href="http://www.cnblogs.com/xd502djj/p/3799432.html" target="_blank" rel="external">http://www.cnblogs.com/xd502djj/p/3799432.html</a><br><a href="http://blog.csdn.net/scgaliguodong123_/article/details/45477323" target="_blank" rel="external">http://blog.csdn.net/scgaliguodong123_/article/details/45477323</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/21/Hadoop2的Hdfs框架/" rel="next" title="Hadoop2.x的Hdfs框架">
+                <i class="fa fa-chevron-left"></i> Hadoop2.x的Hdfs框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="xiwu1212@163.com" />
+          <p class="site-author-name" itemprop="name">xiwu1212@163.com</p>
+          <p class="site-description motion-element" itemprop="description">学无止境</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#合理控制Map和Reduce数"><span class="nav-number">1.</span> <span class="nav-text">合理控制Map和Reduce数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#map数"><span class="nav-number">1.1.</span> <span class="nav-text">map数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reduce数"><span class="nav-number">1.2.</span> <span class="nav-text">Reduce数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据倾斜-Join-Or-GroupBy"><span class="nav-number">2.</span> <span class="nav-text">数据倾斜(Join Or GroupBy)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数调节"><span class="nav-number">2.1.</span> <span class="nav-text">参数调节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL语句调节"><span class="nav-number">2.2.</span> <span class="nav-text">SQL语句调节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常见数据倾斜场景"><span class="nav-number">2.3.</span> <span class="nav-text">常见数据倾斜场景</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiwu1212@163.com</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
