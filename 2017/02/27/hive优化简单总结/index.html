@@ -98,7 +98,7 @@ Map数过大1、Map阶段输出文件太小，产生大量小文件，reduce阶�
 Map数过小1、文件处理或查询并发度小，Job执行空间过长。2、大量作业时，容易堵塞集群。
 
 Map数过大过小解决办法一、过大，通过合并小文件有三个阶段可以合并文件Map输入，Reduce输出，Map-only任务结束时1">
-<meta property="og:updated_time" content="2017-02-28T04:01:09.000Z">
+<meta property="og:updated_time" content="2017-03-01T02:49:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hive优化简单总结">
 <meta name="twitter:description" content="合理控制Map和Reduce数map数
@@ -334,8 +334,8 @@ Map数过大过小解决办法一、过大，通过合并小文件有三个阶�
 <p><strong>Map数过大过小解决办法</strong><br>一、过大，<strong>通过合并小文件</strong><br>有三个阶段可以合并文件<br>Map输入，Reduce输出，Map-only任务结束时<br>1、Map输入</p>
 <ul>
 <li>set hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat</li>
-<li>合并文件数大小由mapred.max.split.size的大小决定</li>
-<li>mapred.min.split.size.per.node 决定了 多少datanode上的文件 是否需要合并</li>
+<li>set mapred.max.split.size=100000000 表示合并后文件大小大于100M，可以合并下一个</li>
+<li>set mapred.min.split.size.per.node=100000000 表示文件小于100M，需要被合并</li>
 </ul>
 <p>2、 Reduce输出:<br>set hive.merge.mapredfiles = true(默认false)<br>3、 Map-only任务结束时:<br>set hive.merge.mapfiles=true(默认true)</p>
 <p>二、 过小，<strong>通过设置mapred.map.tasks</strong><br><a href="https://xiwu1994.github.io/2017/02/14/Hadoop%E8%AE%A1%E7%AE%97Map%E6%95%B0/" target="_blank" rel="external">Map数量是如何计算的参考文档</a></p>
@@ -343,7 +343,7 @@ Map数过大过小解决办法一、过大，通过合并小文件有三个阶�
 <li>Reduce数过大<br>1、最终生成了很多个小文件，如果作为下一个Job输入，会出现上面说的Map数过多的问题。<br>2、启动和初始化reduce也会消耗大量的时间和资源</li>
 <li>Reduce数过小<br>1、每个文件很大，执行耗时。<br>2、可能出现数据领斜。</li>
 </ul>
-<p><strong>默认计算方法</strong><br>Hive分配reduce数基于以下参数：<br>参数1：hive.exec.reducers.bytes.per.reducer(默认是1G)<br>参数2：hive.exec.reducers.max(最大reduce数，默认为999)<br>计算Reduce数的公式：<br>N=min(参数2，总输入数据量/参数1)<br><strong>即默认一个reduce处理1G数据量</strong></p>
+<p><strong>默认计算方法</strong><br>Hive分配reduce数基于以下参数：<br>参数1：hive.exec.reducers.bytes.per.reducer(默认是1G)<br>参数2：hive.exec.reducers.max(最大reduce数，默认为999)<br>计算Reduce数的公式：<br>N=min(参数2，总输入数据量/参数1)<br>PS. 注意总输入数据量是Map的输入量，而不是Map的输出量。所以这点不是很好，因此要预估Map的输出量来手动设置mapred.reduce.tasks<br><strong>即默认一个reduce处理1G数据量</strong></p>
 <p><strong>解决办法:通过设置Reduce数</strong><br>参数mapred.reduce.tasks 默认是1<br>set mapred.reduce.tasks=XX</p>
 <h3 id="数据倾斜-Join-Or-GroupBy"><a href="#数据倾斜-Join-Or-GroupBy" class="headerlink" title="数据倾斜(Join Or GroupBy)"></a>数据倾斜(Join Or GroupBy)</h3><h4 id="参数调节"><a href="#参数调节" class="headerlink" title="参数调节"></a>参数调节</h4><ul>
 <li><strong>增加Shuffle并行度(Reduce个数)</strong><br>set hive.exec.reducers.max=200;<br>set mapred.reduce.tasks= 200; –增大Reduce个数</li>
@@ -351,7 +351,7 @@ Map数过大过小解决办法一、过大，通过合并小文件有三个阶�
 <li><strong>Join</strong><br>set hive.skewjoin.key=100000; –这个是join的键对应的记录条数超过这个值则会进行分拆,值根据具体数据量设置<br>set hive.optimize.skewjoin=true; –如果是 <strong>Join</strong> 过程出现倾斜 应该设置为true</li>
 </ul>
 <h4 id="SQL语句调节"><a href="#SQL语句调节" class="headerlink" title="SQL语句调节"></a>SQL语句调节</h4><ul>
-<li>Join操作<br>1、<strong>若其中有一个表很小使用map join /<em>+ MAPJOIN(table) </em>/</strong>，否则使用普通的reduce join<br>2、<strong>使用普通reduce join时 将条目少的表/子查询放在 Join 操作符的 左边</strong>（位于 Join 操作符左边的表的内容会被加载进内存）</li>
+<li>Join操作<br>1、<strong>若其中有一个表很小使用map join /*+ MAPJOIN(table) */</strong>，否则使用普通的reduce join<br>2、<strong>使用普通reduce join时 将条目少的表/子查询放在 Join 操作符的 左边</strong>（位于 Join 操作符左边的表的内容会被加载进内存）</li>
 </ul>
 <p>PS. 熟练运用 <strong>union all和 创建临时表insert overwrite table</strong> 优化SQL语句</p>
 <h4 id="常见数据倾斜场景"><a href="#常见数据倾斜场景" class="headerlink" title="常见数据倾斜场景"></a>常见数据倾斜场景</h4><ul>
@@ -474,7 +474,7 @@ Map数过大过小解决办法一、过大，通过合并小文件有三个阶�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

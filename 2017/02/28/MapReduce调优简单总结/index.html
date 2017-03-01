@@ -92,6 +92,12 @@
 
 
 
+mapreduce.map.memory.mb
+int
+1024
+map使用的内存
+
+
 mapred.min.split.size
 int
 1
@@ -112,12 +118,7 @@ map缓冲区大小
 
 io.sort.factor
 int
-10
-并行处理spill的个数
-
-
-min.num.spill.for.combine
-int">
+10">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MapReduce调优简单总结">
 <meta property="og:url" content="http://yoursite.com/2017/02/28/MapReduce调优简单总结/index.html">
@@ -130,6 +131,12 @@ int">
 
 
 
+mapreduce.map.memory.mb
+int
+1024
+map使用的内存
+
+
 mapred.min.split.size
 int
 1
@@ -150,15 +157,10 @@ map缓冲区大小
 
 io.sort.factor
 int
-10
-并行处理spill的个数
-
-
-min.num.spill.for.combine
-int">
+10">
 <meta property="og:image" content="http://yoursite.com/images/201702/mr_optimize_1.png">
 <meta property="og:image" content="http://yoursite.com/images/201702/mr_optimize_2.png">
-<meta property="og:updated_time" content="2017-02-28T11:35:09.000Z">
+<meta property="og:updated_time" content="2017-03-01T02:33:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MapReduce调优简单总结">
 <meta name="twitter:description" content="选项
@@ -169,6 +171,12 @@ int">
 
 
 
+mapreduce.map.memory.mb
+int
+1024
+map使用的内存
+
+
 mapred.min.split.size
 int
 1
@@ -189,12 +197,7 @@ map缓冲区大小
 
 io.sort.factor
 int
-10
-并行处理spill的个数
-
-
-min.num.spill.for.combine
-int">
+10">
 <meta name="twitter:image" content="http://yoursite.com/images/201702/mr_optimize_1.png">
 
 
@@ -429,6 +432,12 @@ int">
 </thead>
 <tbody>
 <tr>
+<td>mapreduce.map.memory.mb</td>
+<td>int</td>
+<td>1024</td>
+<td>map使用的内存</td>
+</tr>
+<tr>
 <td>mapred.min.split.size</td>
 <td>int</td>
 <td>1</td>
@@ -484,6 +493,12 @@ int">
 </thead>
 <tbody>
 <tr>
+<td>mapreduce.reduce.memory.mb</td>
+<td>int</td>
+<td>1024</td>
+<td>reduce使用的内存</td>
+</tr>
+<tr>
 <td>mapred.reduce.parallel.copies</td>
 <td>int</td>
 <td>5</td>
@@ -496,7 +511,8 @@ int">
 <td>获取map数据最大超时时间</td>
 </tr>
 <tr>
-<td>mapred.job.shuffle.input.buffer.percent float</td>
+<td>mapred.job.shuffle.input.buffer.percent</td>
+<td>float</td>
 <td>0.7</td>
 <td>buffer大小占reduce可用内存的比例</td>
 </tr>
@@ -558,6 +574,10 @@ int">
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/03/01/SparkStreaming的window操作/" rel="prev" title="SparkStreaming的window操作">
+                SparkStreaming的window操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -617,7 +637,7 @@ int">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

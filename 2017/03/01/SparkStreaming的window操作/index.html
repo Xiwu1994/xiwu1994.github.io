@@ -84,19 +84,42 @@
 
 
 
-<meta name="description" content="Spark比Hadoop快的原因一、shuffle后中间结果可以存入内存而不是直接写入到disk二、减少shuffle阶段，因为DAG的优化..（待深入）Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别1、Yarn-cluster—生产环境，Yarn-client—交互和调试2、Yarn-cluster模式,Driver运行在AM(Application M">
+<meta name="description" content="简单介绍window操作
+原始的Dstream：一个参数，表示多长时间划分一个RDD窗口操作：两个参数，表示
+
+window length（窗口长度）：窗口的持续时间（上图为3个时间单位）
+sliding interval （滑动间隔）- 窗口操作的时间间隔（上图为2个时间单位）
+
+对上图简单理解：每隔2个时间单位，对之前的3个时间单位操作
+API说明举例：SparkStreaming的输入：每秒">
 <meta property="og:type" content="article">
-<meta property="og:title" content="大数据面试总结-1">
-<meta property="og:url" content="http://yoursite.com/2017/01/27/大数据面试总结-1/index.html">
+<meta property="og:title" content="SparkStreaming的window操作">
+<meta property="og:url" content="http://yoursite.com/2017/03/01/SparkStreaming的window操作/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="Spark比Hadoop快的原因一、shuffle后中间结果可以存入内存而不是直接写入到disk二、减少shuffle阶段，因为DAG的优化..（待深入）Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别1、Yarn-cluster—生产环境，Yarn-client—交互和调试2、Yarn-cluster模式,Driver运行在AM(Application M">
-<meta property="og:image" content="http://yoursite.com/images/201702/yarn-cluster.png">
-<meta property="og:image" content="http://yoursite.com/images/201702/yarn-client.png">
-<meta property="og:updated_time" content="2017-02-14T03:35:19.000Z">
+<meta property="og:description" content="简单介绍window操作
+原始的Dstream：一个参数，表示多长时间划分一个RDD窗口操作：两个参数，表示
+
+window length（窗口长度）：窗口的持续时间（上图为3个时间单位）
+sliding interval （滑动间隔）- 窗口操作的时间间隔（上图为2个时间单位）
+
+对上图简单理解：每隔2个时间单位，对之前的3个时间单位操作
+API说明举例：SparkStreaming的输入：每秒">
+<meta property="og:image" content="http://yoursite.com/images/201703/SparkStreaming_window_1.png">
+<meta property="og:image" content="http://yoursite.com/images/201703/SparkStreaming_window_2.png">
+<meta property="og:image" content="http://yoursite.com/images/201703/SparkStreaming_window_3.png">
+<meta property="og:image" content="http://yoursite.com/images/201703/SparkStreaming_window_4.png">
+<meta property="og:updated_time" content="2017-03-01T15:19:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="大数据面试总结-1">
-<meta name="twitter:description" content="Spark比Hadoop快的原因一、shuffle后中间结果可以存入内存而不是直接写入到disk二、减少shuffle阶段，因为DAG的优化..（待深入）Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别1、Yarn-cluster—生产环境，Yarn-client—交互和调试2、Yarn-cluster模式,Driver运行在AM(Application M">
-<meta name="twitter:image" content="http://yoursite.com/images/201702/yarn-cluster.png">
+<meta name="twitter:title" content="SparkStreaming的window操作">
+<meta name="twitter:description" content="简单介绍window操作
+原始的Dstream：一个参数，表示多长时间划分一个RDD窗口操作：两个参数，表示
+
+window length（窗口长度）：窗口的持续时间（上图为3个时间单位）
+sliding interval （滑动间隔）- 窗口操作的时间间隔（上图为2个时间单位）
+
+对上图简单理解：每隔2个时间单位，对之前的3个时间单位操作
+API说明举例：SparkStreaming的输入：每秒">
+<meta name="twitter:image" content="http://yoursite.com/images/201703/SparkStreaming_window_1.png">
 
 
 
@@ -124,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/27/大数据面试总结-1/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/01/SparkStreaming的window操作/"/>
 
 
 
 
 
-  <title> 大数据面试总结-1 | Refrain </title>
+  <title> SparkStreaming的window操作 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -243,7 +266,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/大数据面试总结-1/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/SparkStreaming的window操作/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -267,7 +290,7 @@
             
             
               
-                大数据面试总结-1
+                SparkStreaming的window操作
               
             
           </h1>
@@ -282,8 +305,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-27T22:36:35+08:00">
-                2017-01-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-01T21:38:12+08:00">
+                2017-03-01
               </time>
             
 
@@ -318,15 +341,27 @@
       
 
       
-        <h2 id="Spark比Hadoop快的原因"><a href="#Spark比Hadoop快的原因" class="headerlink" title="Spark比Hadoop快的原因"></a>Spark比Hadoop快的原因</h2><h3 id="一、shuffle后中间结果可以存入内存而不是直接写入到disk"><a href="#一、shuffle后中间结果可以存入内存而不是直接写入到disk" class="headerlink" title="一、shuffle后中间结果可以存入内存而不是直接写入到disk"></a>一、shuffle后中间结果可以存入内存而不是直接写入到disk</h3><h3 id="二、减少shuffle阶段，因为DAG的优化-（待深入）"><a href="#二、减少shuffle阶段，因为DAG的优化-（待深入）" class="headerlink" title="二、减少shuffle阶段，因为DAG的优化..（待深入）"></a>二、减少shuffle阶段，因为DAG的优化..（待深入）</h3><h2 id="Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别"><a href="#Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别" class="headerlink" title="Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别"></a>Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别</h2><p>1、Yarn-cluster—生产环境，Yarn-client—交互和调试<br>2、Yarn-cluster模式,Driver运行在AM(Application Master)中，它负责向Yarn申请资源，并监督作业的运行状况。当用户提交了作业之后，就可以关掉Client，作业会继续在Yarn上运行。<br>Yarn-client模式,AM仅仅向Yarn请求executor,client会和请求的container通信来调度他们的工作<br>yarn-cluster:<br><img src="/images/201702/yarn-cluster.png"><br>yarn-client:<br><img src="/images/201702/yarn-client.png"></p>
-<h2 id="MapReduce调优"><a href="#MapReduce调优" class="headerlink" title="MapReduce调优"></a>MapReduce调优</h2><h3 id="管理员"><a href="#管理员" class="headerlink" title="管理员"></a>管理员</h3><h4 id="JVM参数调优"><a href="#JVM参数调优" class="headerlink" title="JVM参数调优"></a>JVM参数调优</h4><p>通过调整JVM FLAGS和JVM垃圾回收机制提高Hadoop性能</p>
-<h4 id="Hadoop参数调优"><a href="#Hadoop参数调优" class="headerlink" title="Hadoop参数调优"></a>Hadoop参数调优</h4><p>合理规划资源，调整心跳配置，磁盘块配置(I/O密集型，增加磁盘块)，启用批量任务调度，选择合适的压缩算法，启用预读取机制</p>
-<h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><h4 id="应用程序编写规范"><a href="#应用程序编写规范" class="headerlink" title="应用程序编写规范"></a>应用程序编写规范</h4><p>1、设置Combiner(对于大批MR程序)<br>2、选择合理的Writable类型</p>
-<h4 id="作业级别参数调优"><a href="#作业级别参数调优" class="headerlink" title="作业级别参数调优"></a>作业级别参数调优</h4><p>规划合理的任务数目，增加文件副本数，启用推测执行机制，适当打开JVM重用功能，设置任务超时时间</p>
-<h4 id="任务级别参数调优"><a href="#任务级别参数调优" class="headerlink" title="任务级别参数调优"></a>任务级别参数调优</h4><p>Map Task调优, Reduce Task调优</p>
-<h2 id="Hive调优"><a href="#Hive调优" class="headerlink" title="Hive调优"></a>Hive调优</h2><h3 id="配置角度优化"><a href="#配置角度优化" class="headerlink" title="配置角度优化"></a>配置角度优化</h3><p>列裁剪, 分区裁剪, join(小表放前), group by(Map端部分聚合,负载均衡), 合并小文件<br>reduce的内存和数量配置</p>
-<h3 id="程序角度优化"><a href="#程序角度优化" class="headerlink" title="程序角度优化"></a>程序角度优化</h3><p>GROUP BY替代COUNT(DISTINCT), 不同数据类型关联产生的倾斜问题, 无效ID在关联时的数据倾斜问题</p>
-<p>转载:<br><a href="http://jaydenwang.blog.51cto.com/6033165/1845247" target="_blank" rel="external">http://jaydenwang.blog.51cto.com/6033165/1845247</a><br><a href="http://www.cnblogs.com/smartloli/p/4356660.html" target="_blank" rel="external">http://www.cnblogs.com/smartloli/p/4356660.html</a></p>
+        <h3 id="简单介绍window操作"><a href="#简单介绍window操作" class="headerlink" title="简单介绍window操作"></a>简单介绍window操作</h3><img src="/images/201703/SparkStreaming_window_1.png">
+<p><strong>原始的Dstream</strong>：一个参数，表示多长时间划分一个RDD<br><strong>窗口操作</strong>：两个参数，表示</p>
+<ul>
+<li>window length（窗口长度）：窗口的持续时间（上图为3个时间单位）</li>
+<li>sliding interval （滑动间隔）- 窗口操作的时间间隔（上图为2个时间单位）</li>
+</ul>
+<p><strong>对上图简单理解：每隔2个时间单位，对之前的3个时间单位操作</strong></p>
+<h3 id="API说明"><a href="#API说明" class="headerlink" title="API说明"></a>API说明</h3><p>举例：<br>SparkStreaming的输入：每秒从[aa,bb,cc,dd,ee,ff,gg,hh]中随机选一个作为输入<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(sc,<span class="type">Seconds</span>(<span class="number">1</span>))</div><div class="line"><span class="keyword">val</span> socketStreaming = ssc.socketTextStream(<span class="string">"master"</span>,<span class="number">9999</span>)</div></pre></td></tr></table></figure></p>
+<h4 id="window"><a href="#window" class="headerlink" title="window"></a>window</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> data = socketStreaming.window(<span class="type">Seconds</span>(<span class="number">3</span>), <span class="type">Seconds</span>(<span class="number">2</span>))</div><div class="line">data.print()</div></pre></td></tr></table></figure>
+<p>结果如图：<br><img src="/images/201703/SparkStreaming_window_2.png"></p>
+<h4 id="countByValueAndWindow"><a href="#countByValueAndWindow" class="headerlink" title="countByValueAndWindow"></a>countByValueAndWindow</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> data = socketStreaming.countByValueAndWindow(<span class="type">Seconds</span>(<span class="number">3</span>),<span class="type">Seconds</span>(<span class="number">2</span>))</div><div class="line">data.print()</div></pre></td></tr></table></figure>
+<img src="/images/201703/SparkStreaming_window_3.png">
+<h4 id="reduceByKeyAndWindow"><a href="#reduceByKeyAndWindow" class="headerlink" title="reduceByKeyAndWindow"></a>reduceByKeyAndWindow</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> data = socketStreaming.map(x=&gt;(x,<span class="number">1</span>)).</div><div class="line">    reduceByKeyAndWindow(</div><div class="line">    _+_, <span class="comment">// 加上新进入窗口的新批次中的元素 </span></div><div class="line">    _-_, <span class="comment">// 减去离开窗口的的老批次的元素</span></div><div class="line">    <span class="type">Seconds</span>(<span class="number">3</span>),<span class="type">Seconds</span>(<span class="number">2</span>))</div><div class="line">data.print()</div></pre></td></tr></table></figure>
+<img src="/images/201703/SparkStreaming_window_4.png">
+<ul>
+<li>reduceByKeyAndWindow(func,windowLength, slideInterval, [numTasks])</li>
+<li>reduceByKeyAndWindow(func, invFunc,windowLength, slideInterval, [numTasks])</li>
+<li>使用逆函数invFunc可以提高效率(原理下次补上)</li>
+</ul>
+<h4 id="reduceByWindow和countByWindow"><a href="#reduceByWindow和countByWindow" class="headerlink" title="reduceByWindow和countByWindow"></a>reduceByWindow和countByWindow</h4><p>暂时没看明白,mark</p>
+<p>PS.在今天面试之前，面试官竟然看了我的博客，还是很开心的～</p>
 
       
     </div>
@@ -353,8 +388,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/26/Spark运行框架/" rel="next" title="Spark运行框架">
-                <i class="fa fa-chevron-left"></i> Spark运行框架
+              <a href="/2017/02/28/MapReduce调优简单总结/" rel="next" title="MapReduce调优简单总结">
+                <i class="fa fa-chevron-left"></i> MapReduce调优简单总结
               </a>
             
           </div>
@@ -362,10 +397,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/28/c/" rel="prev" title="c">
-                c <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -481,7 +512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark比Hadoop快的原因"><span class="nav-number">1.</span> <span class="nav-text">Spark比Hadoop快的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、shuffle后中间结果可以存入内存而不是直接写入到disk"><span class="nav-number">1.1.</span> <span class="nav-text">一、shuffle后中间结果可以存入内存而不是直接写入到disk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、减少shuffle阶段，因为DAG的优化-（待深入）"><span class="nav-number">1.2.</span> <span class="nav-text">二、减少shuffle阶段，因为DAG的优化..（待深入）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别"><span class="nav-number">2.</span> <span class="nav-text">Spark通过yarn提交任务时，Yarn-client和Yarn-cluster的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce调优"><span class="nav-number">3.</span> <span class="nav-text">MapReduce调优</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#管理员"><span class="nav-number">3.1.</span> <span class="nav-text">管理员</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JVM参数调优"><span class="nav-number">3.1.1.</span> <span class="nav-text">JVM参数调优</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hadoop参数调优"><span class="nav-number">3.1.2.</span> <span class="nav-text">Hadoop参数调优</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户"><span class="nav-number">3.2.</span> <span class="nav-text">用户</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用程序编写规范"><span class="nav-number">3.2.1.</span> <span class="nav-text">应用程序编写规范</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作业级别参数调优"><span class="nav-number">3.2.2.</span> <span class="nav-text">作业级别参数调优</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务级别参数调优"><span class="nav-number">3.2.3.</span> <span class="nav-text">任务级别参数调优</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive调优"><span class="nav-number">4.</span> <span class="nav-text">Hive调优</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置角度优化"><span class="nav-number">4.1.</span> <span class="nav-text">配置角度优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序角度优化"><span class="nav-number">4.2.</span> <span class="nav-text">程序角度优化</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单介绍window操作"><span class="nav-number">1.</span> <span class="nav-text">简单介绍window操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API说明"><span class="nav-number">2.</span> <span class="nav-text">API说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#window"><span class="nav-number">2.1.</span> <span class="nav-text">window</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#countByValueAndWindow"><span class="nav-number">2.2.</span> <span class="nav-text">countByValueAndWindow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reduceByKeyAndWindow"><span class="nav-number">2.3.</span> <span class="nav-text">reduceByKeyAndWindow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reduceByWindow和countByWindow"><span class="nav-number">2.4.</span> <span class="nav-text">reduceByWindow和countByWindow</span></a></li></ol></li></ol></div>
             
 
           </div>
