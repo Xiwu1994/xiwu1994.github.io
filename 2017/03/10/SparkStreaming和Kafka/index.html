@@ -84,29 +84,33 @@
 
 
 
-<meta name="description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
+<meta name="description" content="Receiver到DirectApi 优点
+没有WAL，减少了存储和增快了性能(从kafka直接获取数据，比从hdfs快)
+自己维护Offset，实现了exactly-one
+
+不足
+offset不通过zk维护，不能在监控工具上查看offset">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark运行框架">
-<meta property="og:url" content="http://yoursite.com/2017/01/26/Spark运行框架/index.html">
+<meta property="og:title" content="SparkStreaming+Kafka Receiver到DirectApi">
+<meta property="og:url" content="http://yoursite.com/2017/03/10/SparkStreaming和Kafka/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_2.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_3.png">
-<meta property="og:updated_time" content="2017-01-27T15:11:11.000Z">
+<meta property="og:description" content="Receiver到DirectApi 优点
+没有WAL，减少了存储和增快了性能(从kafka直接获取数据，比从hdfs快)
+自己维护Offset，实现了exactly-one
+
+不足
+offset不通过zk维护，不能在监控工具上查看offset">
+<meta property="og:image" content="http://yoursite.com/images/201703/SparkStreaming_Kafka_1.png">
+<meta property="og:updated_time" content="2017-03-11T12:16:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark运行框架">
-<meta name="twitter:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta name="twitter:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
+<meta name="twitter:title" content="SparkStreaming+Kafka Receiver到DirectApi">
+<meta name="twitter:description" content="Receiver到DirectApi 优点
+没有WAL，减少了存储和增快了性能(从kafka直接获取数据，比从hdfs快)
+自己维护Offset，实现了exactly-one
+
+不足
+offset不通过zk维护，不能在监控工具上查看offset">
+<meta name="twitter:image" content="http://yoursite.com/images/201703/SparkStreaming_Kafka_1.png">
 
 
 
@@ -134,13 +138,13 @@ Spark YARN Cluster Mode 运行流程示意图
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/26/Spark运行框架/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/10/SparkStreaming和Kafka/"/>
 
 
 
 
 
-  <title> Spark运行框架 | Refrain </title>
+  <title> SparkStreaming+Kafka Receiver到DirectApi | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -253,7 +257,7 @@ Spark YARN Cluster Mode 运行流程示意图
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/26/Spark运行框架/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/10/SparkStreaming和Kafka/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -277,7 +281,7 @@ Spark YARN Cluster Mode 运行流程示意图
             
             
               
-                Spark运行框架
+                SparkStreaming+Kafka Receiver到DirectApi
               
             
           </h1>
@@ -292,8 +296,8 @@ Spark YARN Cluster Mode 运行流程示意图
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-26T12:00:43+08:00">
-                2017-01-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-10T14:10:42+08:00">
+                2017-03-10
               </time>
             
 
@@ -328,10 +332,14 @@ Spark YARN Cluster Mode 运行流程示意图
       
 
       
-        <h3 id="Spark官网展示了如下的集群运行架构"><a href="#Spark官网展示了如下的集群运行架构" class="headerlink" title="Spark官网展示了如下的集群运行架构"></a>Spark官网展示了如下的集群运行架构</h3><img src="/images/201701/Spark_Frame_1.png">
-<h3 id="Spark-Standalone-Client-Mode-运行流程示意图"><a href="#Spark-Standalone-Client-Mode-运行流程示意图" class="headerlink" title="Spark Standalone Client Mode 运行流程示意图"></a>Spark Standalone Client Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_2.png">
-<h3 id="Spark-YARN-Cluster-Mode-运行流程示意图"><a href="#Spark-YARN-Cluster-Mode-运行流程示意图" class="headerlink" title="Spark YARN Cluster Mode 运行流程示意图"></a>Spark YARN Cluster Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_3.png">
-<p>转载: <a href="http://blog.csdn.net/bigdata_wang/article/details/48245581" target="_blank" rel="external">http://blog.csdn.net/bigdata_wang/article/details/48245581</a></p>
+        <img src="/images/201703/SparkStreaming_Kafka_1.png">
+<h3 id="Receiver到DirectApi-优点"><a href="#Receiver到DirectApi-优点" class="headerlink" title="Receiver到DirectApi 优点"></a>Receiver到DirectApi 优点</h3><ul>
+<li>没有WAL，减少了存储和增快了性能(从kafka直接获取数据，比从hdfs快)</li>
+<li>自己维护Offset，实现了exactly-one</li>
+</ul>
+<h3 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h3><ul>
+<li>offset不通过zk维护，不能在监控工具上查看offset</li>
+</ul>
 
       
     </div>
@@ -358,8 +366,8 @@ Spark YARN Cluster Mode 运行流程示意图
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/25/supervisor使用/" rel="next" title="Supervisor简单使用">
-                <i class="fa fa-chevron-left"></i> Supervisor简单使用
+              <a href="/2017/03/03/kylin/" rel="next" title="kylin">
+                <i class="fa fa-chevron-left"></i> kylin
               </a>
             
           </div>
@@ -367,10 +375,6 @@ Spark YARN Cluster Mode 运行流程示意图
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/27/大数据面试总结-1/" rel="prev" title="大数据面试总结-1">
-                大数据面试总结-1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -486,7 +490,7 @@ Spark YARN Cluster Mode 运行流程示意图
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark官网展示了如下的集群运行架构"><span class="nav-number">1.</span> <span class="nav-text">Spark官网展示了如下的集群运行架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Standalone-Client-Mode-运行流程示意图"><span class="nav-number">2.</span> <span class="nav-text">Spark Standalone Client Mode 运行流程示意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-YARN-Cluster-Mode-运行流程示意图"><span class="nav-number">3.</span> <span class="nav-text">Spark YARN Cluster Mode 运行流程示意图</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Receiver到DirectApi-优点"><span class="nav-number">1.</span> <span class="nav-text">Receiver到DirectApi 优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不足"><span class="nav-number">2.</span> <span class="nav-text">不足</span></a></li></ol></div>
             
 
           </div>
