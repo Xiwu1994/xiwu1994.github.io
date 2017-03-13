@@ -241,6 +241,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/13/分组TopN问题/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/13/分组TopN问题/" itemprop="url">
+                  分组TopN问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-13T15:02:21+08:00">
+                2017-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>列说明:<br>菜名 省份名 市场名 价格<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">v2 p2 m7 2.2</div><div class="line">v2 p2 m8 2.4</div><div class="line">v1 p1 m8 1</div><div class="line">v1 p1 m9 1.2</div><div class="line">v1 p2 m10 1.3</div><div class="line">v1 p2 m11 1.4</div><div class="line">v2 p1 m9 2</div><div class="line">v2 p1 m10 3</div><div class="line">v2 p1 m11 5</div><div class="line">v2 p2 m12 2.2</div><div class="line">v2 p2 m13 2.4</div></pre></td></tr></table></figure></p>
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>一、对于每种菜，求出比全国平均价更高的省份<br>(解释：每种菜都有全国平均价格，每种菜在不同省也有不同的平均价格，找到比全国平均价高的省份)<br>二、对于上面的省份，求出比全国平均价高的每种菜的Top3的市场</p>
+<h3 id="Spark任务"><a href="#Spark任务" class="headerlink" title="Spark任务"></a>Spark任务</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">test_data_spark</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</div><div class="line">    <span class="type">Logger</span>.getLogger(<span class="string">"org"</span>).setLevel(<span class="type">Level</span>.<span class="type">WARN</span>)</div><div class="line">    <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">"test"</span>).setMaster(<span class="string">"local"</span>)</div><div class="line">    <span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(conf)</div><div class="line">    <span class="keyword">val</span> rdd = sc.textFile(<span class="string">"./src/test/test_data"</span>).cache()</div><div class="line">    <span class="keyword">val</span> v_p_avg_price = rdd.map(x =&gt; &#123;</div><div class="line">      <span class="keyword">val</span> line = x.split(<span class="string">" "</span>)</div><div class="line">      (line(<span class="number">0</span>)+<span class="string">"#"</span>+line(<span class="number">1</span>), (line(<span class="number">3</span>).toFloat, <span class="number">1</span>))</div><div class="line">    &#125;).reduceByKey((x, y) =&gt; (x._1+y._1, x._2+y._2)).mapValues(x =&gt; x._1/x._2).cache()</div><div class="line">    <span class="comment">/*</span></div><div class="line">    v_p_avg_price 是求出每种菜的每个省份的 平均价格</div><div class="line">    (v2#p2,2.3000002)</div><div class="line">    (v1#p1,1.5666666)</div><div class="line">    (v1#p2,1.3499999)</div><div class="line">    (v2#p1,3.3333333)</div><div class="line">    */</div><div class="line">    <span class="keyword">val</span> v_avg_price = v_p_avg_price.map(x =&gt;</div><div class="line">      (x._1.split(<span class="string">"#"</span>)(<span class="number">0</span>), (x._2, <span class="number">1</span>))).reduceByKey((x, y) =&gt; (x._1+y._1, x._2+y._2)).mapValues(x =&gt; x._1/x._2)</div><div class="line">    <span class="comment">/*</span></div><div class="line">    v_avg_price 是每种菜的全国平均价格</div><div class="line">    (v1,1.4583333)</div><div class="line">    (v2,2.8166666)</div><div class="line">    * */</div><div class="line">    <span class="keyword">val</span> nn_v_p_avg_price = v_p_avg_price.map(x =&gt; (x._1.split(<span class="string">"#"</span>)(<span class="number">0</span>), (x._1.split(<span class="string">"#"</span>)(<span class="number">1</span>), x._2)))</div><div class="line">    <span class="keyword">val</span> higer_p = nn_v_p_avg_price.join(v_avg_price).map(x =&gt; &#123;</div><div class="line">      <span class="keyword">if</span>(x._2._1._2 &gt; x._2._2)&#123;</div><div class="line">        (x._1, x._2._1._1)</div><div class="line">      &#125;<span class="keyword">else</span>&#123;</div><div class="line">        (<span class="string">"NULL"</span>, <span class="string">"NULL"</span>)</div><div class="line">      &#125;</div><div class="line">    &#125;).filter(x =&gt; ! x._1.contains(<span class="string">"NULL"</span>)).map(x =&gt; (x._1 + <span class="string">"#"</span> + x._2, <span class="number">0</span>))</div><div class="line">    <span class="comment">/*</span></div><div class="line">    higer_p 是对于每种菜，求出比全国平均价更高的省份</div><div class="line">    (v1#p1,0)</div><div class="line">    (v2#p1,0)</div><div class="line">    * */</div><div class="line">    <span class="keyword">val</span> wait_filter_data = rdd.map(x =&gt; &#123;</div><div class="line">      <span class="keyword">val</span> line = x.split(<span class="string">" "</span>)</div><div class="line">      (line(<span class="number">0</span>)+<span class="string">"#"</span>+line(<span class="number">1</span>), line(<span class="number">2</span>)+<span class="string">"#"</span>+line(<span class="number">3</span>))</div><div class="line">    &#125;)</div><div class="line">    higer_p.join(wait_filter_data).groupByKey().mapValues(x =&gt; &#123;</div><div class="line">      x.toList.map(x =&gt; &#123;</div><div class="line">        <span class="keyword">val</span> line = x._2.split(<span class="string">"#"</span>)</div><div class="line">        (line(<span class="number">0</span>), line(<span class="number">1</span>))</div><div class="line">      &#125;).sortBy(x =&gt; -x._2.toDouble).take(<span class="number">3</span>) <span class="comment">// ===分组求TopN操作 先groupByKey-&gt;sortBy-&gt;take===</span></div><div class="line">    &#125;).foreach(println _)</div><div class="line">    <span class="comment">/*</span></div><div class="line">    最后结果</div><div class="line">    (v1#p1,List((m5,3), (m4,2), (m2,1.2)))   m5是最高的，接下来m4, m2</div><div class="line">    (v2#p1,List((m5,5), (m6,5), (m11,5)))</div><div class="line">    * */</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<img src="/images/201703/groupby_topN_1.png">
+<h3 id="SparkSQL任务-（Hive窗口函数）"><a href="#SparkSQL任务-（Hive窗口函数）" class="headerlink" title="SparkSQL任务 （Hive窗口函数）"></a>SparkSQL任务 （Hive窗口函数）</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">test_data_SparkSql</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</div><div class="line">    <span class="type">Logger</span>.getLogger(<span class="string">"org"</span>).setLevel(<span class="type">Level</span>.<span class="type">WARN</span>)</div><div class="line">    <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">"test"</span>).setMaster(<span class="string">"local"</span>)</div><div class="line">    <span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(conf)</div><div class="line">    <span class="keyword">val</span> <span class="type">Hivectx</span> = <span class="keyword">new</span> <span class="type">HiveContext</span>(sc)</div><div class="line">    <span class="type">Hivectx</span>.sql(<span class="string">"DROP TABLE IF EXISTS LOG"</span>)</div><div class="line">    <span class="type">Hivectx</span>.sql(<span class="string">"CREATE TABLE IF NOT EXISTS LOG (v STRING,p STRING,m STRING, price FLOAT) row format delimited fields terminated by ' '"</span>)</div><div class="line">    <span class="type">Hivectx</span>.sql(<span class="string">"LOAD DATA LOCAL INPATH './src/test/test_data' INTO TABLE LOG"</span>)</div><div class="line">    <span class="type">Hivectx</span>.sql(<span class="string">"DROP TABLE IF EXISTS higher_p"</span>)</div><div class="line">    <span class="comment">//以上是将输入源导入Hive表中</span></div><div class="line"></div><div class="line">    <span class="type">Hivectx</span>.sql(<span class="string">"create table IF NOT EXISTS higher_p as select b.v, b.p from( select v, avg(price) price from log "</span> +</div><div class="line">      <span class="string">"group by v)a join (select v, p, avg(price) price from log group by v, p)b on a.v = b.v where b.price &gt; a.price"</span>)</div><div class="line">    <span class="comment">//上一部是找到  对于每种菜，求出比全国平均价更高的省份</span></div><div class="line"></div><div class="line">    <span class="keyword">val</span> result = <span class="type">Hivectx</span>.sql(<span class="string">"select * from(select b.v as v, b.p as p, b.m as m, b.price as price, row_number() OVER(PARTITION by b.v, b.p order by b.price desc) as rank from higher_p a join log b on a.v = b.v and a.p = b.p )c where c.rank &lt;= 3"</span>)</div><div class="line">    <span class="comment">//上一部是找到  对于上面的省份，求出比全国平均价高的每种菜的Top3的市场</span></div><div class="line">    <span class="comment">// 用到row_number 窗口函数（PS. 因为用到窗口函数，需要把表放到Hive中，不能建立临时表操作）</span></div><div class="line">    result.foreach(println _)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<img src="/images/201703/groupby_topN_2.png">
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/10/SparkStreaming和Kafka/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1690,198 +1813,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/17/hive的join操作/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/17/hive的join操作/" itemprop="url">
-                  Hive的join操作
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-17T11:26:04+08:00">
-                2017-02-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="join类型"><a href="#join类型" class="headerlink" title="join类型"></a>join类型</h2><ul>
-<li>内关联（JOIN）</li>
-<li>左外关联（LEFT [OUTER] JOIN)</li>
-<li>右外关联（RIGHT [OUTER] JOIN）</li>
-<li>全外关联（FULL [OUTER] JOIN）</li>
-<li>LEFT SEMI JOIN</li>
-<li>笛卡尔积关联（CROSS JOIN）</li>
-</ul>
-<h2 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h2><p>TableName: <strong>Name</strong></p>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>zhangsan</td>
-</tr>
-<tr>
-<td>2</td>
-<td>lisi</td>
-</tr>
-<tr>
-<td>3</td>
-<td>wangwu</td>
-</tr>
-</tbody>
-</table>
-<p>TableName: <strong>Age</strong></p>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>30</td>
-</tr>
-<tr>
-<td>2</td>
-<td>29</td>
-</tr>
-<tr>
-<td>4</td>
-<td>21</td>
-</tr>
-</tbody>
-</table>
-<h2 id="内关联（JOIN）"><a href="#内关联（JOIN）" class="headerlink" title="内关联（JOIN）"></a>内关联（JOIN）</h2><p>返回能关联上的结果<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name,</div><div class="line">b.age </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a</div><div class="line"><span class="keyword">join</span> Age b</div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">--执行结果</span></div><div class="line">1       zhangsan    30</div><div class="line">2       lisi        29</div></pre></td></tr></table></figure></p>
-<h2 id="左外关联（LEFT-OUTER-JOIN）"><a href="#左外关联（LEFT-OUTER-JOIN）" class="headerlink" title="左外关联（LEFT [OUTER] JOIN）"></a>左外关联（LEFT [OUTER] JOIN）</h2><p>以LEFT [OUTER] JOIN关键字 <strong>前面的表</strong> 作为主表，和其他表进行关联，返回记录和主表的记录数一致，关联不上的字段置为NULL。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name,</div><div class="line">b.age </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">left</span> <span class="keyword">join</span> Age b </div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"> </div><div class="line"><span class="comment">--执行结果：</span></div><div class="line">1   zhangsan   30</div><div class="line">2   lisi       29</div><div class="line">3   wangwu     NULL</div></pre></td></tr></table></figure></p>
-<h2 id="右外关联（RIGHT-OUTER-JOIN）"><a href="#右外关联（RIGHT-OUTER-JOIN）" class="headerlink" title="右外关联（RIGHT [OUTER] JOIN）"></a>右外关联（RIGHT [OUTER] JOIN）</h2><p>和左外关联相反，以RIGTH [OUTER] JOIN关键词 <strong>后面的表</strong> 作为主表，和前面的表做关联，返回记录数和主表一致，关联不上的字段为NULL。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name,</div><div class="line">b.age </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">RIGHT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> Age b </div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"> </div><div class="line"><span class="comment">--执行结果：</span></div><div class="line">1          zhangsan    30</div><div class="line">2          lisi        29</div><div class="line">NULL       NULL        21</div></pre></td></tr></table></figure></p>
-<h2 id="全外关联（FULL-OUTER-JOIN）"><a href="#全外关联（FULL-OUTER-JOIN）" class="headerlink" title="全外关联（FULL [OUTER] JOIN）"></a>全外关联（FULL [OUTER] JOIN）</h2><p>以两个表的记录为基准，返回两个表的记录去重之和，关联不上的字段为NULL。<br><em>注意：FULL JOIN时候，Hive不会使用MapJoin来优化。</em><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name,</div><div class="line">b.age </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">FULL</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> Age b </div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"> </div><div class="line"><span class="comment">--执行结果：</span></div><div class="line">1       zhangsan        30</div><div class="line">2       lisi            29</div><div class="line">3       wangwu          NULL</div><div class="line">NULL    NULL            21</div></pre></td></tr></table></figure></p>
-<h2 id="LEFT-SEMI-JOIN"><a href="#LEFT-SEMI-JOIN" class="headerlink" title="LEFT SEMI JOIN"></a>LEFT SEMI JOIN</h2><p>以LEFT SEMI JOIN关键字 <strong>前面的表</strong> 为主表，返回主表的KEY也在副表中的记录 <em>(相当于mysql中的 <strong>in</strong> 操作)。</em><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">LEFT</span> SEMI <span class="keyword">JOIN</span> Age b </div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"> </div><div class="line"><span class="comment">--执行结果：</span></div><div class="line">1       zhangsan</div><div class="line">2       lisi</div><div class="line"> </div><div class="line"><span class="comment">--等价于：</span></div><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">WHERE</span> a.id <span class="keyword">IN</span> (<span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> Age);</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="comment">--也等价于：</span></div><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">join</span> Age b </div><div class="line"><span class="keyword">ON</span> (a.id = b.id);</div><div class="line"> </div><div class="line"><span class="comment">--也等价于：</span></div><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name </div><div class="line"><span class="keyword">FROM</span> <span class="keyword">Name</span> a </div><div class="line"><span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (<span class="keyword">SELECT</span> <span class="number">1</span> <span class="keyword">FROM</span> Age b <span class="keyword">WHERE</span> a.id = b.id);</div></pre></td></tr></table></figure></p>
-<p>PS. LEFT SEMI JOIN 和 JOIN的区别:<br><strong>当B表出现重复数据的时候</strong>LEFT SEMI JOIN是在B表上产生符合条件之后就返回,不会再继续查找B表记录了，而JOIN是会遍历完整个B表,返回所有符合条件的纪录</p>
-<h2 id="笛卡尔积关联（CROSS-JOIN）"><a href="#笛卡尔积关联（CROSS-JOIN）" class="headerlink" title="笛卡尔积关联（CROSS JOIN）"></a>笛卡尔积关联（CROSS JOIN）</h2><p>返回两个表的笛卡尔积结果，不需要指定关联键。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> a.id,</div><div class="line">a.name,</div><div class="line">b.age </div><div class="line"><span class="keyword">FROM</span> lxw1234_a a </div><div class="line"><span class="keyword">CROSS</span> <span class="keyword">JOIN</span> lxw1234_b b;</div><div class="line"> </div><div class="line"><span class="comment">--执行结果：</span></div><div class="line">1       zhangsan        30</div><div class="line">1       zhangsan        29</div><div class="line">1       zhangsan        21</div><div class="line">2       lisi            30</div><div class="line">2       lisi            29</div><div class="line">2       lisi            21</div><div class="line">3       wangwu          30</div><div class="line">3       wangwu          29</div><div class="line">3       wangwu          21</div></pre></td></tr></table></figure></p>
-<h2 id="map-site-JOIN"><a href="#map-site-JOIN" class="headerlink" title="map-site JOIN"></a>map-site JOIN</h2><p>如果所有表中只有一张表是小表，那么可以在最大的表通过Mapper的时候将小标完全放倒内存中。Hive可以在map端执行连接过程（称为map-site join）。这样做的优点：</p>
-<ul>
-<li>小表加入内存，省去常规连接操作所需要的reduce过程</li>
-<li>同时减少map过程的执行步骤</li>
-</ul>
-<h3 id="方法一-直接通过SQL声明"><a href="#方法一-直接通过SQL声明" class="headerlink" title="方法一:直接通过SQL声明"></a>方法一:直接通过SQL声明</h3><p>select /<em>+mapjoin(a)</em>/ a.col1,b.col2<br>from table_a a join table_b b on a.col1=b.col1</p>
-<h3 id="方法二-Hive配置来启用，用户也可以配置能够使用这个优化的小表大小"><a href="#方法二-Hive配置来启用，用户也可以配置能够使用这个优化的小表大小" class="headerlink" title="方法二:Hive配置来启用，用户也可以配置能够使用这个优化的小表大小"></a>方法二:Hive配置来启用，用户也可以配置能够使用这个优化的小表大小</h3><p>set hive.auto.convert.join=true;<br>set hive.mapjoin.smalltable.filesize=250000;<br>select a.col1,b.col2<br>from table_a a join table_b b on a.col1=b.col1</p>
-<h3 id="mapjoin-还有一个很大的好处是能够进行不等连接的join操作"><a href="#mapjoin-还有一个很大的好处是能够进行不等连接的join操作" class="headerlink" title="mapjoin 还有一个很大的好处是能够进行不等连接的join操作"></a>mapjoin 还有一个很大的好处是能够进行不等连接的join操作</h3><p>如果将不等条件写在where中，那么mapreduce过程中会进行笛卡尔积，运行效率特别低，如果使用mapjoin操作，在map的过程中就完成了不等值的join操作，效率会高很多。<br>例子：<br>select A.a ,A.b from A join B where A.a&gt;B.a</p>
-<h3 id="mapjoin的使用场景："><a href="#mapjoin的使用场景：" class="headerlink" title="mapjoin的使用场景："></a>mapjoin的使用场景：</h3><ul>
-<li>关联操作中有一张表非常小</li>
-<li>不等值的链接操作</li>
-</ul>
-<p>参考文档：<br><a href="http://lxw1234.com/archives/2015/06/315.htm" target="_blank" rel="external">http://lxw1234.com/archives/2015/06/315.htm</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1929,7 +1860,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
