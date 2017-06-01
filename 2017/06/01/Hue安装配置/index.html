@@ -84,24 +84,19 @@
 
 
 
-<meta name="description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
-二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
+<meta name="description" content="下载Huehttp://gethue.com/category/release/
+解压Hue安装包12345tar -xzvf hue-3.11.0.tgzcd hue-3.11.0#下载依赖sudo yum install apache-maven ant asciidoc cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ krb5-devel lib">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MapReduce自定义二次排序">
-<meta property="og:url" content="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/index.html">
+<meta property="og:title" content="Hue安装配置">
+<meta property="og:url" content="http://yoursite.com/2017/06/01/Hue安装配置/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
-二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
-<meta property="og:image" content="http://yoursite.com/images/201702/map.png">
-<meta property="og:image" content="http://yoursite.com/images/201702/reduce.png">
-<meta property="og:image" content="http://yoursite.com/images/201702/map_secondSort.png">
-<meta property="og:image" content="http://yoursite.com/images/201702/reduce_secondSort.png">
-<meta property="og:updated_time" content="2017-02-16T14:50:36.000Z">
+<meta property="og:description" content="下载Huehttp://gethue.com/category/release/
+解压Hue安装包12345tar -xzvf hue-3.11.0.tgzcd hue-3.11.0#下载依赖sudo yum install apache-maven ant asciidoc cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ krb5-devel lib">
+<meta property="og:updated_time" content="2017-06-01T13:03:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MapReduce自定义二次排序">
-<meta name="twitter:description" content="具体需求1、输入数据：sort1    1sort2    3sort2    77sort2    54sort1    2sort6    22sort6    221sort6    202、目标输出sort1 1,2sort2 3,54,77sort6 20,22,221
-二次排序解决思路MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是">
-<meta name="twitter:image" content="http://yoursite.com/images/201702/map.png">
+<meta name="twitter:title" content="Hue安装配置">
+<meta name="twitter:description" content="下载Huehttp://gethue.com/category/release/
+解压Hue安装包12345tar -xzvf hue-3.11.0.tgzcd hue-3.11.0#下载依赖sudo yum install apache-maven ant asciidoc cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ krb5-devel lib">
 
 
 
@@ -129,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/01/Hue安装配置/"/>
 
 
 
 
 
-  <title> MapReduce自定义二次排序 | Refrain </title>
+  <title> Hue安装配置 | Refrain </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -248,7 +243,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/16/MapReduce自定义二次排序/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/Hue安装配置/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="xiwu1212@163.com">
@@ -272,7 +267,7 @@
             
             
               
-                MapReduce自定义二次排序
+                Hue安装配置
               
             
           </h1>
@@ -287,8 +282,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-16T20:14:34+08:00">
-                2017-02-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-01T20:42:47+08:00">
+                2017-06-01
               </time>
             
 
@@ -323,18 +318,11 @@
       
 
       
-        <h2 id="具体需求"><a href="#具体需求" class="headerlink" title="具体需求"></a>具体需求</h2><p>1、输入数据：<br>sort1    1<br>sort2    3<br>sort2    77<br>sort2    54<br>sort1    2<br>sort6    22<br>sort6    221<br>sort6    20<br>2、目标输出<br>sort1 1,2<br>sort2 3,54,77<br>sort6 20,22,221</p>
-<h2 id="二次排序解决思路"><a href="#二次排序解决思路" class="headerlink" title="二次排序解决思路"></a>二次排序解决思路</h2><p>MapReduce框架不管是默认排序或者是自定义排序都只是对Key值进行排序，现在的情况是这些数据不是key值，怎么办？其实我们可以将原始数据的Key值和其对应的数据组合成一个新的Key值，然后新的Key值对应的还是之前的数字。那么我们就可以将原始数据的map输出变成类似下面的数据结构：<br>{[sort1,1],1}<br>{[sort2,3],3}<br>{[sort2,77],77}<br>{[sort2,54],54}<br>{[sort1,2],2}<br>{[sort6,22],22}<br>{[sort6,221],221}<br>{[sort6,20],20}<br>那么我们只需要对[]里面的新key值进行排序就ok了。然后我们需要自定义一个分区处理器，因为我的目标不是想将新key相同的传到同一个reduce中，而是想将新key中的第一个字段相同的才放到同一个reduce中进行分组合并，所以我们需要根据新key值中的第一个字段来自定义一个分区处理器。通过分区操作后，得到的数据流如下：<br>Partition1:{[sort1,1],1}、{[sort1,2],2}<br>Partition2:{[sort2,3],3}、{[sort2,77],77}、{[sort2,54],54}<br>Partition3:{[sort6,22],22}、{[sort6,221],221}、{[sort6,20],20}</p>
-<h2 id="MR的运行流程简单说明"><a href="#MR的运行流程简单说明" class="headerlink" title="MR的运行流程简单说明"></a>MR的运行流程简单说明</h2><img src="/images/201702/map.png">
-<img src="/images/201702/reduce.png">
-<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><img src="/images/201702/map_secondSort.png">
-<img src="/images/201702/reduce_secondSort.png">
-<h3 id="自定义组合键-更改key结构"><a href="#自定义组合键-更改key结构" class="headerlink" title="自定义组合键(更改key结构)"></a>自定义组合键(更改key结构)</h3><p>自定义组合键的时候，我们需要特别注意，一定要实现WritableComparable接口，并且实现compareTo方法的比较策略。这个用于mapreduce的第一次默认排序，也就是发生在map阶段的sort小阶段，发生地点为环形缓冲区(可以通过io.sort.mb进行大小调整)，但是其对我们最终的二次排序结果是没有影响的。我们二次排序的最终结果是由我们的自定义比较器决定的。</p>
-<h3 id="自定义分区器"><a href="#自定义分区器" class="headerlink" title="自定义分区器"></a>自定义分区器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//默认的Hash分区</span></div><div class="line">key.hashCode()&amp;Integer.MAX_VALUE)%numPartitions</div><div class="line"><span class="comment">//自定义分区</span></div><div class="line">key.getFirstKey().hashCode()&amp;Integer.MAX_VALUE)%numPartitions</div></pre></td></tr></table></figure>
-<h3 id="自定义比较器"><a href="#自定义比较器" class="headerlink" title="自定义比较器"></a>自定义比较器</h3><p>自定义比较器决定了我们二次排序的结果。自定义比较器需要继承WritableComparator类，并且重写compare方法实现自己的比较策略。</p>
-<h3 id="自定义分组策略"><a href="#自定义分组策略" class="headerlink" title="自定义分组策略"></a>自定义分组策略</h3><p>将组合键中第一个值相同的分在一组<br>PS. 每处理完一个分组数据就会去调用一次的reduce函对这个分组来进行处理和输出</p>
-<p>JAVA代码在下面参考资料(PS. 因为不会JAVA，所以我的重点在理解)<br>参考资料：<br><a href="http://zengzhaozheng.blog.51cto.com/8219051/1379271" target="_blank" rel="external">http://zengzhaozheng.blog.51cto.com/8219051/1379271</a></p>
-
+        <h3 id="下载Hue"><a href="#下载Hue" class="headerlink" title="下载Hue"></a>下载Hue</h3><p><a href="http://gethue.com/category/release/" target="_blank" rel="external">http://gethue.com/category/release/</a></p>
+<h3 id="解压Hue安装包"><a href="#解压Hue安装包" class="headerlink" title="解压Hue安装包"></a>解压Hue安装包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">tar -xzvf hue-3.11.0.tgz</div><div class="line"><span class="built_in">cd</span> hue-3.11.0</div><div class="line"><span class="comment">#下载依赖</span></div><div class="line">sudo yum install apache-maven ant asciidoc cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ krb5-devel libxml2-devel libxslt-devel make mysql mysql-devel openldap-devel python-devel sqlite-devel gmp-devel</div><div class="line">make apps</div></pre></td></tr></table></figure>
+<h3 id="修改Hue配置"><a href="#修改Hue配置" class="headerlink" title="修改Hue配置"></a>修改Hue配置</h3><p>vim ./hue-3.11.0/desktop/conf/hue.ini<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 1</span></div><div class="line">  time_zone=Asia/Shanghai</div><div class="line"><span class="comment"># 2</span></div><div class="line">  [[database]]</div><div class="line">    engine=mysql</div><div class="line">    host=xxx.xxx.xxx.xxx</div><div class="line">    port=3306</div><div class="line">    user=xxx</div><div class="line">    password=xxx</div><div class="line">    <span class="comment"># Execute this script to produce the database password. This will be used when 'password' is not set.</span></div><div class="line">    <span class="comment">## password_script=/path/script</span></div><div class="line">    name=db_hue</div><div class="line">    <span class="comment">## options=&#123;&#125;</span></div><div class="line"><span class="comment"># 3</span></div><div class="line">  [[hdfs_clusters]]</div><div class="line">    <span class="comment"># HA support by using HttpFs</span></div><div class="line"></div><div class="line">    [[[default]]]</div><div class="line">      <span class="comment"># Enter the filesystem uri</span></div><div class="line">      fs_defaultfs=hdfs://xxx:8020</div><div class="line">      hadoop_conf_dir=xxx</div><div class="line"><span class="comment">#4</span></div><div class="line">[beeswax]</div><div class="line">  hive_server_host=xxx.xxx.xxx.xxx</div><div class="line">  hive_server_port=10000</div><div class="line"><span class="comment">#5</span></div><div class="line">[librdbms]</div><div class="line">  [[databases]]</div><div class="line">     [[[mysql_1]]]</div><div class="line">       nice_name=<span class="string">"xxx"</span></div><div class="line">       name=xxx</div><div class="line">       host=xxx.xxx.xxx.xxx</div><div class="line">       port=3306</div><div class="line">       user=root</div><div class="line">       password=xxx</div><div class="line">       options=&#123;<span class="string">"charset"</span>:<span class="string">"utf8"</span>&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="mysql执行建数据库命令"><a href="#mysql执行建数据库命令" class="headerlink" title="mysql执行建数据库命令"></a>mysql执行建数据库命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mysql -hhost -uroot -pxxx</div><div class="line">&gt; create database db_hue;</div><div class="line">&gt; <span class="built_in">exit</span>;</div><div class="line">./build/env/bin/hue syncdb</div><div class="line">./build/env/bin/hue migrate</div></pre></td></tr></table></figure>
+<h3 id="启动Hue"><a href="#启动Hue" class="headerlink" title="启动Hue"></a>启动Hue</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./build/env/bin/supervisor</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -360,8 +348,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/15/MapReduce的Shuffle过程/" rel="next" title="MapReduce的Shuffle过程">
-                <i class="fa fa-chevron-left"></i> MapReduce的Shuffle过程
+              <a href="/2017/03/13/分组TopN问题/" rel="next" title="分组TopN问题">
+                <i class="fa fa-chevron-left"></i> 分组TopN问题
               </a>
             
           </div>
@@ -369,10 +357,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/17/hive的join操作/" rel="prev" title="Hive的join操作">
-                Hive的join操作 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -488,7 +472,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#具体需求"><span class="nav-number">1.</span> <span class="nav-text">具体需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二次排序解决思路"><span class="nav-number">2.</span> <span class="nav-text">二次排序解决思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MR的运行流程简单说明"><span class="nav-number">3.</span> <span class="nav-text">MR的运行流程简单说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决办法"><span class="nav-number">4.</span> <span class="nav-text">解决办法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义组合键-更改key结构"><span class="nav-number">4.1.</span> <span class="nav-text">自定义组合键(更改key结构)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分区器"><span class="nav-number">4.2.</span> <span class="nav-text">自定义分区器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义比较器"><span class="nav-number">4.3.</span> <span class="nav-text">自定义比较器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义分组策略"><span class="nav-number">4.4.</span> <span class="nav-text">自定义分组策略</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载Hue"><span class="nav-number">1.</span> <span class="nav-text">下载Hue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解压Hue安装包"><span class="nav-number">2.</span> <span class="nav-text">解压Hue安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改Hue配置"><span class="nav-number">3.</span> <span class="nav-text">修改Hue配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql执行建数据库命令"><span class="nav-number">4.</span> <span class="nav-text">mysql执行建数据库命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动Hue"><span class="nav-number">5.</span> <span class="nav-text">启动Hue</span></a></li></ol></div>
             
 
           </div>

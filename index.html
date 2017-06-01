@@ -241,6 +241,128 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/Hue安装配置/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xiwu1212@163.com">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Refrain">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/01/Hue安装配置/" itemprop="url">
+                  Hue安装配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-01T20:42:47+08:00">
+                2017-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="下载Hue"><a href="#下载Hue" class="headerlink" title="下载Hue"></a>下载Hue</h3><p><a href="http://gethue.com/category/release/" target="_blank" rel="external">http://gethue.com/category/release/</a></p>
+<h3 id="解压Hue安装包"><a href="#解压Hue安装包" class="headerlink" title="解压Hue安装包"></a>解压Hue安装包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">tar -xzvf hue-3.11.0.tgz</div><div class="line"><span class="built_in">cd</span> hue-3.11.0</div><div class="line"><span class="comment">#下载依赖</span></div><div class="line">sudo yum install apache-maven ant asciidoc cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ krb5-devel libxml2-devel libxslt-devel make mysql mysql-devel openldap-devel python-devel sqlite-devel gmp-devel</div><div class="line">make apps</div></pre></td></tr></table></figure>
+<h3 id="修改Hue配置"><a href="#修改Hue配置" class="headerlink" title="修改Hue配置"></a>修改Hue配置</h3><p>vim ./hue-3.11.0/desktop/conf/hue.ini<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 1</span></div><div class="line">  time_zone=Asia/Shanghai</div><div class="line"><span class="comment"># 2</span></div><div class="line">  [[database]]</div><div class="line">    engine=mysql</div><div class="line">    host=xxx.xxx.xxx.xxx</div><div class="line">    port=3306</div><div class="line">    user=xxx</div><div class="line">    password=xxx</div><div class="line">    <span class="comment"># Execute this script to produce the database password. This will be used when 'password' is not set.</span></div><div class="line">    <span class="comment">## password_script=/path/script</span></div><div class="line">    name=db_hue</div><div class="line">    <span class="comment">## options=&#123;&#125;</span></div><div class="line"><span class="comment"># 3</span></div><div class="line">  [[hdfs_clusters]]</div><div class="line">    <span class="comment"># HA support by using HttpFs</span></div><div class="line"></div><div class="line">    [[[default]]]</div><div class="line">      <span class="comment"># Enter the filesystem uri</span></div><div class="line">      fs_defaultfs=hdfs://xxx:8020</div><div class="line">      hadoop_conf_dir=xxx</div><div class="line"><span class="comment">#4</span></div><div class="line">[beeswax]</div><div class="line">  hive_server_host=xxx.xxx.xxx.xxx</div><div class="line">  hive_server_port=10000</div><div class="line"><span class="comment">#5</span></div><div class="line">[librdbms]</div><div class="line">  [[databases]]</div><div class="line">     [[[mysql_1]]]</div><div class="line">       nice_name=<span class="string">"xxx"</span></div><div class="line">       name=xxx</div><div class="line">       host=xxx.xxx.xxx.xxx</div><div class="line">       port=3306</div><div class="line">       user=root</div><div class="line">       password=xxx</div><div class="line">       options=&#123;<span class="string">"charset"</span>:<span class="string">"utf8"</span>&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="mysql执行建数据库命令"><a href="#mysql执行建数据库命令" class="headerlink" title="mysql执行建数据库命令"></a>mysql执行建数据库命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mysql -hhost -uroot -pxxx</div><div class="line">&gt; create database db_hue;</div><div class="line">&gt; <span class="built_in">exit</span>;</div><div class="line">./build/env/bin/hue syncdb</div><div class="line">./build/env/bin/hue migrate</div></pre></td></tr></table></figure>
+<h3 id="启动Hue"><a href="#启动Hue" class="headerlink" title="启动Hue"></a>启动Hue</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./build/env/bin/supervisor</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/13/分组TopN问题/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1638,181 +1760,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/18/一个hive优化的例子/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xiwu1212@163.com">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.gif">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Refrain">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Refrain" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/18/一个hive优化的例子/" itemprop="url">
-                  一个Hive优化的例子
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-18T09:04:32+08:00">
-                2017-02-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="表结构和需求"><a href="#表结构和需求" class="headerlink" title="表结构和需求"></a>表结构和需求</h3><h4 id="表"><a href="#表" class="headerlink" title="表"></a>表</h4><p>TableName: <strong>logFile</strong></p>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>city1</th>
-<th>city2</th>
-<th>city3</th>
-<th>action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>BeiJing</td>
-<td>ShangHai</td>
-<td>ShenZhen</td>
-<td>Dance</td>
-</tr>
-<tr>
-<td>..</td>
-<td>..</td>
-<td>..</td>
-<td>..</td>
-<td>..</td>
-</tr>
-</tbody>
-</table>
-<p>TableName: <strong>City</strong></p>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>CityName</th>
-<th>CityCode</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>BeiJing</td>
-<td>Jing</td>
-</tr>
-<tr>
-<td>..</td>
-<td>..</td>
-<td>..</td>
-</tr>
-</tbody>
-</table>
-<h4 id="需求按照传统SQL语句"><a href="#需求按照传统SQL语句" class="headerlink" title="需求按照传统SQL语句:"></a>需求按照传统SQL语句:</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">on</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure>
-<h4 id="具体表和sql操作结果"><a href="#具体表和sql操作结果" class="headerlink" title="具体表和sql操作结果:"></a>具体表和sql操作结果:</h4><img src="/images/201702/hive_ex_1.png">
-<h3 id="把SQL复制到Hive中执行-—-gt-笛卡尔积"><a href="#把SQL复制到Hive中执行-—-gt-笛卡尔积" class="headerlink" title="把SQL复制到Hive中执行 —&gt; 笛卡尔积"></a>把SQL复制到Hive中执行 —&gt; 笛卡尔积</h3><p><strong>报错!</strong> 这是因为 hive 受限于 MapReduce 算法模型，只支持 equi-joins（等值join），要实现上述的非等值 join，可以采用笛卡儿积(full Cartesian product)来实现：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> b.action, a.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span> City a</div><div class="line"><span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line"><span class="keyword">where</span> (b.city1=a.CityName <span class="keyword">or</span> b.city2=a.CityName <span class="keyword">or</span> b.city3=a.CityName)</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> b.action, a.CityCode;</div></pre></td></tr></table></figure></p>
-<h3 id="笛卡尔积占用资源太大-—-gt-union-all"><a href="#笛卡尔积占用资源太大-—-gt-union-all" class="headerlink" title="笛卡尔积占用资源太大 —&gt; union all"></a>笛卡尔积占用资源太大 —&gt; union all</h3><p><strong>笛卡尔积默认不让执行</strong><br>既然不允许非等值 join，采用多个子查询union all，然后汇总(假设logFile表中每一行的三个city都不一样)<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
-<h3 id="优化：map-side-join"><a href="#优化：map-side-join" class="headerlink" title="优化：map side join"></a>优化：map side join</h3><p>如果City是一张小表<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> tmp.action, tmp.CityCode, <span class="keyword">count</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">from</span></div><div class="line">(</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city1</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city2</div><div class="line">    <span class="keyword">union</span> all</div><div class="line">    <span class="keyword">select</span> <span class="comment">/*+ MAPJOIN(a) */</span> b.action <span class="keyword">action</span>, a.CityCode CityCode</div><div class="line">    <span class="keyword">from</span> City a</div><div class="line">    <span class="keyword">join</span> <span class="keyword">logFile</span> b</div><div class="line">    <span class="keyword">on</span> a.CityName = b.city3</div><div class="line">)tmp</div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">action</span>, CityCode</div></pre></td></tr></table></figure></p>
-<h2 id="开启-parallel"><a href="#开启-parallel" class="headerlink" title="开启 parallel"></a>开启 parallel</h2><p>三个 union 语句之间没有依赖关系，其实是可以并行执行的<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">set</span> hive.exec.parallel=<span class="literal">true</span>;</div></pre></td></tr></table></figure></p>
-<p>参考文档:<br><a href="https://my.oschina.net/leejun2005/blog/307812" target="_blank" rel="external">https://my.oschina.net/leejun2005/blog/307812</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1860,7 +1807,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
