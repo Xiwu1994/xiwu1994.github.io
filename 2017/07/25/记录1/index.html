@@ -93,16 +93,16 @@
 
 
 
-<meta name="description" content="1、HIVE-13632 -&amp;gt; Hive failing on insert empty array into parquet table报错如下:1234567891011121314by: parquet.io.ParquetEncodingException: empty fields are illegal, the field should be ommited completel">
+<meta name="description" content="hive 更改字段类型无分区表12345678910CREATE TABLE `tb_dw_cu_mimsg_fbi_servdt_day1`(  `mimsg_serv` int COMMENT &amp;apos;微信服务量&amp;apos;)ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;apos;|&amp;apos;;insert overwrite table tb_d">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hive问题记录">
-<meta property="og:url" content="http://yoursite.com/2017/07/21/hive问题记录/index.html">
+<meta property="og:title" content="记录1">
+<meta property="og:url" content="http://yoursite.com/2017/07/25/记录1/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="1、HIVE-13632 -&amp;gt; Hive failing on insert empty array into parquet table报错如下:1234567891011121314by: parquet.io.ParquetEncodingException: empty fields are illegal, the field should be ommited completel">
-<meta property="og:updated_time" content="2017-07-21T03:04:23.000Z">
+<meta property="og:description" content="hive 更改字段类型无分区表12345678910CREATE TABLE `tb_dw_cu_mimsg_fbi_servdt_day1`(  `mimsg_serv` int COMMENT &amp;apos;微信服务量&amp;apos;)ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;apos;|&amp;apos;;insert overwrite table tb_d">
+<meta property="og:updated_time" content="2017-07-25T10:16:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hive问题记录">
-<meta name="twitter:description" content="1、HIVE-13632 -&amp;gt; Hive failing on insert empty array into parquet table报错如下:1234567891011121314by: parquet.io.ParquetEncodingException: empty fields are illegal, the field should be ommited completel">
+<meta name="twitter:title" content="记录1">
+<meta name="twitter:description" content="hive 更改字段类型无分区表12345678910CREATE TABLE `tb_dw_cu_mimsg_fbi_servdt_day1`(  `mimsg_serv` int COMMENT &amp;apos;微信服务量&amp;apos;)ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;apos;|&amp;apos;;insert overwrite table tb_d">
 
 
 
@@ -130,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/07/21/hive问题记录/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/25/记录1/"/>
 
 
 
 
 
-  <title>hive问题记录 | Refrain</title>
+  <title>记录1 | Refrain</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -256,7 +256,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/21/hive问题记录/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/25/记录1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xiwu1212@163.com">
@@ -273,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hive问题记录</h1>
+          <h1 class="post-title" itemprop="name headline">记录1</h1>
         
 
         <div class="post-meta">
@@ -285,8 +285,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-21T10:59:53+08:00">
-                2017-07-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-25T17:57:47+08:00">
+                2017-07-25
               </time>
             
 
@@ -320,9 +320,20 @@
       
 
       
-        <h3 id="1、HIVE-13632-gt-Hive-failing-on-insert-empty-array-into-parquet-table"><a href="#1、HIVE-13632-gt-Hive-failing-on-insert-empty-array-into-parquet-table" class="headerlink" title="1、HIVE-13632 -&gt; Hive failing on insert empty array into parquet table"></a>1、HIVE-13632 -&gt; Hive failing on insert empty array into parquet table</h3><p>报错如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">by: parquet.io.ParquetEncodingException: empty fields are illegal, the field should be ommited completely instead</div><div class="line">at parquet.io.MessageColumnIO$MessageColumnIORecordConsumer.endField(MessageColumnIO.java:<span class="number">271</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$ListDataWriter.write(DataWritableWriter.java:<span class="number">271</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$GroupDataWriter.write(DataWritableWriter.java:<span class="number">199</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$MessageDataWriter.write(DataWritableWriter.java:<span class="number">215</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter.write(DataWritableWriter.java:<span class="number">88</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriteSupport.write(DataWritableWriteSupport.java:<span class="number">59</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriteSupport.write(DataWritableWriteSupport.java:<span class="number">31</span>)</div><div class="line">at parquet.hadoop.InternalParquetRecordWriter.write(InternalParquetRecordWriter.java:<span class="number">116</span>)</div><div class="line">at parquet.hadoop.ParquetRecordWriter.write(ParquetRecordWriter.java:<span class="number">123</span>)</div><div class="line">at parquet.hadoop.ParquetRecordWriter.write(ParquetRecordWriter.java:<span class="number">42</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.ParquetRecordWriterWrapper.write(ParquetRecordWriterWrapper.java:<span class="number">111</span>)</div><div class="line">at org.apache.hadoop.hive.ql.io.parquet.write.ParquetRecordWriterWrapper.write(ParquetRecordWriterWrapper.java:<span class="number">124</span>)</div><div class="line">at org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:<span class="number">697</span>)</div></pre></td></tr></table></figure></p>
-<p>解决办法:<br>insert overwrite table test_table select <strong>if(size(array_column)=0, null, array_column)</strong> from src limit 1</p>
-<p>参考: <a href="https://issues.apache.org/jira/browse/HIVE-13632" target="_blank" rel="external">https://issues.apache.org/jira/browse/HIVE-13632</a></p>
+        <h2 id="hive-更改字段类型"><a href="#hive-更改字段类型" class="headerlink" title="hive 更改字段类型"></a>hive 更改字段类型</h2><h3 id="无分区表"><a href="#无分区表" class="headerlink" title="无分区表"></a>无分区表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `tb_dw_cu_mimsg_fbi_servdt_day1`(</div><div class="line">  `mimsg_serv` int COMMENT &apos;微信服务量&apos;</div><div class="line">)</div><div class="line">ROW FORMAT DELIMITED FIELDS TERMINATED BY &apos;|&apos;;</div><div class="line"></div><div class="line">insert overwrite table tb_dw_cu_mimsg_fbi_servdt_day1 values(1.02);</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">1</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 修改表结构</div><div class="line">ALTER TABLE tb_dw_cu_mimsg_fbi_servdt_day1 REPLACE COLUMNS (mimsg_serv DECIMAL(5,2));</div><div class="line"></div><div class="line">insert overwrite table tb_dw_cu_mimsg_fbi_servdt_day1 values(1.02);</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">1.02</div></pre></td></tr></table></figure>
+<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `tb_dw_cu_mimsg_fbi_servdt_day1`(</div><div class="line">  `mimsg_serv` int COMMENT &apos;微信服务量&apos;)</div><div class="line">PARTITIONED BY (</div><div class="line">  `statis_date` varchar(8))</div><div class="line">ROW FORMAT DELIMITED</div><div class="line">  FIELDS TERMINATED BY &apos;|&apos; ;</div><div class="line"></div><div class="line">insert overwrite table tb_dw_cu_mimsg_fbi_servdt_day1 partition (statis_date=20160501) values(1.02);</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">1    20160501</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 正确的修改分区表结构</div><div class="line">ALTER TABLE tb_dw_cu_mimsg_fbi_servdt_day1 PARTITION (statis_date) CHANGE COLUMN mimsg_serv mimsg_serv DECIMAL(5,2);</div><div class="line"></div><div class="line">insert overwrite table tb_dw_cu_mimsg_fbi_servdt_day1 partition (statis_date=20160501) values(1.02);</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">1.02    20160501</div></pre></td></tr></table></figure>
+<h2 id="hive-增加字段"><a href="#hive-增加字段" class="headerlink" title="hive 增加字段"></a>hive 增加字段</h2><p><em>还是用之前的表</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">alter table tb_dw_cu_mimsg_fbi_servdt_day1 add COLUMNS (prov_code varchar(5));</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">1.02    NULL    20160501</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">insert overwrite table tb_dw_cu_mimsg_fbi_servdt_day1 partition(statis_date=20160501) values (2.01,0371);</div><div class="line"></div><div class="line">hive&gt; select * from tb_dw_cu_mimsg_fbi_servdt_day1;</div><div class="line"></div><div class="line">2.01    NULL    20160501</div></pre></td></tr></table></figure>
+<p><em>数据没有更新成功</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 正确的更改表结构</div><div class="line">alter table tb_dw_cu_mimsg_fbi_servdt_day1 replace COLUMNS (mimsg_serv  decimal(5,2),prov_code varchar(5)) CASCADE;</div></pre></td></tr></table></figure>
+<p>参考文档: <a href="http://blog.csdn.net/windyqcf/article/details/51488139" target="_blank" rel="external">http://blog.csdn.net/windyqcf/article/details/51488139</a></p>
+<h2 id="Hadoop平台关闭THP解决服务器高负载问题"><a href="#Hadoop平台关闭THP解决服务器高负载问题" class="headerlink" title="Hadoop平台关闭THP解决服务器高负载问题"></a>Hadoop平台关闭THP解决服务器高负载问题</h2><p>如果不关闭THP，发现Hadoop的系统态CPU使用率很高，</p>
+<p>原因是RHEL6优化了内存申请的效率，而且在某些场景下对KVM的性能有明显提升。</p>
+<p>而Hadoop是个高密集型内存运算系统，这个改动似乎给它带来了副作用。理论上运算型Java程序应该更多的使用用户态CPU才对，Cloudera官方也推荐关闭THP。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#关闭 THP(Transparent HugePages )</span></div><div class="line"><span class="comment"># for hadoop , disable thp</span></div><div class="line"><span class="built_in">echo</span> never &gt; /sys/kernel/mm/redhat_transparent_hugepage/enabled</div><div class="line"><span class="built_in">echo</span> never &gt; /sys/kernel/mm/redhat_transparent_hugepage/defrag</div></pre></td></tr></table></figure>
+<p>参考文档: <a href="http://blog.csdn.net/levy_cui/article/details/51143125" target="_blank" rel="external">http://blog.csdn.net/levy_cui/article/details/51143125</a></p>
 
       
     </div>
@@ -359,8 +370,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/01/Hue安装配置/" rel="next" title="Hue安装配置">
-                <i class="fa fa-chevron-left"></i> Hue安装配置
+              <a href="/2017/07/21/hive问题记录/" rel="next" title="hive问题记录">
+                <i class="fa fa-chevron-left"></i> hive问题记录
               </a>
             
           </div>
@@ -368,10 +379,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/07/25/记录1/" rel="prev" title="记录1">
-                记录1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -491,7 +498,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、HIVE-13632-gt-Hive-failing-on-insert-empty-array-into-parquet-table"><span class="nav-number">1.</span> <span class="nav-text">1、HIVE-13632 -> Hive failing on insert empty array into parquet table</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hive-更改字段类型"><span class="nav-number">1.</span> <span class="nav-text">hive 更改字段类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无分区表"><span class="nav-number">1.1.</span> <span class="nav-text">无分区表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区表"><span class="nav-number">1.2.</span> <span class="nav-text">分区表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hive-增加字段"><span class="nav-number">2.</span> <span class="nav-text">hive 增加字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop平台关闭THP解决服务器高负载问题"><span class="nav-number">3.</span> <span class="nav-text">Hadoop平台关闭THP解决服务器高负载问题</span></a></li></ol></div>
             
 
           </div>
