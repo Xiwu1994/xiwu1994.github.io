@@ -257,6 +257,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/15/YARN集群资源相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiwu1212@163.com">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Refrain">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/15/YARN集群资源相关/" itemprop="url">YARN集群资源相关</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-15T20:51:59+08:00">
+                2017-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>问题: 给你一个集群，该如何对资源进行合理分配</strong></p>
+<h3 id="总资源"><a href="#总资源" class="headerlink" title="总资源"></a>总资源</h3><p>集群中每台机器的配置 (RAM,CPU,Disk,网卡)</p>
+<h3 id="预留资源"><a href="#预留资源" class="headerlink" title="预留资源"></a>预留资源</h3><p>总资源 - 集群中运行服务需要的资源(操作系统OS,DataNode,NodeManger,HBase,Hive,ZK,Impala..)</p>
+<h3 id="配置集群"><a href="#配置集群" class="headerlink" title="配置集群"></a>配置集群</h3><h4 id="YARN分配资源-主要参数"><a href="#YARN分配资源-主要参数" class="headerlink" title="YARN分配资源 主要参数:"></a>YARN分配资源 主要参数:</h4><p>yarn.nodemanager.resource.memory-mb 每个节点分配的内存<br>yarn.nodemanager.resource.cpu-vcores 每个节点分配的虚拟CPU<br><img src="/images/201708/yarn_resource_1.png"><br><img src="/images/201708/yarn_resource_2.png"></p>
+<h4 id="YARN资源调度分配-主要参数"><a href="#YARN资源调度分配-主要参数" class="headerlink" title="YARN资源调度分配 主要参数:"></a>YARN资源调度分配 主要参数:</h4><p>yarn.scheduler.minimum-allocation-mb container最少内存<br>yarn.scheduler.maximum-allocation-mb container最大内存&lt;限制分配资源大小&gt;</p>
+<h4 id="Determine-HDP-Memory-Configuration-Settings"><a href="#Determine-HDP-Memory-Configuration-Settings" class="headerlink" title="Determine HDP Memory Configuration Settings"></a>Determine HDP Memory Configuration Settings</h4><p><a href="https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html" target="_blank" rel="external">https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">python hdp-configuration-utils.py -c 12 -m 48 <span class="_">-d</span> 12 -k False</div><div class="line"> Using cores=12 memory=48GB disks=12 hbase=False</div><div class="line"> Profile: cores=12 memory=43008MB reserved=6GB usableMem=42GB disks=12</div><div class="line"> Num Container=21</div><div class="line"> Container Ram=2048MB</div><div class="line"> Used Ram=42GB</div><div class="line"> Unused Ram=6GB</div><div class="line"> ***** mapred-site.xml *****</div><div class="line"> mapreduce.map.memory.mb=2048</div><div class="line"> mapreduce.map.java.opts=-Xmx1536m</div><div class="line"> mapreduce.reduce.memory.mb=2048</div><div class="line"> mapreduce.reduce.java.opts=-Xmx1536m</div><div class="line"> mapreduce.task.io.sort.mb=768</div><div class="line"> ***** yarn-site.xml *****</div><div class="line"> yarn.scheduler.minimum-allocation-mb=2048</div><div class="line"> yarn.scheduler.maximum-allocation-mb=43008</div><div class="line"> yarn.nodemanager.resource.memory-mb=43008</div><div class="line"> yarn.app.mapreduce.am.resource.mb=2048</div><div class="line"> yarn.app.mapreduce.am.command-opts=-Xmx1536m</div><div class="line"> ***** tez-site.xml *****</div><div class="line"> tez.am.resource.memory.mb=2048</div><div class="line"> tez.am.java.opts=-Xmx1536m</div><div class="line"> ***** hive-site.xml *****</div><div class="line"> hive.tez.container.size=2048</div><div class="line"> hive.tez.java.opts=-Xmx1536m</div><div class="line"> hive.auto.convert.join.noconditionaltask.size=402653000</div></pre></td></tr></table></figure></p>
+<h3 id="其他注意项"><a href="#其他注意项" class="headerlink" title="其他注意项"></a>其他注意项</h3><h4 id="虚拟内存和物理内存检查"><a href="#虚拟内存和物理内存检查" class="headerlink" title="虚拟内存和物理内存检查"></a>虚拟内存和物理内存检查</h4><p>NodeManager 可以监控Container的虚拟和物理内存使用情况<br>一般都会关闭虚拟内存检查<br><img src="/images/201708/yarn_resource_3.png"></p>
+<h4 id="Set-Xmx-of-java-opts-of-each-container-to-0-8-container-memory-allocation"><a href="#Set-Xmx-of-java-opts-of-each-container-to-0-8-container-memory-allocation" class="headerlink" title="Set -Xmx of java-opts of each container to 0.8 * (container memory allocation)"></a>Set -Xmx of java-opts of each container to 0.8 * (container memory allocation)</h4><img src="/images/201708/yarn_resource_4.png">
+<img src="/images/201708/yarn_resource_5.png">
+<img src="/images/201708/yarn_resource_6.png">
+<h4 id="Bottleneck-resource-瓶颈资源"><a href="#Bottleneck-resource-瓶颈资源" class="headerlink" title="Bottleneck resource 瓶颈资源"></a>Bottleneck resource 瓶颈资源</h4><p>Since there are three types of resources, different containers from different jobs may ask for different amount of resources. This can result in one of the resources becoming the bottleneck. Suppose we have a cluster with capacity (1000G RAM,16 Cores,16 disks) and each Mapper container needs (10G RAM,1 Core, 0.5 disks): at most, 16 Mappers can run in parallel because CPU cores become the bottleneck here.<br>As a result, (840G RAM, 8 disks) resources are not used by anyone. If you meet this situation, just check the RM UI(<a href="http://:8088/cluster/nodes" target="_blank" rel="external">http://:8088/cluster/nodes</a>) to figure out which resource is the bottleneck. You can probably allocate the leftover resources to jobs which can improve performance with such resource. For example, you can allocate more memory to sorting jobs which used to spill to disk.</p>
+<p>参考文档:<br><a href="https://mapr.com/blog/best-practices-yarn-resource-management/" target="_blank" rel="external">https://mapr.com/blog/best-practices-yarn-resource-management/</a><br><a href="https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html" target="_blank" rel="external">https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/25/记录1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1462,169 +1585,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/21/Hadoop2的Hdfs框架/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiwu1212@163.com">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Refrain">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/21/Hadoop2的Hdfs框架/" itemprop="url">Hadoop2.x的Hdfs框架</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-21T17:09:38+08:00">
-                2017-02-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="早期Hdfs改进的原因"><a href="#早期Hdfs改进的原因" class="headerlink" title="早期Hdfs改进的原因"></a>早期Hdfs改进的原因</h3><p>早期的hadoop版本，NameNode是HDFS集群的单点故障点，每一个集群只有一个NameNode,如果这个机器或进程不可用，整个集群就无法使用。</p>
-<h3 id="SPOF方案回顾-single-point-of-failure单点故障"><a href="#SPOF方案回顾-single-point-of-failure单点故障" class="headerlink" title="SPOF方案回顾(single point of failure单点故障)"></a>SPOF方案回顾(single point of failure单点故障)</h3><ol>
-<li>Secondary NameNode：<strong>它不是HA</strong>，它只是阶段性的合并edits和fsimage，以缩短集群启动的时间。当NN失效的时候，Secondary NN并无法立刻提供服务，Secondary NN甚至无法保证数据完整性：如果NN数据丢失的话，在上一次合并后的文件系统的改动会丢失</li>
-<li>Backup NameNode：它在内存中复制了NN的当前状态，算是Warm Standby，可也就仅限于此，并没有 <strong>failover(故障自动处理)</strong> 等。它同样是阶段性的做checkpoint，也无法保证数据完整性</li>
-<li>手动把<strong>name.dir指向NFS</strong>（Network File System），这是安全的Cold Standby，可以保证元数据不丢失，但集群的恢复则完全靠手动</li>
-<li>Facebook AvatarNode：Facebook有强大的运维做后盾，所以Avatarnode只是Hot Standby，并没有自动切换，当主NN失效的时候，需要管理员确认，然后手动把对外提供服务的虚拟IP映射到Standby NN，这样做的好处是确保不会发生脑裂的场景。</li>
-</ol>
-<ul>
-<li>Facebook AvatarNode 原理示例图</li>
-<li><img src="/images/201702/hdfs2_1.png"></li>
-<li>PrimaryNN与StandbyNN之间通过NFS来共享FsEdits、FsImage文件，这样主备NN之间就拥有了一致的目录树和block信息；而block的位置信息，可以根据DN向两个NN上报的信息过程中构建起来。这样再辅以虚IP，可以较好达到主备NN快速热切的目的。但是显然，这里的<em>NFS又引入了新的SPOF</em></li>
-</ul>
-<h3 id="HDFS-NameNode-高可用整体架构"><a href="#HDFS-NameNode-高可用整体架构" class="headerlink" title="HDFS NameNode 高可用整体架构"></a>HDFS NameNode 高可用整体架构</h3><img src="/images/201702/hdfs2_2.png">
-<p>NameNode 的高可用架构主要分为下面几个部分：</p>
-<ul>
-<li>Active NameNode 和 Standby NameNode：两台 NameNode 形成互备，一台处于 Active 状态，为主 NameNode，另外一台处于 Standby 状态，为备 NameNode，只有主 NameNode 才能对外提供读写服务。</li>
-<li>主备切换控制器 ZKFailoverController：ZKFailoverController 作为独立的进程运行，对 NameNode 的主备切换进行总体控制。ZKFailoverController 能及时检测到 NameNode 的健康状况，在主 NameNode 故障时借助 Zookeeper 实现自动的主备选举和切换，当然 NameNode 目前也支持不依赖于 Zookeeper 的手动主备切换。</li>
-<li>Zookeeper 集群：为主备切换控制器提供主备选举支持。</li>
-<li>共享存储系统：<strong>共享存储系统是实现NameNode的高可用最为关键的部分</strong>，共享存储系统保存了NameNode在运行过程中所产生的 HDFS 的元数据。主NameNode和备NameNode通过共享存储系统实现元数据同步。在进行主备切换的时候，新的主 NameNode 在确认元数据完全同步之后才能继续对外提供服务。</li>
-<li>DataNode 节点：除了通过共享存储系统共享 HDFS 的元数据信息之外，主 NameNode 和备 NameNode 还需要共享 HDFS 的数据块和 DataNode 之间的映射关系。DataNode 会<strong>同时</strong>向主 NameNode 和备 NameNode 上报数据块的位置信息。</li>
-</ul>
-<h4 id="共享存储系统简单分析原理"><a href="#共享存储系统简单分析原理" class="headerlink" title="共享存储系统简单分析原理"></a>共享存储系统简单分析原理</h4><p>QJM/Qurom Journal Manager，这是一个基于Paxos算法实现的HDFS HA方案<br><img src="/images/201702/hdfs2_3.png"></p>
-<ul>
-<li>基本原理就是用2N+1台 JournalNode 存储EditLog，每次写数据操作有大多数（&gt;=N+1）返回成功时即认为该次写成功，数据不会丢失了。当然这个算法所能容忍的是最多有N台机器挂掉，如果多于N台挂掉，这个算法就失效了。</li>
-<li>在HA架构里面SecondaryNameNode这个冷备角色已经不存在了，为了保持standby NN时时的与主Active NN的元数据保持一致，他们之间交互通过一系列守护的轻量级进程JournalNode</li>
-<li>任何修改操作在 Active NN上执行时，JN进程同时也会记录修改log到至少半数以上的JN中，这时 Standby NN 监测到JN 里面的同步log发生变化了会读取 JN 里面的修改log，然后同步到自己的的目录镜像树里面，如下图：</li>
-<li><img src="/images/201702/hdfs2_4.png"></li>
-<li>当发生故障时，Active的 NN 挂掉后，Standby NN 会在它成为Active NN 前，读取所有的JN里面的修改日志，这样就能高可靠的保证与挂掉的NN的目录镜像树一致，然后无缝的接替它的职责，维护来自客户端请求，从而达到一个高可用的目的</li>
-<li>QJM方式来实现HA的主要优势：</li>
-</ul>
-<ol>
-<li>不需要配置额外的高共享存储，降低了复杂度和维护成本</li>
-<li>消除spof</li>
-<li>系统健壮性的程度是可配置</li>
-<li>JN不会因为其中一台的延迟而影响整体的延迟，而且也不会因为JN的数量增多而影响性能（因为NN向JN发送日志是并行的）</li>
-</ol>
-<h4 id="NameNode的主备切换实现"><a href="#NameNode的主备切换实现" class="headerlink" title="NameNode的主备切换实现"></a>NameNode的主备切换实现</h4><p>NameNode 主备切换主要由 ZKFailoverController、HealthMonitor 和 ActiveStandbyElector 这 3 个组件来协同实现</p>
-<ul>
-<li>ZKFailoverController 启动的时候会创建 HealthMonitor 和 ActiveStandbyElector 这两个主要的内部组件，ZKFailoverController 在创建 HealthMonitor 和 ActiveStandbyElector 的同时，也会向 HealthMonitor 和 ActiveStandbyElector 注册相应的回调方法。</li>
-<li>HealthMonitor 主要负责检测 NameNode 的健康状态，如果检测到 NameNode 的状态发生变化，会回调 ZKFailoverController 的相应方法进行自动的主备选举。</li>
-<li>ActiveStandbyElector 主要负责完成自动的主备选举，内部封装了 Zookeeper 的处理逻辑，一旦 Zookeeper 主备选举完成，会回调 ZKFailoverController 的相应方法来进行 NameNode 的主备状态切换。</li>
-</ul>
-<p>NameNode 实现主备切换的流程如下图所示:<br><img src="/images/201702/hdfs2_5.png"></p>
-<ol>
-<li>HealthMonitor 初始化完成之后会启动内部的线程来定时调用对应 NameNode 的 HAServiceProtocol RPC 接口的方法，对 NameNode 的健康状态进行检测。</li>
-<li>HealthMonitor 如果检测到 NameNode 的健康状态发生变化，会回调 ZKFailoverController 注册的相应方法进行处理。</li>
-<li>如果 ZKFailoverController 判断需要进行主备切换，会首先使用 ActiveStandbyElector 来进行自动的主备选举。</li>
-<li>ActiveStandbyElector 与 Zookeeper 进行交互完成自动的主备选举。</li>
-<li>ActiveStandbyElector 在主备选举完成后，会回调 ZKFailoverController 的相应方法来通知当前的 NameNode 成为主 NameNode 或备 NameNode。</li>
-<li>ZKFailoverController 调用对应 NameNode 的 HAServiceProtocol RPC 接口的方法将 NameNode 转换为 Active 状态或 Standby 状态。</li>
-</ol>
-<p>参考文档:<br><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-hadoop-name-node/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-hadoop-name-node/</a><br><a href="http://www.cnblogs.com/tgzhu/p/5790565.html" target="_blank" rel="external">http://www.cnblogs.com/tgzhu/p/5790565.html</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1674,7 +1634,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

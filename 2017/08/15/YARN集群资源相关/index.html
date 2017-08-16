@@ -1,0 +1,698 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="问题: 给你一个集群，该如何对资源进行合理分配
+总资源集群中每台机器的配置 (RAM,CPU,Disk,网卡)
+预留资源总资源 - 集群中运行服务需要的资源(操作系统OS,DataNode,NodeManger,HBase,Hive,ZK,Impala..)
+配置集群YARN分配资源 主要参数:yarn.nodemanager.resource.memory-mb 每个节点分配的内存yarn.no">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YARN集群资源相关">
+<meta property="og:url" content="http://yoursite.com/2017/08/15/YARN集群资源相关/index.html">
+<meta property="og:site_name" content="Refrain">
+<meta property="og:description" content="问题: 给你一个集群，该如何对资源进行合理分配
+总资源集群中每台机器的配置 (RAM,CPU,Disk,网卡)
+预留资源总资源 - 集群中运行服务需要的资源(操作系统OS,DataNode,NodeManger,HBase,Hive,ZK,Impala..)
+配置集群YARN分配资源 主要参数:yarn.nodemanager.resource.memory-mb 每个节点分配的内存yarn.no">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_1.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_2.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_3.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_4.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_5.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/yarn_resource_6.png">
+<meta property="og:updated_time" content="2017-08-16T00:31:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="YARN集群资源相关">
+<meta name="twitter:description" content="问题: 给你一个集群，该如何对资源进行合理分配
+总资源集群中每台机器的配置 (RAM,CPU,Disk,网卡)
+预留资源总资源 - 集群中运行服务需要的资源(操作系统OS,DataNode,NodeManger,HBase,Hive,ZK,Impala..)
+配置集群YARN分配资源 主要参数:yarn.nodemanager.resource.memory-mb 每个节点分配的内存yarn.no">
+<meta name="twitter:image" content="http://yoursite.com/images/201708/yarn_resource_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/15/YARN集群资源相关/"/>
+
+
+
+
+
+  <title>YARN集群资源相关 | Refrain</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Refrain</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/15/YARN集群资源相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiwu1212@163.com">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Refrain">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">YARN集群资源相关</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-15T20:51:59+08:00">
+                2017-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>问题: 给你一个集群，该如何对资源进行合理分配</strong></p>
+<h3 id="总资源"><a href="#总资源" class="headerlink" title="总资源"></a>总资源</h3><p>集群中每台机器的配置 (RAM,CPU,Disk,网卡)</p>
+<h3 id="预留资源"><a href="#预留资源" class="headerlink" title="预留资源"></a>预留资源</h3><p>总资源 - 集群中运行服务需要的资源(操作系统OS,DataNode,NodeManger,HBase,Hive,ZK,Impala..)</p>
+<h3 id="配置集群"><a href="#配置集群" class="headerlink" title="配置集群"></a>配置集群</h3><h4 id="YARN分配资源-主要参数"><a href="#YARN分配资源-主要参数" class="headerlink" title="YARN分配资源 主要参数:"></a>YARN分配资源 主要参数:</h4><p>yarn.nodemanager.resource.memory-mb 每个节点分配的内存<br>yarn.nodemanager.resource.cpu-vcores 每个节点分配的虚拟CPU<br><img src="/images/201708/yarn_resource_1.png"><br><img src="/images/201708/yarn_resource_2.png"></p>
+<h4 id="YARN资源调度分配-主要参数"><a href="#YARN资源调度分配-主要参数" class="headerlink" title="YARN资源调度分配 主要参数:"></a>YARN资源调度分配 主要参数:</h4><p>yarn.scheduler.minimum-allocation-mb container最少内存<br>yarn.scheduler.maximum-allocation-mb container最大内存&lt;限制分配资源大小&gt;</p>
+<h4 id="Determine-HDP-Memory-Configuration-Settings"><a href="#Determine-HDP-Memory-Configuration-Settings" class="headerlink" title="Determine HDP Memory Configuration Settings"></a>Determine HDP Memory Configuration Settings</h4><p><a href="https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html" target="_blank" rel="external">https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">python hdp-configuration-utils.py -c 12 -m 48 <span class="_">-d</span> 12 -k False</div><div class="line"> Using cores=12 memory=48GB disks=12 hbase=False</div><div class="line"> Profile: cores=12 memory=43008MB reserved=6GB usableMem=42GB disks=12</div><div class="line"> Num Container=21</div><div class="line"> Container Ram=2048MB</div><div class="line"> Used Ram=42GB</div><div class="line"> Unused Ram=6GB</div><div class="line"> ***** mapred-site.xml *****</div><div class="line"> mapreduce.map.memory.mb=2048</div><div class="line"> mapreduce.map.java.opts=-Xmx1536m</div><div class="line"> mapreduce.reduce.memory.mb=2048</div><div class="line"> mapreduce.reduce.java.opts=-Xmx1536m</div><div class="line"> mapreduce.task.io.sort.mb=768</div><div class="line"> ***** yarn-site.xml *****</div><div class="line"> yarn.scheduler.minimum-allocation-mb=2048</div><div class="line"> yarn.scheduler.maximum-allocation-mb=43008</div><div class="line"> yarn.nodemanager.resource.memory-mb=43008</div><div class="line"> yarn.app.mapreduce.am.resource.mb=2048</div><div class="line"> yarn.app.mapreduce.am.command-opts=-Xmx1536m</div><div class="line"> ***** tez-site.xml *****</div><div class="line"> tez.am.resource.memory.mb=2048</div><div class="line"> tez.am.java.opts=-Xmx1536m</div><div class="line"> ***** hive-site.xml *****</div><div class="line"> hive.tez.container.size=2048</div><div class="line"> hive.tez.java.opts=-Xmx1536m</div><div class="line"> hive.auto.convert.join.noconditionaltask.size=402653000</div></pre></td></tr></table></figure></p>
+<h3 id="其他注意项"><a href="#其他注意项" class="headerlink" title="其他注意项"></a>其他注意项</h3><h4 id="虚拟内存和物理内存检查"><a href="#虚拟内存和物理内存检查" class="headerlink" title="虚拟内存和物理内存检查"></a>虚拟内存和物理内存检查</h4><p>NodeManager 可以监控Container的虚拟和物理内存使用情况<br>一般都会关闭虚拟内存检查<br><img src="/images/201708/yarn_resource_3.png"></p>
+<h4 id="Set-Xmx-of-java-opts-of-each-container-to-0-8-container-memory-allocation"><a href="#Set-Xmx-of-java-opts-of-each-container-to-0-8-container-memory-allocation" class="headerlink" title="Set -Xmx of java-opts of each container to 0.8 * (container memory allocation)"></a>Set -Xmx of java-opts of each container to 0.8 * (container memory allocation)</h4><img src="/images/201708/yarn_resource_4.png">
+<img src="/images/201708/yarn_resource_5.png">
+<img src="/images/201708/yarn_resource_6.png">
+<h4 id="Bottleneck-resource-瓶颈资源"><a href="#Bottleneck-resource-瓶颈资源" class="headerlink" title="Bottleneck resource 瓶颈资源"></a>Bottleneck resource 瓶颈资源</h4><p>Since there are three types of resources, different containers from different jobs may ask for different amount of resources. This can result in one of the resources becoming the bottleneck. Suppose we have a cluster with capacity (1000G RAM,16 Cores,16 disks) and each Mapper container needs (10G RAM,1 Core, 0.5 disks): at most, 16 Mappers can run in parallel because CPU cores become the bottleneck here.<br>As a result, (840G RAM, 8 disks) resources are not used by anyone. If you meet this situation, just check the RM UI(<a href="http://:8088/cluster/nodes" target="_blank" rel="external">http://:8088/cluster/nodes</a>) to figure out which resource is the bottleneck. You can probably allocate the leftover resources to jobs which can improve performance with such resource. For example, you can allocate more memory to sorting jobs which used to spill to disk.</p>
+<p>参考文档:<br><a href="https://mapr.com/blog/best-practices-yarn-resource-management/" target="_blank" rel="external">https://mapr.com/blog/best-practices-yarn-resource-management/</a><br><a href="https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html" target="_blank" rel="external">https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_installing_manually_book/content/determine-hdp-memory-config.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/25/记录1/" rel="next" title="记录1">
+                <i class="fa fa-chevron-left"></i> 记录1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="xiwu1212@163.com" />
+          <p class="site-author-name" itemprop="name">xiwu1212@163.com</p>
+           
+              <p class="site-description motion-element" itemprop="description">学无止境</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#总资源"><span class="nav-number">1.</span> <span class="nav-text">总资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预留资源"><span class="nav-number">2.</span> <span class="nav-text">预留资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置集群"><span class="nav-number">3.</span> <span class="nav-text">配置集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#YARN分配资源-主要参数"><span class="nav-number">3.1.</span> <span class="nav-text">YARN分配资源 主要参数:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#YARN资源调度分配-主要参数"><span class="nav-number">3.2.</span> <span class="nav-text">YARN资源调度分配 主要参数:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Determine-HDP-Memory-Configuration-Settings"><span class="nav-number">3.3.</span> <span class="nav-text">Determine HDP Memory Configuration Settings</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他注意项"><span class="nav-number">4.</span> <span class="nav-text">其他注意项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟内存和物理内存检查"><span class="nav-number">4.1.</span> <span class="nav-text">虚拟内存和物理内存检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set-Xmx-of-java-opts-of-each-container-to-0-8-container-memory-allocation"><span class="nav-number">4.2.</span> <span class="nav-text">Set -Xmx of java-opts of each container to 0.8 * (container memory allocation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bottleneck-resource-瓶颈资源"><span class="nav-number">4.3.</span> <span class="nav-text">Bottleneck resource 瓶颈资源</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiwu1212@163.com</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

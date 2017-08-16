@@ -257,6 +257,169 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/21/Hadoop2的Hdfs框架/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiwu1212@163.com">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Refrain">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/02/21/Hadoop2的Hdfs框架/" itemprop="url">Hadoop2.x的Hdfs框架</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-21T17:09:38+08:00">
+                2017-02-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="早期Hdfs改进的原因"><a href="#早期Hdfs改进的原因" class="headerlink" title="早期Hdfs改进的原因"></a>早期Hdfs改进的原因</h3><p>早期的hadoop版本，NameNode是HDFS集群的单点故障点，每一个集群只有一个NameNode,如果这个机器或进程不可用，整个集群就无法使用。</p>
+<h3 id="SPOF方案回顾-single-point-of-failure单点故障"><a href="#SPOF方案回顾-single-point-of-failure单点故障" class="headerlink" title="SPOF方案回顾(single point of failure单点故障)"></a>SPOF方案回顾(single point of failure单点故障)</h3><ol>
+<li>Secondary NameNode：<strong>它不是HA</strong>，它只是阶段性的合并edits和fsimage，以缩短集群启动的时间。当NN失效的时候，Secondary NN并无法立刻提供服务，Secondary NN甚至无法保证数据完整性：如果NN数据丢失的话，在上一次合并后的文件系统的改动会丢失</li>
+<li>Backup NameNode：它在内存中复制了NN的当前状态，算是Warm Standby，可也就仅限于此，并没有 <strong>failover(故障自动处理)</strong> 等。它同样是阶段性的做checkpoint，也无法保证数据完整性</li>
+<li>手动把<strong>name.dir指向NFS</strong>（Network File System），这是安全的Cold Standby，可以保证元数据不丢失，但集群的恢复则完全靠手动</li>
+<li>Facebook AvatarNode：Facebook有强大的运维做后盾，所以Avatarnode只是Hot Standby，并没有自动切换，当主NN失效的时候，需要管理员确认，然后手动把对外提供服务的虚拟IP映射到Standby NN，这样做的好处是确保不会发生脑裂的场景。</li>
+</ol>
+<ul>
+<li>Facebook AvatarNode 原理示例图</li>
+<li><img src="/images/201702/hdfs2_1.png"></li>
+<li>PrimaryNN与StandbyNN之间通过NFS来共享FsEdits、FsImage文件，这样主备NN之间就拥有了一致的目录树和block信息；而block的位置信息，可以根据DN向两个NN上报的信息过程中构建起来。这样再辅以虚IP，可以较好达到主备NN快速热切的目的。但是显然，这里的<em>NFS又引入了新的SPOF</em></li>
+</ul>
+<h3 id="HDFS-NameNode-高可用整体架构"><a href="#HDFS-NameNode-高可用整体架构" class="headerlink" title="HDFS NameNode 高可用整体架构"></a>HDFS NameNode 高可用整体架构</h3><img src="/images/201702/hdfs2_2.png">
+<p>NameNode 的高可用架构主要分为下面几个部分：</p>
+<ul>
+<li>Active NameNode 和 Standby NameNode：两台 NameNode 形成互备，一台处于 Active 状态，为主 NameNode，另外一台处于 Standby 状态，为备 NameNode，只有主 NameNode 才能对外提供读写服务。</li>
+<li>主备切换控制器 ZKFailoverController：ZKFailoverController 作为独立的进程运行，对 NameNode 的主备切换进行总体控制。ZKFailoverController 能及时检测到 NameNode 的健康状况，在主 NameNode 故障时借助 Zookeeper 实现自动的主备选举和切换，当然 NameNode 目前也支持不依赖于 Zookeeper 的手动主备切换。</li>
+<li>Zookeeper 集群：为主备切换控制器提供主备选举支持。</li>
+<li>共享存储系统：<strong>共享存储系统是实现NameNode的高可用最为关键的部分</strong>，共享存储系统保存了NameNode在运行过程中所产生的 HDFS 的元数据。主NameNode和备NameNode通过共享存储系统实现元数据同步。在进行主备切换的时候，新的主 NameNode 在确认元数据完全同步之后才能继续对外提供服务。</li>
+<li>DataNode 节点：除了通过共享存储系统共享 HDFS 的元数据信息之外，主 NameNode 和备 NameNode 还需要共享 HDFS 的数据块和 DataNode 之间的映射关系。DataNode 会<strong>同时</strong>向主 NameNode 和备 NameNode 上报数据块的位置信息。</li>
+</ul>
+<h4 id="共享存储系统简单分析原理"><a href="#共享存储系统简单分析原理" class="headerlink" title="共享存储系统简单分析原理"></a>共享存储系统简单分析原理</h4><p>QJM/Qurom Journal Manager，这是一个基于Paxos算法实现的HDFS HA方案<br><img src="/images/201702/hdfs2_3.png"></p>
+<ul>
+<li>基本原理就是用2N+1台 JournalNode 存储EditLog，每次写数据操作有大多数（&gt;=N+1）返回成功时即认为该次写成功，数据不会丢失了。当然这个算法所能容忍的是最多有N台机器挂掉，如果多于N台挂掉，这个算法就失效了。</li>
+<li>在HA架构里面SecondaryNameNode这个冷备角色已经不存在了，为了保持standby NN时时的与主Active NN的元数据保持一致，他们之间交互通过一系列守护的轻量级进程JournalNode</li>
+<li>任何修改操作在 Active NN上执行时，JN进程同时也会记录修改log到至少半数以上的JN中，这时 Standby NN 监测到JN 里面的同步log发生变化了会读取 JN 里面的修改log，然后同步到自己的的目录镜像树里面，如下图：</li>
+<li><img src="/images/201702/hdfs2_4.png"></li>
+<li>当发生故障时，Active的 NN 挂掉后，Standby NN 会在它成为Active NN 前，读取所有的JN里面的修改日志，这样就能高可靠的保证与挂掉的NN的目录镜像树一致，然后无缝的接替它的职责，维护来自客户端请求，从而达到一个高可用的目的</li>
+<li>QJM方式来实现HA的主要优势：</li>
+</ul>
+<ol>
+<li>不需要配置额外的高共享存储，降低了复杂度和维护成本</li>
+<li>消除spof</li>
+<li>系统健壮性的程度是可配置</li>
+<li>JN不会因为其中一台的延迟而影响整体的延迟，而且也不会因为JN的数量增多而影响性能（因为NN向JN发送日志是并行的）</li>
+</ol>
+<h4 id="NameNode的主备切换实现"><a href="#NameNode的主备切换实现" class="headerlink" title="NameNode的主备切换实现"></a>NameNode的主备切换实现</h4><p>NameNode 主备切换主要由 ZKFailoverController、HealthMonitor 和 ActiveStandbyElector 这 3 个组件来协同实现</p>
+<ul>
+<li>ZKFailoverController 启动的时候会创建 HealthMonitor 和 ActiveStandbyElector 这两个主要的内部组件，ZKFailoverController 在创建 HealthMonitor 和 ActiveStandbyElector 的同时，也会向 HealthMonitor 和 ActiveStandbyElector 注册相应的回调方法。</li>
+<li>HealthMonitor 主要负责检测 NameNode 的健康状态，如果检测到 NameNode 的状态发生变化，会回调 ZKFailoverController 的相应方法进行自动的主备选举。</li>
+<li>ActiveStandbyElector 主要负责完成自动的主备选举，内部封装了 Zookeeper 的处理逻辑，一旦 Zookeeper 主备选举完成，会回调 ZKFailoverController 的相应方法来进行 NameNode 的主备状态切换。</li>
+</ul>
+<p>NameNode 实现主备切换的流程如下图所示:<br><img src="/images/201702/hdfs2_5.png"></p>
+<ol>
+<li>HealthMonitor 初始化完成之后会启动内部的线程来定时调用对应 NameNode 的 HAServiceProtocol RPC 接口的方法，对 NameNode 的健康状态进行检测。</li>
+<li>HealthMonitor 如果检测到 NameNode 的健康状态发生变化，会回调 ZKFailoverController 注册的相应方法进行处理。</li>
+<li>如果 ZKFailoverController 判断需要进行主备切换，会首先使用 ActiveStandbyElector 来进行自动的主备选举。</li>
+<li>ActiveStandbyElector 与 Zookeeper 进行交互完成自动的主备选举。</li>
+<li>ActiveStandbyElector 在主备选举完成后，会回调 ZKFailoverController 的相应方法来通知当前的 NameNode 成为主 NameNode 或备 NameNode。</li>
+<li>ZKFailoverController 调用对应 NameNode 的 HAServiceProtocol RPC 接口的方法将 NameNode 转换为 Active 状态或 Standby 状态。</li>
+</ol>
+<p>参考文档:<br><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-hadoop-name-node/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-hadoop-name-node/</a><br><a href="http://www.cnblogs.com/tgzhu/p/5790565.html" target="_blank" rel="external">http://www.cnblogs.com/tgzhu/p/5790565.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/20/Hadoop1的Hdfs框架/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1608,124 +1771,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/04/数据库简单总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiwu1212@163.com">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Refrain">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/04/数据库简单总结/" itemprop="url">关系型数据库和非关系型数据库简单总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-04T13:24:03+08:00">
-                2017-02-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><h3 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h3><p>关系型数据库，采用了关系模型来组织数据的数据库。<br>关系模型指的就是二维表格模型，而一个关系型数据库就是由二维表及其之间的联系所组成的一个数据组织。</p>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>容易理解：二维表结构是非常贴近逻辑世界的一个概念，关系模型相对网状、层次等其他模型来说更容易理解<br>使用方便：通用的SQL语言使得操作关系型数据库非常方便<br>易于维护：丰富的完整性(实体完整性、参照完整性和用户定义的完整性)大大减低了数据冗余和数据不一致的概率</p>
-<h3 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h3><p>非关系型数据库产品是传统关系型数据库的功能阉割版本(去除ACID)，通过减少用不到或很少用的功能，来大幅度提高产品性能。</p>
-<h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><p>以下的这几种情况下比较适用：<br>1、数据模型比较简单<br>2、需要灵活性更强的IT系统<br>3、对数据库性能要求较高<br>4、不需要高度的数据一致性<br>5、对于给定key，比较容易映射复杂值的环境</p>
-<h4 id="常见的Nosql"><a href="#常见的Nosql" class="headerlink" title="常见的Nosql"></a>常见的Nosql</h4><p>高性能并发读写的key-value数据库:Redis,Tokyo<br>列存储数据库:HBase,Cassandra<br>文档型数据库:MongoDB,CouchDB<br>图形(Graph)数据库:Neo4J, InfoGrid</p>
-<h2 id="主要优势"><a href="#主要优势" class="headerlink" title="主要优势"></a>主要优势</h2><p>非关系型数据库:操作的扩展性和大数据量处理<br>关系型数据库:事务的一致性(安全性能高)和复杂SQL查询</p>
-<h2 id="分布式一些比较"><a href="#分布式一些比较" class="headerlink" title="分布式一些比较"></a>分布式一些比较</h2><img src="/images/201702/database_1.png">
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1775,7 +1820,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
