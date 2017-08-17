@@ -93,29 +93,53 @@
 
 
 
-<meta name="description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
+<meta name="description" content="问题: 查看Job是否出现数据倾斜查看reduce task最长和最短执行时间
+
+
+如上图所示，task执行最长时间为3分56秒，最短时间为10秒，可能出现数据倾斜
+查看最长和最短执行时间的reduce输入量
+
+
+输入量差异比较大，则出现了数据倾斜的情况
+问题: 定位出现数据倾斜的地方找到造成数据倾斜的key
+找到任务特别慢的那个task，打开对应日志
+搜索日志中出现的”rows for join">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark运行框架">
-<meta property="og:url" content="http://yoursite.com/2017/01/26/Spark运行框架/index.html">
+<meta property="og:title" content="Hive中Reduce执行时间不同问题">
+<meta property="og:url" content="http://yoursite.com/2017/08/16/Hive中Reduce执行时间不同问题/index.html">
 <meta property="og:site_name" content="Refrain">
-<meta property="og:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_2.png">
-<meta property="og:image" content="http://yoursite.com/images/201701/Spark_Frame_3.png">
-<meta property="og:updated_time" content="2017-01-27T15:11:11.000Z">
+<meta property="og:description" content="问题: 查看Job是否出现数据倾斜查看reduce task最长和最短执行时间
+
+
+如上图所示，task执行最长时间为3分56秒，最短时间为10秒，可能出现数据倾斜
+查看最长和最短执行时间的reduce输入量
+
+
+输入量差异比较大，则出现了数据倾斜的情况
+问题: 定位出现数据倾斜的地方找到造成数据倾斜的key
+找到任务特别慢的那个task，打开对应日志
+搜索日志中出现的”rows for join">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_time_0.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_time_1.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_time_2.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_tasks_0.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_tasks_1.png">
+<meta property="og:image" content="http://yoursite.com/images/201708/reduce_tasks_2.png">
+<meta property="og:updated_time" content="2017-08-17T09:42:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark运行框架">
-<meta name="twitter:description" content="Spark官网展示了如下的集群运行架构
-Spark Standalone Client Mode 运行流程示意图
-Spark YARN Cluster Mode 运行流程示意图
-转载: http://blog.csdn.net/bigdata_wang/article/details/48245581">
-<meta name="twitter:image" content="http://yoursite.com/images/201701/Spark_Frame_1.png">
+<meta name="twitter:title" content="Hive中Reduce执行时间不同问题">
+<meta name="twitter:description" content="问题: 查看Job是否出现数据倾斜查看reduce task最长和最短执行时间
+
+
+如上图所示，task执行最长时间为3分56秒，最短时间为10秒，可能出现数据倾斜
+查看最长和最短执行时间的reduce输入量
+
+
+输入量差异比较大，则出现了数据倾斜的情况
+问题: 定位出现数据倾斜的地方找到造成数据倾斜的key
+找到任务特别慢的那个task，打开对应日志
+搜索日志中出现的”rows for join">
+<meta name="twitter:image" content="http://yoursite.com/images/201708/reduce_time_0.png">
 
 
 
@@ -143,13 +167,13 @@ Spark YARN Cluster Mode 运行流程示意图
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/26/Spark运行框架/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/16/Hive中Reduce执行时间不同问题/"/>
 
 
 
 
 
-  <title>Spark运行框架 | Refrain</title>
+  <title>Hive中Reduce执行时间不同问题 | Refrain</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -269,7 +293,7 @@ Spark YARN Cluster Mode 运行流程示意图
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/26/Spark运行框架/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/Hive中Reduce执行时间不同问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xiwu1212@163.com">
@@ -286,7 +310,7 @@ Spark YARN Cluster Mode 运行流程示意图
 
         
         
-          <h1 class="post-title" itemprop="name headline">Spark运行框架</h1>
+          <h1 class="post-title" itemprop="name headline">Hive中Reduce执行时间不同问题</h1>
         
 
         <div class="post-meta">
@@ -298,8 +322,8 @@ Spark YARN Cluster Mode 运行流程示意图
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-26T12:00:43+08:00">
-                2017-01-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-16T21:07:55+08:00">
+                2017-08-16
               </time>
             
 
@@ -333,10 +357,34 @@ Spark YARN Cluster Mode 运行流程示意图
       
 
       
-        <h3 id="Spark官网展示了如下的集群运行架构"><a href="#Spark官网展示了如下的集群运行架构" class="headerlink" title="Spark官网展示了如下的集群运行架构"></a>Spark官网展示了如下的集群运行架构</h3><img src="/images/201701/Spark_Frame_1.png">
-<h3 id="Spark-Standalone-Client-Mode-运行流程示意图"><a href="#Spark-Standalone-Client-Mode-运行流程示意图" class="headerlink" title="Spark Standalone Client Mode 运行流程示意图"></a>Spark Standalone Client Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_2.png">
-<h3 id="Spark-YARN-Cluster-Mode-运行流程示意图"><a href="#Spark-YARN-Cluster-Mode-运行流程示意图" class="headerlink" title="Spark YARN Cluster Mode 运行流程示意图"></a>Spark YARN Cluster Mode 运行流程示意图</h3><img src="/images/201701/Spark_Frame_3.png">
-<p>转载: <a href="http://blog.csdn.net/bigdata_wang/article/details/48245581" target="_blank" rel="external">http://blog.csdn.net/bigdata_wang/article/details/48245581</a></p>
+        <h3 id="问题-查看Job是否出现数据倾斜"><a href="#问题-查看Job是否出现数据倾斜" class="headerlink" title="问题: 查看Job是否出现数据倾斜"></a>问题: 查看Job是否出现数据倾斜</h3><h4 id="查看reduce-task最长和最短执行时间"><a href="#查看reduce-task最长和最短执行时间" class="headerlink" title="查看reduce task最长和最短执行时间"></a>查看reduce task最长和最短执行时间</h4><img src="/images/201708/reduce_time_0.png">
+<img src="/images/201708/reduce_time_1.png">
+<img src="/images/201708/reduce_time_2.png">
+<p>如上图所示，task执行最长时间为3分56秒，最短时间为10秒，可能出现数据倾斜</p>
+<h4 id="查看最长和最短执行时间的reduce输入量"><a href="#查看最长和最短执行时间的reduce输入量" class="headerlink" title="查看最长和最短执行时间的reduce输入量"></a>查看最长和最短执行时间的reduce输入量</h4><img src="/images/201708/reduce_tasks_0.png">
+<img src="/images/201708/reduce_tasks_1.png">
+<img src="/images/201708/reduce_tasks_2.png">
+<p><strong>输入量差异比较大，则出现了数据倾斜的情况</strong></p>
+<h3 id="问题-定位出现数据倾斜的地方"><a href="#问题-定位出现数据倾斜的地方" class="headerlink" title="问题: 定位出现数据倾斜的地方"></a>问题: 定位出现数据倾斜的地方</h3><h4 id="找到造成数据倾斜的key"><a href="#找到造成数据倾斜的key" class="headerlink" title="找到造成数据倾斜的key"></a>找到造成数据倾斜的key</h4><ul>
+<li>找到任务特别慢的那个task，打开对应日志</li>
+<li>搜索日志中出现的”rows for joinkey”</li>
+<li>找到时间跨度最大的那条记录</li>
+</ul>
+<h4 id="确定任务卡住的stage"><a href="#确定任务卡住的stage" class="headerlink" title="确定任务卡住的stage"></a>确定任务卡住的stage</h4><ul>
+<li>确定stage (通过Job下Overview中Job Name)</li>
+<li>确定SQL &lt;通过Job下Configuration搜索hive.query.string)</li>
+<li>找到对应的stage，查看具体执行计划 (explain extend该SQL)</li>
+<li>确定SQL执行代码</li>
+</ul>
+<h3 id="问题：解决数据倾斜问题"><a href="#问题：解决数据倾斜问题" class="headerlink" title="问题：解决数据倾斜问题"></a>问题：解决数据倾斜问题</h3><ul>
+<li>过滤掉脏数据</li>
+<li>hive.optimize.skewjoin</li>
+<li>调大内存</li>
+<li>mapjoin</li>
+<li>大key单独处理</li>
+</ul>
+<h3 id="PS"><a href="#PS" class="headerlink" title="PS."></a>PS.</h3><p><strong>问题纪录：</strong> 同一个JOB，reduce task执行时间差很多，但是reduce的输入量差不多<br><strong>原因：</strong> mapreduce.job.reduce.slowstart.completedmaps(当Map Task完成的比例达到该值后才会为Reduce Task申请资源)<br>使用的默认的参数0.05<br>在集群资源不足并且任务的输入量很大的情况，Reduce过早的进行Copy操作，会占用资源，导致资源不足，新的Map执行不了(类似死锁)，最后AM会kill掉Reduce，导致某些Reduce执行时间过长<br><strong>解决办法:</strong> 提高mapreduce.job.reduce.slowstart.completedmaps该参数的值</p>
+<p>参考文档: <a href="https://mp.weixin.qq.com/s/ye4PUxgakf-l-32TZ92uew" target="_blank" rel="external">https://mp.weixin.qq.com/s/ye4PUxgakf-l-32TZ92uew</a></p>
 
       
     </div>
@@ -373,8 +421,8 @@ Spark YARN Cluster Mode 运行流程示意图
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/25/supervisor使用/" rel="next" title="Supervisor简单使用">
-                <i class="fa fa-chevron-left"></i> Supervisor简单使用
+              <a href="/2017/08/15/YARN集群资源相关/" rel="next" title="YARN集群资源相关">
+                <i class="fa fa-chevron-left"></i> YARN集群资源相关
               </a>
             
           </div>
@@ -382,10 +430,6 @@ Spark YARN Cluster Mode 运行流程示意图
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/27/大数据面试总结-1/" rel="prev" title="大数据面试总结-1">
-                大数据面试总结-1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -505,7 +549,7 @@ Spark YARN Cluster Mode 运行流程示意图
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark官网展示了如下的集群运行架构"><span class="nav-number">1.</span> <span class="nav-text">Spark官网展示了如下的集群运行架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Standalone-Client-Mode-运行流程示意图"><span class="nav-number">2.</span> <span class="nav-text">Spark Standalone Client Mode 运行流程示意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-YARN-Cluster-Mode-运行流程示意图"><span class="nav-number">3.</span> <span class="nav-text">Spark YARN Cluster Mode 运行流程示意图</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题-查看Job是否出现数据倾斜"><span class="nav-number">1.</span> <span class="nav-text">问题: 查看Job是否出现数据倾斜</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查看reduce-task最长和最短执行时间"><span class="nav-number">1.1.</span> <span class="nav-text">查看reduce task最长和最短执行时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看最长和最短执行时间的reduce输入量"><span class="nav-number">1.2.</span> <span class="nav-text">查看最长和最短执行时间的reduce输入量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题-定位出现数据倾斜的地方"><span class="nav-number">2.</span> <span class="nav-text">问题: 定位出现数据倾斜的地方</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#找到造成数据倾斜的key"><span class="nav-number">2.1.</span> <span class="nav-text">找到造成数据倾斜的key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定任务卡住的stage"><span class="nav-number">2.2.</span> <span class="nav-text">确定任务卡住的stage</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题：解决数据倾斜问题"><span class="nav-number">3.</span> <span class="nav-text">问题：解决数据倾斜问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS"><span class="nav-number">4.</span> <span class="nav-text">PS.</span></a></li></ol></div>
             
 
           </div>
